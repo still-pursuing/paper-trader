@@ -3,23 +3,23 @@
 ## setup
 
 ```sh
-npm install -g yarn
+pre-commit install
 ```
 
 ## frontend
 
 ```sh
 cd app
-yarn install
+npm install
 
-yarn start
+npm run start
 ```
 
 ## backend
 
 ```sh
 cd server
-yarn install
+npm install
 
-yarn start
+npm run start
 ```
