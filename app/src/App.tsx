@@ -6,12 +6,8 @@ function App() {
   const [text, setText] = useState('')
 
   useEffect(() => {
-    ;(async function () {
-      const response = await fetch('/test')
-      const test = (await response.json())['test']
-      setText(test)
-    })()
-  })
+    fetchText(setText)
+  }, [text])
 
   return (
     <div className="App">
@@ -32,6 +28,14 @@ function App() {
       </header>
     </div>
   )
+}
+
+async function fetchText(
+  setText: React.Dispatch<React.SetStateAction<string>>
+) {
+  const response = await fetch('/test')
+  const test = (await response.json())['test']
+  setText(test)
 }
 
 export default App
