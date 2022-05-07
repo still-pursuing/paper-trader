@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import logo from './logo.svg'
-import './App.css'
+import './Splash.css'
 
-function App() {
+export function Splash() {
   const [text, setText] = useState('')
 
   useEffect(() => {
@@ -10,15 +10,15 @@ function App() {
   }, [text])
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div className="Splash">
+      <header className="Splash-header">
+        <img src={logo} className="Splash-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          Edit <code>src/Splash.tsx</code> and save to reload.
         </p>
         <p>{text}</p>
         <a
-          className="App-link"
+          className="Splash-link"
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
@@ -37,5 +37,3 @@ async function fetchText(
   const test = (await response.json())['test']
   setText(test)
 }
-
-export default App
