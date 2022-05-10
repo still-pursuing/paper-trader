@@ -19,8 +19,8 @@
   "dependencies": {
     "express": "^4.18.1"
   },
-  "engine": {
-    ">=16.13.0"
+  "engines": {
+    "node": ">=16.13.0"
   },
   "license": "MIT"
 }
