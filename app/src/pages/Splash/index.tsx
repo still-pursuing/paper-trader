@@ -17,14 +17,9 @@ export function Splash() {
           Edit <code>src/Splash.tsx</code> and save to reload.
         </p>
         <p>{text}</p>
-        <a
-          className="Splash-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p>
+          Deployed on Firebase.
+        </p>
       </header>
     </div>
   )
