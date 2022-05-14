@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from 'react'
+// import React, { useEffect, useState } from 'react'
 import logo from './logo.svg'
 import './Splash.css'
 
 export function Splash() {
-  const [text, setText] = useState('')
-
-  useEffect(() => {
-    fetchText(setText)
-  }, [text])
 
   return (
     <div className="Splash">
@@ -16,7 +11,6 @@ export function Splash() {
         <p>
           Edit <code>src/Splash.tsx</code> and save to reload.
         </p>
-        <p>{text}</p>
         <p>
           Deployed on Firebase.
         </p>
@@ -25,10 +19,3 @@ export function Splash() {
   )
 }
 
-async function fetchText(
-  setText: React.Dispatch<React.SetStateAction<string>>
-) {
-  const response = await fetch('/test')
-  const test = (await response.json())['test']
-  setText(test)
-}
