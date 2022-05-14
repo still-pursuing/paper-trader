@@ -5,7 +5,7 @@
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "prestart": "npm run build",
-    "start": "nodemon src/index.ts"
+    "start": "./node_modules/.bin/ts-node"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
