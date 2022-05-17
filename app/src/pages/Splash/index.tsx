@@ -8,9 +8,9 @@ export function Splash() {
   return (
     <div className="Splash">
       <header className="Splash-header">
-        {/* <img src={logo} className="Splash-logo" alt="logo" /> */}
+        <img src={logo} className="Splash-logo" alt="logo" />
         <p>
-          Some of the top performing stocks our users own:
+          Some of the top performing stocks our users own: 📈📉
         </p>
         <p>
           Insert a table
