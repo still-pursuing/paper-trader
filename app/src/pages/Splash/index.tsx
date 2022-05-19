@@ -9,13 +9,10 @@ export function Splash() {
       <header className="Splash-header">
         <img src={logo} className="Splash-logo" alt="logo" />
         <p>
-          Edit <code>src/Splash.tsx</code> and save to reload.
-        </p>
-        <p>
           Deployed on Firebase.
         </p>
       </header>
+
     </div>
   )
 }
-
