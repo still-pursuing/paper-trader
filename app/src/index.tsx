@@ -1,9 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-<<<<<<< HEAD
 import { Pane } from 'evergreen-ui'
-=======
->>>>>>> origin
 
 import './index.css'
 import { Splash } from './pages/Splash'
