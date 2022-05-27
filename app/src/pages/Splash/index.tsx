@@ -1,6 +1,5 @@
 // import React, { useEffect, useState } from 'react'
 import { Link as ReactRouterLink } from 'react-router-dom'
-import logo from './logo.svg'
 import './Splash.css'
 import DataTable from "../../components/DataTable"
 import { Heading, Link, Pane, Paragraph } from 'evergreen-ui'
