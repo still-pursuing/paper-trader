@@ -1,25 +1,31 @@
 // import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link as ReactRouterLink } from 'react-router-dom'
 import logo from './logo.svg'
 import './Splash.css'
+import DataTable from "../../components/DataTable"
+import { Heading, Link, Pane, Paragraph } from 'evergreen-ui'
 
 export function Splash() {
 
   return (
-    <div className="Splash">
-      <header className="Splash-header">
-        <img src={logo} className="Splash-logo" alt="logo" />
-        <p>
-          Some of the top performing stocks our users own: 📈📉
-        </p>
-        <p>
-          Insert a table
-        </p>
-        <Link to="/login">Log In</Link>
-      </header>
+    <Pane>
+      <Pane background="tint2" elevation={1} >
+        <Heading is='h1' display="flex" justifyContent="space-around" size={1}>
+          Paper Trader
+        </Heading>
+        <Paragraph display="flex" justifyContent="space-around" marginTop={10}>
+          Trading real stocks with fake money.
+        </Paragraph>
+      </Pane>
+      <Pane padding={10}>
+        <DataTable></DataTable>
+
+      </Pane>
+      <Link is={ReactRouterLink} to="/login">Discord Log In</Link>
       <p>
         Deployed on Firebase.
       </p>
-    </div>
+    </Pane >
+
   )
 }
