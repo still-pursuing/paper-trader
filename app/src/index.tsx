@@ -10,9 +10,6 @@ import { NotFound } from './pages/NotFound'
 import Login from './pages/Login'
 import Navbar from './components/Navbar';
 
-// function fakeLog() {
-//   console.log("clicked logging button");
-// }
 
 ReactDOM.render(
   <React.StrictMode>
