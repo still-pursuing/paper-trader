@@ -17,8 +17,8 @@ import Navbar from './components/Navbar';
 ReactDOM.render(
   <React.StrictMode>
     <Pane padding={16}>
-      <Navbar></Navbar>
       <BrowserRouter>
+        <Navbar></Navbar>
         <Routes>
           <Route path="/" element={<Splash />} />
           <Route path="home" element={<Splash />} />
