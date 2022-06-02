@@ -10,6 +10,9 @@ import { NotFound } from './pages/NotFound'
 import Login from './pages/Login'
 import Navbar from './components/Navbar';
 
+function handleLogin(loginData: String) {
+  console.log(loginData);
+}
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,7 +22,7 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<Splash />} />
           <Route path="home" element={<Splash />} />
-          <Route path="login" element={<Login />} />
+          <Route path="login" element={<Login handleLogin={handleLogin} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
