@@ -2,6 +2,7 @@
 import { Link as ReactRouterLink } from 'react-router-dom'
 import './Splash.css'
 import DataTable from "../../components/DataTable"
+import DataChart from '../../components/DataChart'
 import { Heading, Link, Pane, Paragraph } from 'evergreen-ui'
 
 export function Splash() {
@@ -18,7 +19,7 @@ export function Splash() {
       </Pane>
       <Pane padding={10}>
         <DataTable></DataTable>
-
+        <DataChart></DataChart>
       </Pane>
       <Link is={ReactRouterLink} to="/login">Discord Log In</Link>
       <p>
