@@ -64,6 +64,7 @@ const dummyData = {
 };
 
 function DataChart({ options = dummyOptions, data = dummyData }) {
+    // need to limit the size of the component so it doesn't take up the whole screen
     return <Line options={options} data={data} />;
 }
 
