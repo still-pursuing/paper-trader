@@ -2,7 +2,12 @@ import React from "react";
 import { Button, Pane, EditIcon, Heading } from "evergreen-ui";
 
 
-
+/**
+ * Props:
+ * handleLogin: comes from src index.tsx
+ * 
+ * index.tsx --> Login
+ */
 
 function Login({ handleLogin }: any) {
   // do stuff with Discord
