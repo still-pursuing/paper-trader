@@ -10,7 +10,7 @@ export function Splash() {
   return (
     <Pane>
       <Pane background="tint2" elevation={1} >
-        <Heading is='h1' display="flex" justifyContent="space-around" size={1}>
+        <Heading is='h1' display="flex" justifyContent="space-around" size={900}>
           Paper Trader
         </Heading>
         <Paragraph display="flex" justifyContent="space-around" marginTop={10}>
