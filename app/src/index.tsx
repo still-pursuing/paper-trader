@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Pane } from 'evergreen-ui'
+import axios from "axios";
 
 import './index.css'
 import { Splash } from './pages/Splash'
@@ -10,8 +11,13 @@ import { NotFound } from './pages/NotFound'
 import Login from './pages/Login'
 import Navbar from './components/Navbar';
 
-function handleLogin(loginData: String) {
+async function handleLogin(loginData: String) {
   console.log(loginData);
+
+  await axios({
+    method: "get",
+    url: "http://localhost:53134/login",
+  })
 }
 
 ReactDOM.render(
