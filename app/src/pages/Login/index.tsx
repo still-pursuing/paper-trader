@@ -1,40 +1,44 @@
-import React from "react";
+
 import { Button, Pane, EditIcon, Heading } from "evergreen-ui";
 
 
 /**
  * Props:
- * handleLogin: comes from src index.tsx
+ * - None
  * 
- * index.tsx --> Login
+ * State:
+ * - csrfToken: string to append to Discord OAuth URL
+ * 
+ * Events:
+ * - None
+ * 
+ * App --> Login
  */
 
-function Login({ handleLogin }: any) {
+function Login({ csrfToken }: { csrfToken: String }) {
   // do stuff with Discord
   // if a user is already logged in, redirect back to root
 
-
-  function handleClick(event: React.MouseEvent<HTMLButtonElement>) {
-    event.preventDefault();
-    handleLogin("Redirect to Discord")
-  }
+  console.log('login page receiving csrftoken', csrfToken);
 
   return (
     <Pane display="flex" flexDirection="column" alignItems="center">
       <Heading is="h1" size={900}>
         Login
       </Heading>
-      <Pane >
+      <Pane>
         <Button
+          is="a"
+          href={`https://discord.com/api/oauth2/authorize?client_id=981788058833797171&redirect_uri=http%3A%2F%2Flocalhost%3A3000&response_type=code&scope=identify&state=${csrfToken}`}
           marginY={8}
           marginRight={12}
           iconBefore={EditIcon}
           size="large"
-          onClick={handleClick}>
+        >
           Login With Discord
         </Button>
       </Pane>
-    </Pane>
+    </Pane >
   )
 }
 
