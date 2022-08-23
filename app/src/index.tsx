@@ -1,38 +1,20 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Pane } from 'evergreen-ui'
-import axios from "axios";
+
 
 import './index.css'
-import { Splash } from './pages/Splash'
 import reportWebVitals from './reportWebVitals'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { NotFound } from './pages/NotFound'
-import Login from './pages/Login'
-import Navbar from './components/Navbar';
 
-async function handleLogin(loginData: String) {
-  console.log(loginData);
+import App from './App';
+import { BrowserRouter } from 'react-router-dom';
 
-  await axios({
-    method: "get",
-    url: "http://localhost:53134/login",
-  })
-}
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <Pane padding={16}>
-      <BrowserRouter>
-        <Navbar></Navbar>
-        <Routes>
-          <Route path="/" element={<Splash />} />
-          <Route path="home" element={<Splash />} />
-          <Route path="login" element={<Login handleLogin={handleLogin} />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </Pane>
+    <BrowserRouter >
+      <App />
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 )
