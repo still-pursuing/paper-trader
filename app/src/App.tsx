@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Route, Routes, useSearchParams } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import { Pane } from 'evergreen-ui'
 
 import { NotFound } from './pages/NotFound'
 import Login from './pages/Login'
 import Navbar from './components/Navbar';
 import { Splash } from './pages/Splash'
+import DiscordRedirect from './pages/Login/DiscordRedirect'
 
 const LOCAL_STORAGE_TOKEN_KEY = "token";
 
@@ -23,10 +24,7 @@ function App() {
 
     const [csrfToken, setCsrfToken] = useState(LOCAL_STORAGE_TOKEN_KEY);
 
-    // needed when redirecting back from Discord
-    const [searchParams, setSearchParams] = useSearchParams();
-    console.log('code:', searchParams.get('code'), 'state:', searchParams.get('state'));
-    console.log('does state param = csrf string?', searchParams.get('state'), localStorage['token'], searchParams.get('state') === localStorage['token'])
+
 
     useEffect(function generateRandomString() {
         if (localStorage['token'] === undefined) {
@@ -38,12 +36,12 @@ function App() {
                 randomString += String.fromCharCode(33 + Math.floor(Math.random() * 94));
             }
             localStorage.setItem(csrfToken, randomString);
-            console.log('inside effect:', csrfToken)
+            // console.log('inside effect:', csrfToken)
             setCsrfToken(randomString);
         }
     }, [])
 
-    console.log(localStorage, csrfToken);
+    // console.log(localStorage, csrfToken);
 
 
     return (
@@ -52,7 +50,9 @@ function App() {
             <Routes>
                 <Route path="/" element={<Splash />} />
                 <Route path="home" element={<Splash />} />
-                <Route path="login" element={<Login csrfToken={csrfToken} />} />
+                <Route path="login" element={<Login csrfToken={csrfToken} />}>
+                    <Route path="discord-redirect" element={<DiscordRedirect />} />
+                </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </Pane>
