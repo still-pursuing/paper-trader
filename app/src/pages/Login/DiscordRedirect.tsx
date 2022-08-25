@@ -40,7 +40,7 @@ function DiscordRedirect() {
             }
         }
         accessBackend();
-    }, [user, searchParams])
+    }, [searchParams])
 
     // console.log(`The current user is: ${user}`)
 
