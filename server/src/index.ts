@@ -23,7 +23,7 @@ app.get('/login', async (req, res) => {
   console.log(`The access code is: ${code}`);
 
   if (code) {
-    let config = {
+    const config = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
