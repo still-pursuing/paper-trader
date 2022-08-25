@@ -24,7 +24,7 @@ function App() {
 
     const [csrfToken, setCsrfToken] = useState(LOCAL_STORAGE_TOKEN_KEY);
 
-
+    // note: don't override token on redirect so we can compare returned state string to validate
 
     useEffect(function generateRandomString() {
         if (localStorage['token'] === undefined) {

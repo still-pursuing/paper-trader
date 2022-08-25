@@ -17,8 +17,14 @@ import { useEffect, useState } from "react";
  */
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
+// note: dynamically change what redirect_uri is based on if on production or not
+// note: move logic/configuration logic to a config file
+const TEST_FE_URL = process.env.NODE_ENV === 'production'
+    ? 'firebase_url'
+    : 'localhost'
 
 function DiscordRedirect() {
+    // note:
     // pull url params, then make an axios call to backend
     // needed when redirecting back from Discord
     const [searchParams, setSearchParams] = useSearchParams();

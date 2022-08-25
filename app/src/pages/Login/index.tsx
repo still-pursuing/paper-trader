@@ -33,6 +33,9 @@ function Login({ csrfToken }: { csrfToken: String }) {
   }, [searchParams.get('code')]);
 
 
+  // note: change button to use an onClick function which makes request to URL (via axios or window.location)
+  // then need to update browser to show the URL (axios call may not update browser)
+
   return (
     <Pane display="flex" flexDirection="column" alignItems="center">
       {!discordRedirected && <Pane display="flex" flexDirection="column" alignItems="center">
