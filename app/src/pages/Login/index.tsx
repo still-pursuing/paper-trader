@@ -3,9 +3,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom'
 import { Button, Pane, EditIcon, Heading } from "evergreen-ui";
 
-const DISCORD_REDIRECT_URI = process.env.NODE_ENV === "production"
-  ? "https://paper-trader-182a4.web.app/login/discord-redirect"
-  : "http://localhost:3000/login/discord-redirect";
+import { DISCORD_REDIRECT_URI } from "../../config";
 
 /**
  * Props:
