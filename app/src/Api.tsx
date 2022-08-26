@@ -4,7 +4,7 @@ import { BACKEND_BASE_URL } from "./config";
 
 class PaperTraderApi {
 
-    /** Makes a request to server with Discord OAuth authorization code
+    /** Makes a request to server with Discord OAuth authorization code input
      * 
      * Returns: 
      *  "discord_username"

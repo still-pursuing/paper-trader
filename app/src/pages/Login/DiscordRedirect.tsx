@@ -18,9 +18,6 @@ import PaperTraderApi from "../../Api";
  */
 
 function DiscordRedirect() {
-    // note:
-    // pull url params, then make an axios call to backend
-    // needed when redirecting back from Discord
     const [searchParams] = useSearchParams();
     const [user, setUser] = useState('');
 
@@ -31,7 +28,6 @@ function DiscordRedirect() {
                     throw new Error("Clickjacked!!");
                 }
 
-                // could potentially have this be passed down from Login component instead?
                 const discordOAuthCode = searchParams.get('code');
 
                 if (discordOAuthCode) {

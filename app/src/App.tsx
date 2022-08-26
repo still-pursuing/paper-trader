@@ -8,12 +8,8 @@ import Navbar from './components/Navbar';
 import { Splash } from './pages/Splash'
 import DiscordRedirect from './pages/Login/DiscordRedirect'
 
-// const LOCAL_STORAGE_TOKEN_KEY = "token";
-
 function App() {
     const [csrfToken, setCsrfToken] = useState('');
-
-    // note: don't override token on redirect so we can compare returned state string to validate
 
     useEffect(function generateRandomString() {
         if (localStorage['token'] === undefined) {

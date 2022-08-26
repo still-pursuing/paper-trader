@@ -20,8 +20,8 @@ import { DISCORD_REDIRECT_URI } from "../../config";
  */
 
 function Login() {
-  // do stuff with Discord
-  // if a user is already logged in, redirect back to root
+
+  // note: need to add if a user is already logged in, redirect back to root
   const [fromDiscordRedirect, setFromDiscordRedirect] = useState(false);
   const [searchParams] = useSearchParams();
 
