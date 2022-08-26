@@ -11,7 +11,9 @@ app.use(cors());
 // const { clientId, clientSecret, portDiscord } = require('../tsconfig.json');
 
 const port = process.env.PORT ?? 8080;
-
+const REDIRECT_URI = process.env.NODE_ENV === "production"
+  ? "https://paper-trader-182a4.web.app/login/discord-redirect"
+  : "http://localhost:3000/login/discord-redirect";
 
 app.get('/test', (req, res) => {
   console.log('connected to test')
@@ -32,7 +34,7 @@ app.get('/login', async (req, res) => {
     try {
       const tokenResponseData = await axios.post(
         'https://discord.com/api/oauth2/token',
-        `client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&grant_type=authorization_code&redirect_uri=http://localhost:3000/login/discord-redirect&scope=identify&code=${code}`,
+        `client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&grant_type=authorization_code&redirect_uri=${REDIRECT_URI}&scope=identify&code=${code}`,
         config
       );
 
