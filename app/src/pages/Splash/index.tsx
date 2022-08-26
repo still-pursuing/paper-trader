@@ -5,8 +5,6 @@ import DataTable from "../../components/DataTable"
 import { Heading, Link, Pane, Paragraph } from 'evergreen-ui'
 
 export function Splash() {
-  // console.log('public', process.env.PUBLIC_URL)
-  // console.log('env vars', process.env)
 
   return (
     <Pane>
