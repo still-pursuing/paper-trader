@@ -3,60 +3,66 @@ import { useEffect, useState } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom'
 import { Button, Pane, EditIcon, Heading } from "evergreen-ui";
 
+const DISCORD_REDIRECT_URI = process.env.NODE_ENV === "production"
+  ? "https://paper-trader-182a4.web.app/login/discord-redirect"
+  : "http://localhost:3000/login/discord-redirect";
 
 /**
  * Props:
  * - None
  * 
  * State:
- * - csrfToken: string to append to Discord OAuth URL
+ * - discordRedirected: true/false
+ * - searchParams: null or string
  * 
  * Events:
  * - None
  * 
- * App --> Login
+ * App --> Login --> DsicordRedirect
  */
 
-function Login({ csrfToken }: { csrfToken: String }) {
+function Login() {
   // do stuff with Discord
   // if a user is already logged in, redirect back to root
-  const [discordRedirected, setDiscordRedirected] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [fromDiscordRedirect, setFromDiscordRedirect] = useState(false);
+  const [searchParams] = useSearchParams();
 
-  // console.log('login page receiving csrftoken', csrfToken);
-  // console.log('url code param?', searchParams.get('code'))
+  const authCode = searchParams.get('code')
 
-  useEffect(function loadDiscord() {
-    if (searchParams.get('code') !== null) {
-      setDiscordRedirected(true);
+  /** Checks if this component is mounted after a Discord OAuth redirect */
+  useEffect(function checkIfDiscordRedirected() {
+    if (authCode !== null) {
+      setFromDiscordRedirect(true);
     }
-  }, [searchParams.get('code')]);
+  }, [authCode]);
 
-
-  // note: change button to use an onClick function which makes request to URL (via axios or window.location)
-  // then need to update browser to show the URL (axios call may not update browser)
+  /** Makes a request to Discord's OAuth authorization page */
+  async function getDiscordOAuthCode() {
+    const encodedToken = encodeURIComponent(localStorage['token'])
+    const encodedRedirectURI = encodeURIComponent(DISCORD_REDIRECT_URI);
+    window.location.href = `https://discord.com/api/oauth2/authorize?client_id=981788058833797171&redirect_uri=${encodedRedirectURI}&response_type=code&scope=identify&state=${encodedToken}`;
+  }
 
   return (
     <Pane display="flex" flexDirection="column" alignItems="center">
-      {!discordRedirected && <Pane display="flex" flexDirection="column" alignItems="center">
+      {!fromDiscordRedirect && <Pane display="flex" flexDirection="column" alignItems="center">
         <Heading is="h1" size={900}>
           Login
         </Heading>
         <Pane>
           <Button
-            is="a"
-            href={`https://discord.com/api/oauth2/authorize?client_id=981788058833797171&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Flogin%2Fdiscord-redirect&response_type=code&scope=identify&state=${csrfToken}`}
             marginY={8}
             marginRight={12}
             iconBefore={EditIcon}
             size="large"
+            onClick={getDiscordOAuthCode}
           >
             Login With Discord
           </Button>
         </Pane>
       </Pane>
       }
-      {discordRedirected && <Outlet />}
+      {fromDiscordRedirect && <Outlet />}
     </Pane>
   )
 }
