@@ -24,7 +24,7 @@ function App() {
             setCsrfToken(randomString);
             console.log('inside effect:', csrfToken)
         }
-    }, [])
+    }, [csrfToken])
 
     return (
         <Pane padding={16}>
