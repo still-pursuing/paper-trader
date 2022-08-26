@@ -1,8 +1,9 @@
 
 import { Pane, Heading, Spinner, Paragraph } from "evergreen-ui";
-import { useSearchParams } from 'react-router-dom'
-import axios from 'axios';
+import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
+
+import PaperTraderApi from "../../Api";
 /**
  * Props:
  * - None
@@ -16,37 +17,36 @@ import { useEffect, useState } from "react";
  * App --> Login
  */
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:8080";
-// note: dynamically change what redirect_uri is based on if on production or not
-// note: move logic/configuration logic to a config file
-const TEST_FE_URL = process.env.NODE_ENV === 'production'
-    ? 'firebase_url'
-    : 'localhost'
-
 function DiscordRedirect() {
     // note:
     // pull url params, then make an axios call to backend
     // needed when redirecting back from Discord
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const [user, setUser] = useState('');
-
-
-    console.log('code:', searchParams.get('code'), 'state:', searchParams.get('state'));
-    console.log('does state param = csrf string?', searchParams.get('state'), localStorage['token'], searchParams.get('state') === localStorage['token'])
 
     useEffect(function callBackend() {
         async function accessBackend() {
             try {
-                const userInfo = (await axios.get(`${BASE_URL}/login?code=${searchParams.get('code')}`)).data.user;
+                if (localStorage['token'] !== searchParams.get('state')) {
+                    throw new Error("Clickjacked!!");
+                }
 
-                console.log('effect', userInfo)
-                setUser(userInfo);
+                // could potentially have this be passed down from Login component instead?
+                const discordOAuthCode = searchParams.get('code');
+
+                if (discordOAuthCode) {
+                    const userInfo = await PaperTraderApi.getDiscordUser(discordOAuthCode);
+                    // console.log('effect', userInfo);
+                    setUser(userInfo);
+                } else {
+                    throw new Error('Missing Discord OAuth code');
+                }
             } catch (err) {
-                console.error(err)
+                console.error(err);
             }
         }
         accessBackend();
-    }, [searchParams])
+    }, [searchParams]);
 
     // console.log(`The current user is: ${user}`)
 
@@ -60,7 +60,7 @@ function DiscordRedirect() {
                 : <Paragraph> Hi {user}</Paragraph>
             }
         </Pane >
-    )
+    );
 }
 
 export default DiscordRedirect;
