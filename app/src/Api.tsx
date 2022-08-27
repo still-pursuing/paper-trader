@@ -10,7 +10,7 @@ class PaperTraderApi {
      *  "discord_username"
      */
     static async getDiscordUser(code: string) {
-        const discordUserData = await (await axios.get(`${BACKEND_BASE_URL}/login?code=${code}`)).data.user;
+        const discordUserData = (await axios.get(`${BACKEND_BASE_URL}/login?code=${code}`)).data.user;
         return discordUserData;
     }
 }
