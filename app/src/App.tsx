@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Pane } from 'evergreen-ui'
 
@@ -11,20 +11,26 @@ import DiscordRedirect from './pages/Login/DiscordRedirect'
 function App() {
     const [csrfToken, setCsrfToken] = useState('');
 
-    useEffect(function generateRandomString() {
-        if (localStorage['token'] === undefined) {
-            let randomString = '';
-            const randomNumber = Math.floor(Math.random() * 10);
+    const memoizedRandomString = useCallback(
+        function generateRandomString() {
+            if (localStorage['token'] === undefined) {
+                let randomString = '';
+                const randomNumber = Math.floor(Math.random() * 10);
 
-            for (let i = 0; i < 20 + randomNumber; i++) {
-                randomString += String.fromCharCode(33 + Math.floor(Math.random() * 94));
+                for (let i = 0; i < 20 + randomNumber; i++) {
+                    randomString += String.fromCharCode(33 + Math.floor(Math.random() * 94));
+                }
+
+                localStorage.setItem('token', randomString);
+                setCsrfToken(randomString);
+                console.log('inside effect:', csrfToken)
             }
+        }, [csrfToken]
+    );
 
-            localStorage.setItem('token', randomString);
-            setCsrfToken(randomString);
-            console.log('inside effect:', csrfToken)
-        }
-    }, [csrfToken])
+    useEffect(function generateRandomString() {
+        memoizedRandomString()
+    }, [memoizedRandomString]);
 
     return (
         <Pane padding={16}>
