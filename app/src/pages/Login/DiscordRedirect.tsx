@@ -1,28 +1,35 @@
 
 import { Pane, Heading, Spinner, Paragraph } from "evergreen-ui";
 import { useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import PaperTraderApi from "../../Api";
+
 /**
  * Props:
  * - None
  * 
  * State:
- * - csrfToken: string to append to Discord OAuth URL
+ * - user: Discord user information
  * 
  * Events:
  * - None
  * 
- * App --> Login
+ * Login --> DiscordRedirect
  */
 
 function DiscordRedirect() {
     const [searchParams] = useSearchParams();
     const [user, setUser] = useState('');
 
-    useEffect(function callBackend() {
-        async function accessBackend() {
+
+    /**
+     * Validates if there is no CSRF attack and authenticates Discord user with
+     * a valid OAuth code 
+     */
+
+    const memoizedUser = useCallback(
+        async function validateUser() {
             try {
                 if (localStorage['token'] !== searchParams.get('state')) {
                     throw new Error("Clickjacked!!");
@@ -32,7 +39,6 @@ function DiscordRedirect() {
 
                 if (discordOAuthCode) {
                     const userInfo = await PaperTraderApi.getDiscordUser(discordOAuthCode);
-                    // console.log('effect', userInfo);
                     setUser(userInfo);
                 } else {
                     throw new Error('Missing Discord OAuth code');
@@ -40,11 +46,16 @@ function DiscordRedirect() {
             } catch (err) {
                 console.error(err);
             }
-        }
-        accessBackend();
-    }, [searchParams]);
+        }, [searchParams]
+    )
 
-    // console.log(`The current user is: ${user}`)
+    /** 
+     * Call memoizedUser which is memoized validateUser 
+     * to prevent infinite rendering
+     */
+    useEffect(() => {
+        memoizedUser()
+    }, [memoizedUser]);
 
     return (
         <Pane display="flex" flexDirection="column" alignItems="center">
