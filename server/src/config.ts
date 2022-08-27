@@ -10,4 +10,4 @@ export {
     clientId,
     clientSecret,
     REDIRECT_URI
-}
+};
