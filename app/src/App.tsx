@@ -8,9 +8,26 @@ import Navbar from './components/Navbar';
 import { Splash } from './pages/Splash'
 import DiscordRedirect from './pages/Login/DiscordRedirect'
 
+/**
+ * Props:
+ * - None
+ * 
+ * State:
+ * - csrfToken: string to append to Discord OAuth URL
+ * 
+ * Events:
+ * - None
+ * 
+ * App --> NavBar, Routes
+ */
+
 function App() {
     const [csrfToken, setCsrfToken] = useState('');
 
+    /** 
+    * Generate a random string and store in local storage to 
+    * use for Discord OAUth CSRF prevention whenever csrfToken is changed
+    */
     const memoizedRandomString = useCallback(
         function generateRandomString() {
             if (localStorage['token'] === undefined) {
@@ -28,6 +45,10 @@ function App() {
         }, [csrfToken]
     );
 
+    /** 
+     * Call memoizedRandomString which is memoized generateRandomString 
+     * to prevent infinite rendering 
+     */
     useEffect(function generateRandomString() {
         memoizedRandomString()
     }, [memoizedRandomString]);
