@@ -51,7 +51,7 @@ function DiscordRedirect() {
 
     /** 
      * Call memoizedUser which is memoized validateUser 
-     * to prevent infinite rendering
+     * to prevent infinite rendering from having a function in dependency array
      */
     useEffect(() => {
         memoizedUser()
