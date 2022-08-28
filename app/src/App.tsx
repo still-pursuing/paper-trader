@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Pane } from 'evergreen-ui'
 
@@ -14,7 +14,7 @@ import PaperTraderApi from './Api'
  * - None
  * 
  * State:
- * - csrfToken: string to append to Discord OAuth URL
+ * - None
  * 
  * Events:
  * - None
@@ -23,20 +23,19 @@ import PaperTraderApi from './Api'
  */
 
 function App() {
-    const [csrfToken, setCsrfToken] = useState('');
 
     /** 
     * Stores string generated from PaperTraderApi in localStorage to
-    * use for Discord OAUth CSRF prevention whenever csrfToken is changed
+    * use for Discord OAUth CSRF prevention when component mounts if there
+    * no token
     */
-    useEffect(function storeCsrfTokenOnChange() {
+    useEffect(function storeCsrfTokenOnMount() {
         if (localStorage['token'] === undefined) {
             const randomString = PaperTraderApi.generateRandomString();
             localStorage.setItem('token', randomString);
-            setCsrfToken(randomString);
-            console.log('inside effect:', csrfToken)
+            console.log('inside effect:', localStorage['token'])
         }
-    }, [csrfToken]);
+    }, []);
 
     return (
         <Pane padding={16}>
