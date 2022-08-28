@@ -1,7 +1,7 @@
 
 import { Pane, Heading, Spinner, Paragraph } from "evergreen-ui";
 import { useSearchParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import PaperTraderApi from "../../Api";
 
@@ -22,13 +22,11 @@ function DiscordRedirect() {
     const [searchParams] = useSearchParams();
     const [user, setUser] = useState('');
 
-
     /**
      * Validates if there is no CSRF attack and authenticates Discord user with
-     * a valid OAuth code 
+     * a valid OAuth code by communicating with PaperTraderApi
      */
-
-    const memoizedUser = useCallback(
+    useEffect(function validateUserOnSearchParams() {
         async function validateUser() {
             try {
                 if (localStorage['token'] !== searchParams.get('state')) {
@@ -46,16 +44,9 @@ function DiscordRedirect() {
             } catch (err) {
                 console.error(err);
             }
-        }, [searchParams]
-    )
-
-    /** 
-     * Call memoizedUser which is memoized validateUser 
-     * to prevent infinite rendering from having a function in dependency array
-     */
-    useEffect(() => {
-        memoizedUser()
-    }, [memoizedUser]);
+        }
+        validateUser();
+    }, [searchParams]);
 
     return (
         <Pane display="flex" flexDirection="column" alignItems="center">
