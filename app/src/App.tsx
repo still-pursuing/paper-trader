@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Pane } from 'evergreen-ui'
 
@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import Navbar from './components/Navbar';
 import { Splash } from './pages/Splash'
 import DiscordRedirect from './pages/Login/DiscordRedirect'
+import PaperTraderApi from './Api'
 
 /**
  * Props:
@@ -25,33 +26,17 @@ function App() {
     const [csrfToken, setCsrfToken] = useState('');
 
     /** 
-    * Generate a random string and store in local storage to 
+    * Stores string generated from PaperTraderApi in localStorage to
     * use for Discord OAUth CSRF prevention whenever csrfToken is changed
     */
-    const memoizedRandomString = useCallback(
-        function generateRandomString() {
-            if (localStorage['token'] === undefined) {
-                let randomString = '';
-                const randomNumber = Math.floor(Math.random() * 10);
-
-                for (let i = 0; i < 20 + randomNumber; i++) {
-                    randomString += String.fromCharCode(33 + Math.floor(Math.random() * 94));
-                }
-
-                localStorage.setItem('token', randomString);
-                setCsrfToken(randomString);
-                console.log('inside effect:', csrfToken)
-            }
-        }, [csrfToken]
-    );
-
-    /** 
-     * Call memoizedRandomString which is memoized generateRandomString 
-     * to prevent infinite rendering from having a function in dependency array
-     */
-    useEffect(() => {
-        memoizedRandomString()
-    }, [memoizedRandomString]);
+    useEffect(function storeCsrfTokenOnChange() {
+        if (localStorage['token'] === undefined) {
+            const randomString = PaperTraderApi.generateRandomString();
+            localStorage.setItem('token', randomString);
+            setCsrfToken(randomString);
+            console.log('inside effect:', csrfToken)
+        }
+    }, [csrfToken]);
 
     return (
         <Pane padding={16}>
