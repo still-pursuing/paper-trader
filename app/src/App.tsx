@@ -47,9 +47,9 @@ function App() {
 
     /** 
      * Call memoizedRandomString which is memoized generateRandomString 
-     * to prevent infinite rendering 
+     * to prevent infinite rendering from having a function in dependency array
      */
-    useEffect(function generateRandomString() {
+    useEffect(() => {
         memoizedRandomString()
     }, [memoizedRandomString]);
 
