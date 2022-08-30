@@ -2,8 +2,15 @@
 import { Pane, Heading, Spinner, Paragraph } from "evergreen-ui";
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from "react";
+import { decodeToken } from "react-jwt";
 
 import PaperTraderApi from "../../Api";
+
+interface token {
+    username: string;
+    iat: number;
+}
+
 
 /**
  * Props:
@@ -21,7 +28,6 @@ import PaperTraderApi from "../../Api";
 function DiscordRedirect() {
     const [searchParams] = useSearchParams();
     const [user, setUser] = useState('');
-
     /**
      * Validates if there is no CSRF attack and authenticates Discord user with
      * a valid OAuth code by communicating with PaperTraderApi
@@ -29,15 +35,20 @@ function DiscordRedirect() {
     useEffect(function validateUserOnSearchParams() {
         async function validateUser() {
             try {
-                if (localStorage['token'] !== searchParams.get('state')) {
+                if (localStorage['stateString'] !== searchParams.get('state')) {
                     throw new Error("Clickjacked!!");
                 }
 
                 const discordOAuthCode = searchParams.get('code');
 
                 if (discordOAuthCode) {
-                    const userInfo = await PaperTraderApi.getDiscordUser(discordOAuthCode);
-                    setUser(userInfo);
+                    const token = await PaperTraderApi.getDiscordUser(discordOAuthCode);
+
+
+                    const decodedToken = decodeToken<token>(token);
+                    // const username = decodedToken.username;
+                    console.log(decodedToken);
+                    // setUser(username);
                 } else {
                     throw new Error('Missing Discord OAuth code');
                 }

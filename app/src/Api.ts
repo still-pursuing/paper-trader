@@ -3,6 +3,7 @@ import axios from "axios";
 import { BACKEND_BASE_URL } from "./config";
 
 class PaperTraderApi {
+    static token : string;
 
     /**
      * Generates a random string of characters
@@ -27,8 +28,9 @@ class PaperTraderApi {
      *  "discord_username"
      */
     static async getDiscordUser(code: string) {
-        const discordUserData = (await axios.get(`${BACKEND_BASE_URL}/login?code=${code}`)).data.user;
-        return discordUserData;
+        const userToken = (await axios.get(`${BACKEND_BASE_URL}/login?code=${code}`)).data.token;
+        console.log({userToken})
+        return userToken;
     }
 }
 
