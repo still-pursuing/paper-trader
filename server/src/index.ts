@@ -1,7 +1,6 @@
 import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
-import 'dotenv/config';
 
 import {
   port,
@@ -9,6 +8,8 @@ import {
   clientSecret,
   REDIRECT_URI
 } from './config';
+
+import createToken from '../helpers/token';
 
 const app = express();
 
@@ -49,7 +50,11 @@ app.get('/login', async (req, res) => {
 
       const { username, discriminator } = userResult.data;
       console.log(`Hi ${username}${discriminator}`)
-      return res.json({ user: `${username}#${discriminator}` });
+
+      const token = createToken(`${username}${discriminator}`);
+      console.log('JWT', token)
+      return res.json({ token })
+      // return res.json({ user: `${username}#${discriminator}` });
 
     } catch (error) {
       console.error(error);
