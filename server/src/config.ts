@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 const port = process.env.PORT ?? 8080;
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
