@@ -30,7 +30,7 @@ jobs:
         uses: superfly/fly-pr-review-apps@1.0.0
         with:
           # Fly app name
-          name: # optional
+          name: paper-trader-pr${{ github.event.number }}
           # Optional pre-existing Docker image to use
           image: # optional
           # Region to launch the app in (alternatively, set the env FLY_REGION)
