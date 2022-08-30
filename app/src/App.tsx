@@ -30,10 +30,10 @@ function App() {
     * no token
     */
     useEffect(function storeCsrfTokenOnMount() {
-        if (localStorage['token'] === undefined) {
+        if (localStorage['stateString'] === undefined) {
             const randomString = PaperTraderApi.generateRandomString();
-            localStorage.setItem('token', randomString);
-            console.log('inside effect:', localStorage['token'])
+            localStorage.setItem('stateString', randomString);
+            console.log('inside effect:', localStorage['stateString'])
         }
     }, []);
 
