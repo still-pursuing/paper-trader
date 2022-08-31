@@ -49,4 +49,4 @@ jobs:
         with:
           # ⚠️ The provided token needs permission for admin write:org
           token: ${{ secrets.PAPER_TRADER_STAGING_TOKEN }}
-          environment: paper-trader-test-pr-${{ github.event.number }}
+          environment: pr-${{ github.event.number }}
