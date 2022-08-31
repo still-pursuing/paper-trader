@@ -46,7 +46,11 @@ function DiscordRedirect() {
 
 
                     const decodedToken = decodeToken<token>(token);
-                    // const username = decodedToken.username;
+                    if (decodedToken !== null) {
+                        const username = decodedToken.username;
+                    }
+                    // const username = decodedToken !== null ? decodedToken.username : "";
+                    // const username = decodedToken?.username; //optional chaining
                     console.log(decodedToken);
                     // setUser(username);
                 } else {
