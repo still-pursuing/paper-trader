@@ -36,7 +36,7 @@ jobs:
           # Region to launch the app in (alternatively, set the env FLY_REGION)
           region: lax
           # Organization to launch the app in (alternatively, set the env FLY_ORG)
-          org: paper-trader
+          org: paper-trader-test
           # path to a directory containing a fly.toml to clone
           path: server
           # Optionally attach the app to a pre-existing Postgres cluster on Fly
