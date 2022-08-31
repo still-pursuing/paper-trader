@@ -7,7 +7,7 @@ on:
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
   FLY_REGION: lax
-  FLY_ORG: paper-trader
+  FLY_ORG: paper-trader-test
 jobs:
   staging_app:
     runs-on: ubuntu-latest
@@ -34,9 +34,9 @@ jobs:
           # Optional pre-existing Docker image to use
           image: # optional
           # Region to launch the app in (alternatively, set the env FLY_REGION)
-          region: lax
+          region: # optional
           # Organization to launch the app in (alternatively, set the env FLY_ORG)
-          org: paper-trader-test
+          org: # optional
           # path to a directory containing a fly.toml to clone
           path: server
           # Optionally attach the app to a pre-existing Postgres cluster on Fly
@@ -48,5 +48,5 @@ jobs:
         if: ${{ github.event.action == 'closed' }}
         with:
           # ⚠️ The provided token needs permission for admin write:org
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAPER_TRADER_STAGING_TOKEN }}
           environment: pr-${{ github.event.number }}
