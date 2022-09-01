@@ -1,5 +1,5 @@
 const BACKEND_BASE_URL = process.env.NODE_ENV === "production"
-  ? "https://paper-trader.fly.dev/"
+  ? "https://paper-trader.fly.dev"
   : "http://localhost:8080";
 
 const DISCORD_REDIRECT_URI = process.env.NODE_ENV === "production"
