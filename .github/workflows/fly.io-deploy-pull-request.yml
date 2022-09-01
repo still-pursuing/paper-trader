@@ -1,0 +1,52 @@
+name: PR Review Apps on fly.io
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  FLY_REGION: lax
+  FLY_ORG: paper-trader-test
+jobs:
+  staging_app:
+    runs-on: ubuntu-latest
+
+    # Only run one deployment at a time per PR.
+    concurrency:
+      group: pr-${{ github.event.number }}
+
+    # Create a GitHub deployment environment per staging app so it shows up
+    # in the pull request UI.
+    environment:
+      name: pr-${{ github.event.number }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy
+        id: deploy
+        uses: superfly/fly-pr-review-apps@1.0.0
+        with:
+          # Fly app name
+          name: paper-trader-pr${{ github.event.number }}
+          # Optional pre-existing Docker image to use
+          image: # optional
+          # Region to launch the app in (alternatively, set the env FLY_REGION)
+          region: # optional
+          # Organization to launch the app in (alternatively, set the env FLY_ORG)
+          org: # optional
+          # path to a directory containing a fly.toml to clone
+          path: server
+          # Optionally attach the app to a pre-existing Postgres cluster on Fly
+          postgres: paper-trader-db
+          # Whether new commits to the PR should re-deploy the Fly app
+          update: # optional, default is true
+      - name: Clean up GitHub environment
+        uses: strumwolf/delete-deployment-environment@v2
+        if: ${{ github.event.action == 'closed' }}
+        with:
+          # ⚠️ The provided token needs permission for admin write:org
+          token: ${{ secrets.PAPER_TRADER_STAGING_TOKEN }}
+          environment: pr-${{ github.event.number }}
