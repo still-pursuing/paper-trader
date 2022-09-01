@@ -43,10 +43,12 @@ jobs:
           postgres: paper-trader-db
           # Whether new commits to the PR should re-deploy the Fly app
           update: # optional, default is true
-      - name: Clean up GitHub environment
-        uses: strumwolf/delete-deployment-environment@v2
-        if: ${{ github.event.action == 'closed' }}
-        with:
-          # ⚠️ The provided token needs permission for admin write:org
-          token: ${{ secrets.PAPER_TRADER_STAGING_TOKEN }}
-          environment: pr-${{ github.event.number }}
+      # Currently, there is an error related to below action, where it can't find
+      # the deployments in the environment
+      # - name: Clean up GitHub environment
+      #   uses: strumwolf/delete-deployment-environment@v2
+      #   if: ${{ github.event.action == 'closed' }}
+      #   with:
+      #     # ⚠️ The provided token needs permission for admin write:org
+      #     token: ${{ secrets.PAPER_TRADER_STAGING_TOKEN }}
+      #     environment: pr-${{ github.event.number }}

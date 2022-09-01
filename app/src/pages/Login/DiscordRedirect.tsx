@@ -11,7 +11,6 @@ interface token {
     iat: number;
 }
 
-
 /**
  * Props:
  * - None
@@ -28,6 +27,7 @@ interface token {
 function DiscordRedirect() {
     const [searchParams] = useSearchParams();
     const [user, setUser] = useState('');
+
     /**
      * Validates if there is no CSRF attack and authenticates Discord user with
      * a valid OAuth code by communicating with PaperTraderApi
@@ -53,6 +53,7 @@ function DiscordRedirect() {
                     // const username = decodedToken?.username; //optional chaining
                     console.log(decodedToken);
                     // setUser(username);
+
                 } else {
                     throw new Error('Missing Discord OAuth code');
                 }
