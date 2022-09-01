@@ -49,4 +49,4 @@ jobs:
         with:
           # ⚠️ The provided token needs permission for admin write:org
           token: ${{ secrets.PAPER_TRADER_STAGING_TOKEN }}
-          environment: non-existent-env
+          environment: pr-17
