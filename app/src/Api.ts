@@ -32,6 +32,13 @@ class PaperTraderApi {
         console.log({userToken})
         return userToken;
     }
+
+    static async getCurrentUser(username: string) {
+        const result = (await axios.get(`${BACKEND_BASE_URL}/users/${username}`)).data.user;
+        console.log({result})
+        return result;
+    }
+
 }
 
 export default PaperTraderApi;
