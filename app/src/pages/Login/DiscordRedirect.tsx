@@ -41,17 +41,19 @@ function DiscordRedirect() {
 
                 const discordOAuthCode = searchParams.get('code');
 
+                // todo: move this into a handleLogin function that gets passed down
                 if (discordOAuthCode) {
                     const token = await PaperTraderApi.getDiscordUser(discordOAuthCode);
-
+                    localStorage.setItem('userToken', token);
 
                     const decodedToken = decodeToken<token>(token);
                     if (decodedToken !== null) {
                         const username = decodedToken.username;
+                        setUser(username);
                     }
                     // const username = decodedToken !== null ? decodedToken.username : "";
                     // const username = decodedToken?.username; //optional chaining
-                    console.log(decodedToken);
+                    // console.log(decodedToken);
                     // setUser(username);
 
                 } else {
