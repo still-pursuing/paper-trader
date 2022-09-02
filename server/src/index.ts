@@ -52,7 +52,7 @@ app.get('/login', async (req, res) => {
       console.log(`Hi ${username}${discriminator}`)
 
       const token = createToken(`${username}${discriminator}`);
-      console.log('JWT', token)
+      // console.log('JWT', token)
       return res.json({ token })
       // return res.json({ user: `${username}#${discriminator}` });
 
@@ -60,8 +60,17 @@ app.get('/login', async (req, res) => {
       console.error(error);
     }
   }
+})
 
-
+app.get('/users/:username', async (req, res) => {
+  try {
+    // query database for user's data in the future
+    console.log(req.params)
+    const user = req.params.username;
+    return res.json({ user });
+  } catch (err) {
+    return res.json({ user: 'Invalid username' });
+  }
 })
 
 app.listen(port, () => {
