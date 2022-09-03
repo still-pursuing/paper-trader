@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Route, Routes, Navigate } from 'react-router-dom'
+import { Route, Routes, Navigate, useSearchParams } from 'react-router-dom'
 import { Pane } from 'evergreen-ui'
 import { decodeToken } from "react-jwt";
 
@@ -10,6 +10,12 @@ import { Splash } from './pages/Splash'
 import DiscordRedirect from './pages/Login/DiscordRedirect'
 import PaperTraderApi from './Api'
 import UserContext from "./UserContext";
+
+
+interface token {
+    username: string;
+    iat: number;
+}
 
 
 /**
@@ -29,13 +35,14 @@ function App() {
     const [token, setToken] = useState(localStorage.getItem('userToken'));
     const [needsRedirect, setNeedsRedirect] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
+    const [searchParams] = useSearchParams();
 
     /** 
       * Stores string generated from PaperTraderApi in localStorage to
       * use for Discord OAUth CSRF prevention when component mounts if there
       * no token
       */
-    useEffect(function storeCsrfTokenOnMount() {
+    useEffect(function storeCsrfStringAndLoadUser() {
         if (localStorage['stateString'] === undefined) {
             const randomString = PaperTraderApi.generateRandomString();
             localStorage.setItem('stateString', randomString);
@@ -44,7 +51,7 @@ function App() {
         async function getCurrentUser() {
             if (token !== null) {
                 try {
-                    let decodedToken = decodeToken(token);
+                    let decodedToken = decodeToken<string>(token);
                     console.log('decoded', decodedToken);
                     let jsonToken = JSON.stringify(decodedToken);
                     let parsed = JSON.parse(jsonToken);
@@ -53,7 +60,7 @@ function App() {
                         PaperTraderApi.token = token;
                         let resultUser = await PaperTraderApi.getCurrentUser(username)
                         console.log({ resultUser })
-                        setCurrentUser(resultUser);
+                        setCurrentUser(resultUser); // is this necessary? decoding token to set username as app context
                         setNeedsRedirect(false);
                     } else {
                         throw new Error('Invalid username');
@@ -66,6 +73,40 @@ function App() {
         getCurrentUser();
         console.log('In App effect')
     }, [token]);
+
+
+    async function handleLogin() {
+        try {
+            if (localStorage['stateString'] !== searchParams.get('state')) {
+                throw new Error("Clickjacked!!");
+            }
+
+            const discordOAuthCode = searchParams.get('code');
+
+            // todo: move this into a handleLogin function that gets passed down
+            if (discordOAuthCode) {
+                const token = await PaperTraderApi.getDiscordUser(discordOAuthCode);
+                setToken(token); // note may not need? 
+                localStorage.setItem('userToken', token);
+
+                const decodedToken = decodeToken<token>(token);
+                if (decodedToken !== null) {
+                    const username = decodedToken.username;
+                    setCurrentUser(username);
+                }
+                // const username = decodedToken !== null ? decodedToken.username : "";
+                // const username = decodedToken?.username; //optional chaining
+                // console.log(decodedToken);
+                // setUser(username);
+
+            } else {
+                throw new Error('Missing Discord OAuth code');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
 
     console.log({ currentUser });
 
@@ -81,7 +122,7 @@ function App() {
                     <Route path="/" element={<Splash />} />
                     <Route path="home" element={<Splash />} />
                     <Route path="login" element={<Login />}>
-                        <Route path="discord-redirect" element={<DiscordRedirect />} />
+                        <Route path="discord-redirect" element={<DiscordRedirect handleLogin={handleLogin} />} />
                     </Route>
                     <Route path="*" element={<NotFound />} />
                 </Routes>
