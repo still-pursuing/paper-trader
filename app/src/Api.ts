@@ -29,7 +29,6 @@ class PaperTraderApi {
      */
     static async getDiscordUser(code: string) {
         const userToken = (await axios.get(`${BACKEND_BASE_URL}/login?code=${code}`)).data.token;
-        console.log({userToken})
         return userToken;
     }
 
