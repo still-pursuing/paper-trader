@@ -1,15 +1,9 @@
 
 import { Pane, Heading, Spinner, Paragraph } from "evergreen-ui";
-import { useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from "react";
-import { decodeToken } from "react-jwt";
+import { useEffect, useContext } from "react";
+import UserContext from "../../UserContext";
 
-import PaperTraderApi from "../../Api";
 
-interface token {
-    username: string;
-    iat: number;
-}
 
 /**
  * Props:
@@ -25,8 +19,7 @@ interface token {
  */
 
 function DiscordRedirect({ handleLogin }: any) {
-    // const [searchParams] = useSearchParams();
-    // const [user, setUser] = useState('');
+    const user = useContext(UserContext)
 
     /**
      * Validates if there is no CSRF attack and authenticates Discord user with
@@ -36,14 +29,16 @@ function DiscordRedirect({ handleLogin }: any) {
         handleLogin();
     }, []);
 
+    console.log('DiscordRedirect user:', user, typeof user)
+
     return (
         <Pane display="flex" flexDirection="column" alignItems="center">
             <Heading is="h1" size={900}>
                 Discord Redirect Page
             </Heading>
-            {user.length === 0
+            {user === null
                 ? <Spinner />
-                : <Paragraph> Hi {user}</Paragraph>
+                : <Paragraph> Hi <>{user}</> </Paragraph>
             }
         </Pane >
     );
