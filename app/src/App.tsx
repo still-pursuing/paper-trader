@@ -11,12 +11,6 @@ import DiscordRedirect from './pages/Login/DiscordRedirect'
 import PaperTraderApi from './Api'
 import UserContext from "./UserContext";
 
-
-interface token {
-    username: string;
-    iat: number;
-}
-
 interface UserData {
     username: string
 }
