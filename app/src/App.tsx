@@ -92,16 +92,6 @@ function App() {
                 setToken(token); // note may not need? 
                 localStorage.setItem('userToken', token);
 
-                // const decodedToken = decodeToken<token>(token);
-                // if (decodedToken !== null) {
-                //     const username = decodedToken.username;
-                //     setCurrentUser({ username });
-                // }
-                // const username = decodedToken !== null ? decodedToken.username : "";
-                // const username = decodedToken?.username; //optional chaining
-                // console.log(decodedToken);
-                // setUser(username);
-
             } else {
                 throw new Error('Missing Discord OAuth code');
             }
