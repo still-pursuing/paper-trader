@@ -17,6 +17,9 @@ interface token {
     iat: number;
 }
 
+interface UserData {
+    username: string
+}
 
 /**
  * Props:
@@ -34,9 +37,9 @@ interface token {
 function App() {
     const [token, setToken] = useState(localStorage.getItem('userToken'));
     const [needsRedirect, setNeedsRedirect] = useState(false);
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState<UserData | null>(null);
     const [searchParams] = useSearchParams();
-
+    console.debug("App", { token, needsRedirect, currentUser, searchParams })
     /** 
       * Stores string generated from PaperTraderApi in localStorage to
       * use for Discord OAUth CSRF prevention when component mounts if there
@@ -52,14 +55,14 @@ function App() {
             if (token !== null) {
                 try {
                     let decodedToken = decodeToken<string>(token);
-                    console.log('decoded', decodedToken);
+                    // console.log('decoded', decodedToken);
                     let jsonToken = JSON.stringify(decodedToken);
                     let parsed = JSON.parse(jsonToken);
                     if (parsed !== null) {
                         const username = parsed.username
                         PaperTraderApi.token = token;
                         let resultUser = await PaperTraderApi.getCurrentUser(username)
-                        console.log({ resultUser })
+                        // console.log(resultUser)
                         setCurrentUser(resultUser); // is this necessary? decoding token to set username as app context
                         setNeedsRedirect(false);
                     } else {
@@ -89,11 +92,11 @@ function App() {
                 setToken(token); // note may not need? 
                 localStorage.setItem('userToken', token);
 
-                const decodedToken = decodeToken<token>(token);
-                if (decodedToken !== null) {
-                    const username = decodedToken.username;
-                    setCurrentUser(username);
-                }
+                // const decodedToken = decodeToken<token>(token);
+                // if (decodedToken !== null) {
+                //     const username = decodedToken.username;
+                //     setCurrentUser({ username });
+                // }
                 // const username = decodedToken !== null ? decodedToken.username : "";
                 // const username = decodedToken?.username; //optional chaining
                 // console.log(decodedToken);
@@ -108,7 +111,7 @@ function App() {
     };
 
 
-    console.log({ currentUser });
+    // console.log({ currentUser });
 
     if (needsRedirect) {
         return <Navigate replace to="/" />
