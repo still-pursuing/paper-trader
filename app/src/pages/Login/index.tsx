@@ -1,9 +1,10 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom'
 import { Button, Pane, EditIcon, Heading } from "evergreen-ui";
 
 import { DISCORD_REDIRECT_URI } from "../../config";
+import UserContext from "../../UserContext";
 
 /**
  * Props:
@@ -16,7 +17,7 @@ import { DISCORD_REDIRECT_URI } from "../../config";
  * Events:
  * - None
  * 
- * App --> Login --> DsicordRedirect
+ * App --> Login --> DiscordRedirect
  */
 
 function Login() {
@@ -24,6 +25,8 @@ function Login() {
   // note: need to add if a user is already logged in, redirect back to root
   const [fromDiscordRedirect, setFromDiscordRedirect] = useState(false);
   const [searchParams] = useSearchParams();
+  const user = useContext(UserContext)
+  console.debug("Login", { fromDiscordRedirect, searchParams, user })
 
   const authCode = searchParams.get('code')
 
