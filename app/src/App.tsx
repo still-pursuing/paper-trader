@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Route, Routes, Navigate, useSearchParams } from 'react-router-dom'
 import { Pane } from 'evergreen-ui'
 import { decodeToken } from "react-jwt";
@@ -12,7 +12,7 @@ import PaperTraderApi from './Api'
 import UserContext from "./UserContext";
 
 interface UserData {
-    username: string
+	username: string
 }
 
 /**
@@ -29,93 +29,91 @@ interface UserData {
  */
 
 function App() {
-    const [token, setToken] = useState(localStorage.getItem('userToken'));
-    const [needsRedirect, setNeedsRedirect] = useState(false);
-    const [currentUser, setCurrentUser] = useState<UserData | null>(null);
-    const [searchParams] = useSearchParams();
-    console.debug("App", { token, needsRedirect, currentUser, searchParams })
-    /** 
-      * Stores string generated from PaperTraderApi in localStorage to
-      * use for Discord OAUth CSRF prevention when component mounts if there
-      * no token
-      */
-    useEffect(function storeCsrfStringAndLoadUser() {
-        if (localStorage['stateString'] === undefined) {
-            const randomString = PaperTraderApi.generateRandomString();
-            localStorage.setItem('stateString', randomString);
-        }
+	const [token, setToken] = useState(localStorage.getItem('userToken'));
+	const [needsRedirect, setNeedsRedirect] = useState(false);
+	const [currentUser, setCurrentUser] = useState<UserData | null>(null);
+	const [searchParams] = useSearchParams();
+	console.debug("App", { token, needsRedirect, currentUser, searchParams })
 
-        async function getCurrentUser() {
-            if (token !== null) {
-                try {
-                    let decodedToken = decodeToken<string>(token);
-                    // console.log('decoded', decodedToken);
-                    let jsonToken = JSON.stringify(decodedToken);
-                    let parsed = JSON.parse(jsonToken);
-                    if (parsed !== null) {
-                        const username = parsed.username
-                        PaperTraderApi.token = token;
-                        let resultUser = await PaperTraderApi.getCurrentUser(username)
-                        // console.log(resultUser)
-                        setCurrentUser(resultUser); // is this necessary? decoding token to set username as app context
-                        setNeedsRedirect(false);
-                    } else {
-                        throw new Error('Invalid username');
-                    }
-                } catch (err) {
-                    console.error("Can't load user", err);
-                }
-            }
-        }
-        getCurrentUser();
-        console.log('In App effect')
-    }, [token]);
+	/** 
+	  * Stores string generated from PaperTraderApi in localStorage to
+	  * use for Discord OAUth CSRF prevention when component mounts if there
+	  * no token
+	  */
+	useEffect(function storeCsrfStringAndLoadUser() {
+		if (localStorage['stateString'] === undefined) {
+			const randomString = PaperTraderApi.generateRandomString();
+			localStorage.setItem('stateString', randomString);
+		}
 
-
-    async function handleLogin() {
-        try {
-            if (localStorage['stateString'] !== searchParams.get('state')) {
-                throw new Error("Clickjacked!!");
-            }
-
-            const discordOAuthCode = searchParams.get('code');
-
-            // todo: move this into a handleLogin function that gets passed down
-            if (discordOAuthCode) {
-                const token = await PaperTraderApi.getDiscordUser(discordOAuthCode);
-                setToken(token); // note may not need? 
-                localStorage.setItem('userToken', token);
-
-            } else {
-                throw new Error('Missing Discord OAuth code');
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    };
+		async function getCurrentUser() {
+			if (token !== null) {
+				try {
+					let decodedToken = decodeToken<string>(token);
+					// console.log('decoded', decodedToken);
+					let jsonToken = JSON.stringify(decodedToken);
+					let parsed = JSON.parse(jsonToken);
+					if (parsed !== null) {
+						const username = parsed.username
+						PaperTraderApi.token = token;
+						let resultUser = await PaperTraderApi.getCurrentUser(username)
+						setCurrentUser(resultUser); // is this necessary? decoding token to set username as app context
+						setNeedsRedirect(false);
+					} else {
+						throw new Error('Invalid username');
+					}
+				} catch (err) {
+					console.error("Can't load user", err);
+				}
+			}
+		}
+		getCurrentUser();
+		console.log('In App effect')
+	}, [token]);
 
 
-    // console.log({ currentUser });
+	const handleLogin = useCallback(
+		async () => {
+			try {
+				if (localStorage['stateString'] !== searchParams.get('state')) {
+					throw new Error("Clickjacked!!");
+				}
 
-    if (needsRedirect) {
-        return <Navigate replace to="/" />
-    }
+				const discordOAuthCode = searchParams.get('code');
 
-    return (
-        <UserContext.Provider value={currentUser}>
-            <Pane padding={16}>
-                <Navbar></Navbar>
-                <Routes>
-                    <Route path="/" element={<Splash />} />
-                    <Route path="home" element={<Splash />} />
-                    <Route path="login" element={<Login />}>
-                        <Route path="discord-redirect" element={<DiscordRedirect handleLogin={handleLogin} />} />
-                    </Route>
-                    <Route path="*" element={<NotFound />} />
-                </Routes>
-            </Pane>
-        </UserContext.Provider>
-    )
+				if (discordOAuthCode) {
+					const token = await PaperTraderApi.getDiscordUser(discordOAuthCode);
+					setToken(token); // note may not need? 
+					localStorage.setItem('userToken', token);
+
+				} else {
+					throw new Error('Missing Discord OAuth code');
+				}
+			} catch (err) {
+				console.error(err);
+			}
+		}, [searchParams],
+	);
+
+	if (needsRedirect) {
+		return <Navigate replace to="/" />
+	}
+
+	return (
+		<UserContext.Provider value={currentUser}>
+			<Pane padding={16}>
+				<Navbar></Navbar>
+				<Routes>
+					<Route path="/" element={<Splash />} />
+					<Route path="home" element={<Splash />} />
+					<Route path="login" element={<Login />}>
+						<Route path="discord-redirect" element={<DiscordRedirect handleLogin={handleLogin} />} />
+					</Route>
+					<Route path="*" element={<NotFound />} />
+				</Routes>
+			</Pane>
+		</UserContext.Provider>
+	)
 }
 
 export default App;
