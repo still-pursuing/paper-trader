@@ -7,10 +7,10 @@ import UserContext from "../../UserContext";
 
 /**
  * Props:
- * - None
+ * - handleLogin
  * 
  * State:
- * - user: Discord user information
+ * - None
  * 
  * Events:
  * - None
@@ -22,12 +22,12 @@ function DiscordRedirect({ handleLogin }: any) {
     const user = useContext(UserContext)
 
     /**
-     * Validates if there is no CSRF attack and authenticates Discord user with
-     * a valid OAuth code by communicating with PaperTraderApi
+     * When component mounts and handleLogin's dependencies changes, load the
+     * user's information
      */
-    useEffect(function validateUserOnSearchParams() {
+    useEffect(function loadUser() {
         handleLogin();
-    }, []);
+    }, [handleLogin]);
 
     console.log('DiscordRedirect user:', user, typeof user)
 
