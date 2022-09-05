@@ -10,6 +10,7 @@ import {
 } from './config';
 
 import createToken from '../helpers/token';
+import { authenticateJWT, ensureCorrectUser } from '../middleware/auth';
 
 const app = express();
 
@@ -62,10 +63,10 @@ app.get('/login', async (req, res) => {
   }
 })
 
-app.get('/users/:username', async (req, res) => {
+app.get('/users/:username', authenticateJWT, ensureCorrectUser, async (req, res) => {
   try {
     // query database for user's data in the future
-    console.log(req.params)
+    console.log("req params", req.params)
     const user = req.params.username;
     return res.json({ user });
   } catch (err) {
