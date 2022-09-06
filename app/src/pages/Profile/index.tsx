@@ -1,13 +1,11 @@
 
 import { Pane, Heading, Spinner, Paragraph } from "evergreen-ui";
-import { useEffect, useContext } from "react";
+import { useContext } from "react";
 import UserContext from "../../UserContext";
-
-
 
 /**
  * Props:
- * - handleLogin: a function to be called in parent
+ * - None
  * 
  * State:
  * - None
@@ -19,15 +17,8 @@ import UserContext from "../../UserContext";
  */
 
 function Profile() {
-    const user = useContext(UserContext)
-
-
-    /**
-     * When component mounts and handleLogin's dependencies changes, load the
-     * user's information
-     */
-
-    console.log('Profile user:', user, typeof user)
+    const user = useContext(UserContext);
+    console.log('Profile user:', user, typeof user);
 
     return (
         <Pane display="flex" flexDirection="column" alignItems="center">
