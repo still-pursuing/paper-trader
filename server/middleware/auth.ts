@@ -23,11 +23,16 @@ function authenticateJWT(req: express.Request, res: express.Response, next: expr
     }
 }
 
+/** Middleware to use when they must provide a valid token & be user matching
+ *  username provided as route param.
+ *
+ *  If not, raises Error.
+ */
 function ensureCorrectUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
         const user = res.locals.user;
         if (!(user && (user.username === req.params.username))) {
-            throw new Error();
+            throw new Error(); // todo: need to change to Unauthorized and update docstring 
         }
         return next();
     } catch (err) {
