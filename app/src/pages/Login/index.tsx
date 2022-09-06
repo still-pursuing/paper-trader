@@ -1,41 +1,41 @@
 
-import { useEffect, useState, useContext } from 'react';
-import { Outlet, useSearchParams } from 'react-router-dom'
+import { useEffect, useContext } from 'react';
+import { Navigate, useSearchParams } from 'react-router-dom'
 import { Button, Pane, EditIcon, Heading } from "evergreen-ui";
+import UserContext from "../../UserContext";
 
 import { DISCORD_REDIRECT_URI } from "../../config";
-import UserContext from "../../UserContext";
 
 /**
  * Props:
  * - None
  * 
  * State:
- * - discordRedirected: true/false
  * - searchParams: null or string
  * 
  * Events:
  * - None
  * 
- * App --> Login --> DiscordRedirect
+ * App --> Login
  */
 
-function Login() {
-
-  // note: need to add if a user is already logged in, redirect back to root
-  const [fromDiscordRedirect, setFromDiscordRedirect] = useState(false);
-  const [searchParams] = useSearchParams();
+function Login({ handleLogin }: any) {
   const user = useContext(UserContext)
-  console.debug("Login", { fromDiscordRedirect, searchParams, user })
+
+  const [searchParams] = useSearchParams()
+
+  console.debug("Login", { user });
 
   const authCode = searchParams.get('code')
 
   /** Checks if this component is mounted after a Discord OAuth redirect */
-  useEffect(function checkIfDiscordRedirected() {
+  useEffect(function loadUser() {
     if (authCode !== null) {
-      setFromDiscordRedirect(true);
+      handleLogin();
     }
-  }, [authCode]);
+  }, [handleLogin, authCode]);
+
+  if (user) return <Navigate to="/profile" replace />
 
   /** Makes a request to Discord's OAuth authorization page */
   async function getDiscordOAuthCode() {
@@ -46,7 +46,7 @@ function Login() {
 
   return (
     <Pane display="flex" flexDirection="column" alignItems="center">
-      {!fromDiscordRedirect && <Pane display="flex" flexDirection="column" alignItems="center">
+      <Pane display="flex" flexDirection="column" alignItems="center">
         <Heading is="h1" size={900}>
           Login
         </Heading>
@@ -62,8 +62,6 @@ function Login() {
           </Button>
         </Pane>
       </Pane>
-      }
-      {fromDiscordRedirect && <Outlet />}
     </Pane>
   )
 }
