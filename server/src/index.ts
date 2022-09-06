@@ -53,10 +53,7 @@ app.get('/login', async (req, res) => {
       console.log(`Hi ${username}${discriminator}`)
 
       const token = createToken(`${username}${discriminator}`);
-      // console.log('JWT', token)
       return res.json({ token })
-      // return res.json({ user: `${username}#${discriminator}` });
-
     } catch (error) {
       console.error(error);
     }
@@ -65,7 +62,7 @@ app.get('/login', async (req, res) => {
 
 app.get('/users/:username', authenticateJWT, ensureCorrectUser, async (req, res) => {
   try {
-    // query database for user's data in the future
+    // query database for user's data in the future?
     console.log("req params", req.params)
     const user = req.params.username;
     return res.json({ user });
