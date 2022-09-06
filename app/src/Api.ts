@@ -22,7 +22,8 @@ class PaperTraderApi {
     }
 
 
-    /** Makes a request to server with Discord OAuth authorization code input
+    /** 
+     * Makes a request to server with Discord OAuth authorization code input
      * 
      * Returns: 
      *  "discord_username"
@@ -32,6 +33,12 @@ class PaperTraderApi {
         return userToken;
     }
 
+    /** 
+     * Makes a request to server with JWT token from localStorage
+     * 
+     * Returns: 
+     *  "username"
+     */
     static async getCurrentUser(username: string) {
         const config = {
             headers: {
