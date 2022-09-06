@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Route, Routes, Navigate, useSearchParams } from 'react-router-dom'
+import { Route, Routes, useSearchParams } from 'react-router-dom'
 import { Pane } from 'evergreen-ui'
 import { decodeToken } from "react-jwt";
 
 import { NotFound } from './pages/NotFound'
 import Login from './pages/Login'
+import Profile from './pages/Profile'
 import Navbar from './components/Navbar';
 import { Splash } from './pages/Splash'
-import DiscordRedirect from './pages/Login/DiscordRedirect'
 import PaperTraderApi from './Api'
 import UserContext from "./UserContext";
 
@@ -20,7 +20,8 @@ interface UserData {
  * - None
  * 
  * State:
- * - None
+ * - token: string returned from the server/local storage
+ * - currentUser: { username }
  * 
  * Events:
  * - None
@@ -30,15 +31,14 @@ interface UserData {
 
 function App() {
 	const [token, setToken] = useState(localStorage.getItem('userToken'));
-	const [needsRedirect, setNeedsRedirect] = useState(false);
 	const [currentUser, setCurrentUser] = useState<UserData | null>(null);
 	const [searchParams] = useSearchParams();
-	console.debug("App", { token, needsRedirect, currentUser, searchParams })
+	console.debug("App", { token, currentUser, searchParams })
 
 	/** 
 	  * Stores string generated from PaperTraderApi in localStorage to
-	  * use for Discord OAUth CSRF prevention when component mounts if there
-	  * no token
+	  * use for Discord OAUth CSRF prevention when component mounts and updates 
+	  * currentUser state if there token changes from default/previous value
 	  */
 	useEffect(function storeCsrfStringAndLoadUser() {
 		if (localStorage['stateString'] === undefined) {
@@ -50,15 +50,13 @@ function App() {
 			if (token !== null) {
 				try {
 					let decodedToken = decodeToken<string>(token);
-					// console.log('decoded', decodedToken);
 					let jsonToken = JSON.stringify(decodedToken);
 					let parsed = JSON.parse(jsonToken);
 					if (parsed !== null) {
 						const username = parsed.username
 						PaperTraderApi.token = token;
 						let resultUser = await PaperTraderApi.getCurrentUser(username)
-						setCurrentUser(resultUser); // is this necessary? decoding token to set username as app context
-						setNeedsRedirect(false);
+						setCurrentUser(resultUser);
 					} else {
 						throw new Error('Invalid username');
 					}
@@ -71,7 +69,10 @@ function App() {
 		console.log('In App effect')
 	}, [token]);
 
-
+	/** Handles site-wide login.
+	 *
+	 *  Logs in a user and sets localStorage with token
+	 */
 	const handleLogin = useCallback(
 		async () => {
 			try {
@@ -83,9 +84,8 @@ function App() {
 
 				if (discordOAuthCode) {
 					const token = await PaperTraderApi.getDiscordUser(discordOAuthCode);
-					setToken(token); // note may not need? 
+					setToken(token);
 					localStorage.setItem('userToken', token);
-
 				} else {
 					throw new Error('Missing Discord OAuth code');
 				}
@@ -95,10 +95,6 @@ function App() {
 		}, [searchParams],
 	);
 
-	if (needsRedirect) {
-		return <Navigate replace to="/" />
-	}
-
 	return (
 		<UserContext.Provider value={currentUser}>
 			<Pane padding={16}>
@@ -106,9 +102,8 @@ function App() {
 				<Routes>
 					<Route path="/" element={<Splash />} />
 					<Route path="home" element={<Splash />} />
-					<Route path="login" element={<Login />}>
-						<Route path="discord-redirect" element={<DiscordRedirect handleLogin={handleLogin} />} />
-					</Route>
+					<Route path="login" element={<Login handleLogin={handleLogin} />} />
+					<Route path="profile" element={<Profile />} />
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</Pane>
