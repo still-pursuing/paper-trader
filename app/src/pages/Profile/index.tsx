@@ -1,6 +1,8 @@
 
-import { Pane, Heading, Spinner, Paragraph } from "evergreen-ui";
+import { Pane, Heading, Paragraph } from "evergreen-ui";
 import { useContext } from "react";
+import { Navigate } from "react-router-dom";
+
 import UserContext from "../../UserContext";
 
 /**
@@ -18,17 +20,16 @@ import UserContext from "../../UserContext";
 
 function Profile() {
     const user = useContext(UserContext);
-    console.log('Profile user:', user, typeof user);
+    console.debug("Profile", { user });
+
+    if (!user) return <Navigate to="/login" replace />
 
     return (
         <Pane display="flex" flexDirection="column" alignItems="center">
             <Heading is="h1" size={900}>
                 Profile Page
             </Heading>
-            {user === null
-                ? <Spinner />
-                : <Paragraph> Hi <>{user}</> </Paragraph>
-            }
+            <Paragraph> Hi <>{user.username}</> </Paragraph>
         </Pane >
     );
 }
