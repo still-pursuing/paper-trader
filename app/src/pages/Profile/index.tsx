@@ -29,7 +29,7 @@ function Profile() {
             <Heading is="h1" size={900}>
                 Profile Page
             </Heading>
-            <Paragraph> Hi <>{user.username}</> </Paragraph>
+            <Paragraph> Hi <>{user}!</> </Paragraph>
         </Pane >
     );
 }
