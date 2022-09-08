@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Route, Routes, useSearchParams } from 'react-router-dom'
 import { Pane } from 'evergreen-ui'
-import { decodeToken } from "react-jwt";
 
 import { NotFound } from './pages/NotFound'
 import Login from './pages/Login'
@@ -49,17 +48,9 @@ function App() {
 		async function getCurrentUser() {
 			if (token !== null) {
 				try {
-					let decodedToken = decodeToken<string>(token);
-					let jsonToken = JSON.stringify(decodedToken);
-					let parsed = JSON.parse(jsonToken);
-					if (parsed !== null) {
-						const username = parsed.username
-						PaperTraderApi.token = token;
-						let resultUser = await PaperTraderApi.getCurrentUser(username)
-						setCurrentUser(resultUser);
-					} else {
-						throw new Error('Invalid username');
-					}
+					PaperTraderApi.token = token;
+					let resultUser = await PaperTraderApi.getCurrentUser()
+					setCurrentUser(resultUser);
 				} catch (err) {
 					console.error("Can't load user", err);
 				}
