@@ -31,7 +31,7 @@ function authenticateJWT(req: express.Request, res: express.Response, next: expr
 function ensureCorrectUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
         const user = res.locals.user;
-        if (!(user && (user.username === req.params.username))) {
+        if (!user) {
             throw new Error(); // todo: need to change to Unauthorized and update docstring 
         }
         return next();
