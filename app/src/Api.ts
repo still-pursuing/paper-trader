@@ -39,7 +39,7 @@ class PaperTraderApi {
      * Returns: 
      *  "username"
      */
-    static async getCurrentUser(username: string) {
+    static async getCurrentUser() {
         const config = {
             headers: {
                 'Authorization': `Bearer ${PaperTraderApi.token}`
@@ -47,7 +47,7 @@ class PaperTraderApi {
         }
 
         const result = (await axios.get(
-            `${BACKEND_BASE_URL}/users/${username}`,
+            `${BACKEND_BASE_URL}/profile`,
             config
             )).data.user;
         console.log({result})
