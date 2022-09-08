@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-export const JWT_SECRET_KEY = process.env.SECRET_KEY || "secret-dev";
+export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || "secret-dev";
 
 export const port = process.env.PORT ?? 8080;
 

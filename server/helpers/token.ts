@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { SECRET_KEY } from '../src/config';
+import { JWT_SECRET_KEY } from '../src/config';
 
 /** return signed JWT from user data. */
 
@@ -9,7 +9,7 @@ function createToken(user: string) {
         username: user
     };
 
-    return jwt.sign(payload, SECRET_KEY);
+    return jwt.sign(payload, JWT_SECRET_KEY);
 }
 
 export default createToken;
