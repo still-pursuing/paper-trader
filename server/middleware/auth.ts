@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { SECRET_KEY } from '../src/config';
+import { JWT_SECRET_KEY } from '../src/config';
 import express from 'express';
 
 
@@ -15,7 +15,7 @@ function authenticateJWT(req: express.Request, res: express.Response, next: expr
         const authHeader = req.headers && req.headers.authorization;
         if (authHeader) {
             const token = authHeader.replace(/^[Bb]earer /, "").trim();
-            res.locals.user = jwt.verify(token, SECRET_KEY);
+            res.locals.user = jwt.verify(token, JWT_SECRET_KEY);
         }
         return next();
     } catch (err) {
