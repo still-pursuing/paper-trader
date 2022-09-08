@@ -15,7 +15,10 @@ function authenticateJWT(req: express.Request, res: express.Response, next: expr
         const authHeader = req.headers && req.headers.authorization;
         if (authHeader) {
             const token = authHeader.replace(/^[Bb]earer /, "").trim();
-            res.locals.user = jwt.verify(token, JWT_SECRET_KEY);
+            const verifiedUser = jwt.verify(token, JWT_SECRET_KEY)
+            if (typeof verifiedUser !== 'string') {
+                res.locals.user = verifiedUser.username;
+            }
         }
         return next();
     } catch (err) {
