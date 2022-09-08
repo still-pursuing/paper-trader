@@ -60,11 +60,11 @@ app.get('/login', async (req, res) => {
   }
 })
 
-app.get('/users/:username', authenticateJWT, ensureCorrectUser, async (req, res) => {
+app.get('/profile', authenticateJWT, ensureCorrectUser, async (req, res) => {
   try {
     // query database for user's data in the future?
     console.log("req params", req.params)
-    const user = req.params.username;
+    const user = res.locals.user;
     return res.json({ user });
   } catch (err) {
     return res.json({ user: 'Invalid username' });
