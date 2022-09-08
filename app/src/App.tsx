@@ -66,7 +66,6 @@ function App() {
 			}
 		}
 		getCurrentUser();
-		console.log('In App effect')
 	}, [token]);
 
 	/** Handles site-wide login.
