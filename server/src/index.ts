@@ -63,7 +63,7 @@ app.get('/login', async (req, res) => {
 app.get('/profile', authenticateJWT, ensureCorrectUser, async (req, res) => {
   try {
     // query database for user's data in the future?
-    console.log("req params", req.params)
+
     const user = res.locals.user;
     return res.json({ user });
   } catch (err) {
