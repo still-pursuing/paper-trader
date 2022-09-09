@@ -9,7 +9,7 @@ import {
   REDIRECT_URI
 } from './config';
 
-import createToken from '../helpers/token';
+import { createToken } from '../helpers/token';
 import { authenticateJWT, ensureCorrectUser } from '../middleware/auth';
 
 const app = express();
