@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { BACKEND_BASE_URL } from "./config";
+import { BACKEND_BASE_URL } from "../config";
 
 class PaperTraderApi {
     static token : string;
