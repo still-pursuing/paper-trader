@@ -7,8 +7,8 @@ import Login from './pages/Login'
 import Profile from './pages/Profile'
 import Navbar from './components/Navbar';
 import { Splash } from './pages/Splash'
-import PaperTraderApi from './Api'
 import UserContext from "./UserContext";
+import UserSession from "./helpers/UserSession";
 
 interface UserData {
 	username: string
@@ -32,7 +32,7 @@ function App() {
 	const [token, setToken] = useState(localStorage.getItem('userToken'));
 	const [currentUser, setCurrentUser] = useState<UserData | null>(null);
 	const [searchParams] = useSearchParams();
-	console.debug("App", { token, currentUser, searchParams })
+	console.debug("App", { token, currentUser, searchParams });
 
 	/** 
 	  * Stores string generated from PaperTraderApi in localStorage to
@@ -40,50 +40,18 @@ function App() {
 	  * currentUser state if there token changes from default/previous value
 	  */
 	useEffect(function storeCsrfStringAndLoadUser() {
-		if (localStorage['stateString'] === undefined) {
-			const randomString = PaperTraderApi.generateRandomString();
-			localStorage.setItem('stateString', randomString);
-		}
-
-		async function getCurrentUser() {
-			if (token !== null) {
-				try {
-					PaperTraderApi.token = token;
-					let resultUser = await PaperTraderApi.getCurrentUser()
-					setCurrentUser(resultUser);
-				} catch (err) {
-					console.error("Can't load user", err);
-				}
-			}
-		}
-		getCurrentUser();
+		// don't need to wrap these in a useCallback?
+		UserSession.storeCsrf();
+		UserSession.getCurrentUser(token, setCurrentUser);
 	}, [token]);
 
 	/** Handles site-wide login.
 	 *
 	 *  Logs in a user and sets localStorage with token
 	 */
-	const handleLogin = useCallback(
-		async () => {
-			try {
-				if (localStorage['stateString'] !== searchParams.get('state')) {
-					throw new Error("Clickjacked!!");
-				}
-
-				const discordOAuthCode = searchParams.get('code');
-
-				if (discordOAuthCode) {
-					const token = await PaperTraderApi.getDiscordUser(discordOAuthCode);
-					setToken(token);
-					localStorage.setItem('userToken', token);
-				} else {
-					throw new Error('Missing Discord OAuth code');
-				}
-			} catch (err) {
-				console.error(err);
-			}
-		}, [searchParams],
-	);
+	const handleLogin = useCallback(() => {
+		UserSession.login(searchParams, setToken)
+	}, [searchParams]);
 
 	return (
 		<UserContext.Provider value={currentUser}>
