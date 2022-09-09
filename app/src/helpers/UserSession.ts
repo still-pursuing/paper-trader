@@ -1,4 +1,4 @@
-import PaperTraderApi from "./Api";
+import PaperTraderApi from "./PaperTraderApi";
 
 interface UserData {
 	username: string
