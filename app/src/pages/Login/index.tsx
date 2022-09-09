@@ -39,7 +39,7 @@ function Login({ handleLogin }: any) {
 
   /** Makes a request to Discord's OAuth authorization page */
   async function getDiscordOAuthCode() {
-    const encodedToken = encodeURIComponent(localStorage['stateString'])
+    const encodedToken = encodeURIComponent(`${localStorage.getItem('stateString')}`) // localStorage.getItem can return null, but encodeURIComponent does not accept type null
     const encodedRedirectURI = encodeURIComponent(DISCORD_REDIRECT_URI);
     window.location.href = `https://discord.com/api/oauth2/authorize?client_id=981788058833797171&redirect_uri=${encodedRedirectURI}&response_type=code&scope=identify&state=${encodedToken}`;
   }
