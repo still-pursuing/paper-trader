@@ -1,4 +1,5 @@
 import PaperTraderApi from "./PaperTraderApi";
+import {v4 as uuidv4} from "uuid";
 
 interface UserData {
 	username: string
@@ -7,8 +8,7 @@ interface UserData {
 class UserSession {
 	static storeCsrf() {
 		if (localStorage['stateString'] === undefined) {
-			const randomString = PaperTraderApi.generateRandomString();
-			localStorage.setItem('stateString', randomString);
+			localStorage.setItem('stateString', uuidv4());
 		}
 	};
 
