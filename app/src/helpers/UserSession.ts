@@ -7,12 +7,12 @@ interface UserData {
 
 class UserSession {
 	static storeCsrf() {
-		if (localStorage['stateString'] === undefined) {
+		if (localStorage.getItem('stateString') === null) {
 			localStorage.setItem('stateString', uuidv4());
 		}
 	};
 
-	static async getCurrentUser(token: string | null, setCurrentUser: React.Dispatch<React.SetStateAction<UserData | null>>) {
+	static async getCurrentUser(token: string | null, setCurrentUser: React.Dispatch<React.SetStateAction<UserData | undefined>>) {
 		if (token !== null) {
 			try {
 				PaperTraderApi.token = token;
@@ -27,7 +27,7 @@ class UserSession {
 	
 	static async login(searchParams: URLSearchParams, setToken: React.Dispatch<React.SetStateAction<string | null>>) {
 		try {
-			if (localStorage['stateString'] !== searchParams.get('state')) {
+			if (localStorage.getItem('stateString') !== searchParams.get('state')) {
 				throw new Error("Clickjacked!!");
 			}
 

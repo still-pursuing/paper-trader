@@ -30,7 +30,7 @@ interface UserData {
 
 function App() {
 	const [token, setToken] = useState(localStorage.getItem('userToken'));
-	const [currentUser, setCurrentUser] = useState<UserData | null>(null);
+	const [currentUser, setCurrentUser] = useState<UserData | undefined>(undefined);
 	const [searchParams] = useSearchParams();
 	console.debug("App", { token, currentUser, searchParams });
 

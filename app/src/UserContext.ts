@@ -4,6 +4,6 @@ interface UserContextInterface{
     username: string;
 }
 
-const UserContext = createContext<UserContextInterface | null>(null);
+const UserContext = createContext<UserContextInterface | undefined>(undefined);
 
 export default UserContext;
