@@ -14,7 +14,7 @@ function authenticateJWT(req: express.Request, res: express.Response, next: expr
     try {
         const authHeader = req.headers && req.headers.authorization;
         if (authHeader) {
-            const token = authHeader.replace(/^[Bb]earer /, "").trim();
+            const token = authHeader.split(" ")[1];
             const verifiedUser = jwt.verify(token, JWT_SECRET_KEY)
             if (typeof verifiedUser !== 'string') {
                 res.locals.user = verifiedUser.username;
