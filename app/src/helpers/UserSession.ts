@@ -25,7 +25,7 @@ class UserSession {
 		}
 	};
 	
-	static async login(searchParams: URLSearchParams, setToken: React.Dispatch<React.SetStateAction<string | null>>) {
+	static async login(searchParams: URLSearchParams) {
 		try {
 			if (localStorage.getItem('stateString') !== searchParams.get('state')) {
 				throw new Error("Clickjacked!!");
@@ -35,8 +35,8 @@ class UserSession {
 
 			if (discordOAuthCode) {
 				const token = await PaperTraderApi.getDiscordUser(discordOAuthCode);
-				setToken(token);
 				localStorage.setItem('userToken', token);
+				return token;
 			} else {
 				throw new Error('Missing Discord OAuth code');
 			}

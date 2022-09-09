@@ -49,8 +49,8 @@ function App() {
 	 *
 	 *  Logs in a user and sets localStorage with token
 	 */
-	const handleLogin = useCallback(() => {
-		UserSession.login(searchParams, setToken)
+	const handleLogin = useCallback(async () => {
+		setToken(await UserSession.login(searchParams));
 	}, [searchParams]);
 
 	return (
