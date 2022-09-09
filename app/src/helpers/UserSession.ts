@@ -19,6 +19,7 @@ class UserSession {
 				let resultUser = await PaperTraderApi.getCurrentUser()
 				setCurrentUser(resultUser);
 			} catch (err) {
+				// todo: Change to properly throw an Error?
 				console.error("Can't load user", err);
 			}
 		}
@@ -40,6 +41,7 @@ class UserSession {
 				throw new Error('Missing Discord OAuth code');
 			}
 		} catch (err) {
+			// todo: Change to properly throw an Error
 			console.error(err);
 		}
 	};
