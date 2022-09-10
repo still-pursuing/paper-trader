@@ -39,10 +39,13 @@ function App() {
 	  * use for Discord OAUth CSRF prevention when component mounts and updates 
 	  * currentUser state if there token changes from default/previous value
 	  */
-	useEffect(function storeCsrfStringAndLoadUser() {
-		// don't need to wrap these in a useCallback?
-		UserSession.storeCsrf();
-		UserSession.getCurrentUser(token, setCurrentUser);
+	useEffect(() => {
+		async function storeCsrfStringAndLoadUser() {
+			// don't need to wrap these in a useCallback?
+			UserSession.storeCsrf();
+			setCurrentUser(await UserSession.getCurrentUser(token));
+		}
+		storeCsrfStringAndLoadUser();
 	}, [token]);
 
 	/** Handles site-wide login.

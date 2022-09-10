@@ -1,10 +1,6 @@
 import PaperTraderApi from "./PaperTraderApi";
 import {v4 as uuidv4} from "uuid";
 
-interface UserData {
-	username: string
-};
-
 class UserSession {
 	static storeCsrf() {
 		if (localStorage.getItem('stateString') === null) {
@@ -12,12 +8,12 @@ class UserSession {
 		}
 	};
 
-	static async getCurrentUser(token: string | null, setCurrentUser: React.Dispatch<React.SetStateAction<UserData | undefined>>) {
+	static async getCurrentUser(token: string | null) {
 		if (token !== null) {
 			try {
 				PaperTraderApi.token = token;
 				let resultUser = await PaperTraderApi.getCurrentUser()
-				setCurrentUser(resultUser);
+				return resultUser;
 			} catch (err) {
 				// todo: Change to properly throw an Error?
 				console.error("Can't load user", err);
