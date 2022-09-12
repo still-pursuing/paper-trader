@@ -42,7 +42,7 @@ function App() {
 	useEffect(() => {
 		async function storeCsrfStringAndLoadUser() {
 			// don't need to wrap these in a useCallback?
-			UserSession.storeCsrf();
+			UserSession.storeCsrfStateString();
 			setCurrentUser(await UserSession.getCurrentUser(token));
 		}
 		storeCsrfStringAndLoadUser();

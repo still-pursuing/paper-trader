@@ -4,6 +4,7 @@ import { Navigate, useSearchParams } from 'react-router-dom'
 import { Button, Pane, EditIcon, Heading } from "evergreen-ui";
 import UserContext from "../../UserContext";
 
+import UserSession from '../../helpers/UserSession';
 import { DISCORD_REDIRECT_URI } from "../../config";
 
 /**
@@ -39,13 +40,15 @@ function Login({ handleLogin }: any) {
 
   /** Makes a request to Discord's OAuth authorization page */
   async function getDiscordOAuthCode() {
-    const storedStateString = localStorage.getItem('stateString');
-    if (storedStateString !== null) {
-      const encodedStateString = encodeURIComponent(storedStateString)
+    const storedCsrfStateString = localStorage.getItem('csrfStateString');
+    if (storedCsrfStateString !== null) {
+      const encodedCsrfStateString = encodeURIComponent(storedCsrfStateString)
       const encodedRedirectURI = encodeURIComponent(DISCORD_REDIRECT_URI);
-      window.location.href = `https://discord.com/api/oauth2/authorize?client_id=981788058833797171&redirect_uri=${encodedRedirectURI}&response_type=code&scope=identify&state=${encodedStateString}`;
+      window.location.href = `https://discord.com/api/oauth2/authorize?client_id=981788058833797171&redirect_uri=${encodedRedirectURI}&response_type=code&scope=identify&state=${encodedCsrfStateString}`;
+    } else {
+      UserSession.storeCsrfStateString();
+      getDiscordOAuthCode();
     }
-    // todo: add an else statement to handle null stateString?
   }
 
   return (
