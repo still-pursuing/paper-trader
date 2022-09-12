@@ -2,13 +2,15 @@ import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
 
-
 import {
   port,
   clientId,
   clientSecret,
   REDIRECT_URI
 } from './config';
+
+import { createToken } from '../helpers/token';
+import { authenticateJWT, ensureCorrectUser } from '../middleware/auth';
 
 const app = express();
 
@@ -49,14 +51,24 @@ app.get('/login', async (req, res) => {
 
       const { username, discriminator } = userResult.data;
       console.log(`Hi ${username}${discriminator}`)
-      return res.json({ user: `${username}#${discriminator}` });
 
+      const token = createToken(`${username}${discriminator}`);
+      return res.json({ token })
     } catch (error) {
       console.error(error);
     }
   }
+})
 
+app.get('/profile', authenticateJWT, ensureCorrectUser, async (req, res) => {
+  try {
+    // query database for user's data in the future?
 
+    const user = res.locals.user;
+    return res.json({ user });
+  } catch (err) {
+    return res.json({ user: 'Invalid username' });
+  }
 })
 
 app.listen(port, () => {

@@ -1,8 +1,10 @@
 
-import { useEffect, useState } from 'react';
-import { Outlet, useSearchParams } from 'react-router-dom'
+import { useEffect, useContext } from 'react';
+import { Navigate, useSearchParams } from 'react-router-dom'
 import { Button, Pane, EditIcon, Heading } from "evergreen-ui";
+import UserContext from "../../UserContext";
 
+import UserSession from '../../helpers/UserSession';
 import { DISCORD_REDIRECT_URI } from "../../config";
 
 /**
@@ -10,40 +12,48 @@ import { DISCORD_REDIRECT_URI } from "../../config";
  * - None
  * 
  * State:
- * - discordRedirected: true/false
  * - searchParams: null or string
  * 
  * Events:
  * - None
  * 
- * App --> Login --> DsicordRedirect
+ * App --> Login
  */
 
-function Login() {
+function Login({ handleLogin }: any) {
+  const user = useContext(UserContext)
 
-  // note: need to add if a user is already logged in, redirect back to root
-  const [fromDiscordRedirect, setFromDiscordRedirect] = useState(false);
-  const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams()
+
+  console.debug("Login", { user });
 
   const authCode = searchParams.get('code')
 
   /** Checks if this component is mounted after a Discord OAuth redirect */
-  useEffect(function checkIfDiscordRedirected() {
+  useEffect(function loadUser() {
     if (authCode !== null) {
-      setFromDiscordRedirect(true);
+      handleLogin();
     }
-  }, [authCode]);
+  }, [handleLogin, authCode]);
+
+  if (user) return <Navigate to="/profile" replace />
 
   /** Makes a request to Discord's OAuth authorization page */
   async function getDiscordOAuthCode() {
-    const encodedToken = encodeURIComponent(localStorage['token'])
-    const encodedRedirectURI = encodeURIComponent(DISCORD_REDIRECT_URI);
-    window.location.href = `https://discord.com/api/oauth2/authorize?client_id=981788058833797171&redirect_uri=${encodedRedirectURI}&response_type=code&scope=identify&state=${encodedToken}`;
+    const storedCsrfStateString = localStorage.getItem('csrfStateString');
+    if (storedCsrfStateString !== null) {
+      const encodedCsrfStateString = encodeURIComponent(storedCsrfStateString)
+      const encodedRedirectURI = encodeURIComponent(DISCORD_REDIRECT_URI);
+      window.location.href = `https://discord.com/api/oauth2/authorize?client_id=981788058833797171&redirect_uri=${encodedRedirectURI}&response_type=code&scope=identify&state=${encodedCsrfStateString}`;
+    } else {
+      UserSession.storeCsrfStateString();
+      getDiscordOAuthCode();
+    }
   }
 
   return (
     <Pane display="flex" flexDirection="column" alignItems="center">
-      {!fromDiscordRedirect && <Pane display="flex" flexDirection="column" alignItems="center">
+      <Pane display="flex" flexDirection="column" alignItems="center">
         <Heading is="h1" size={900}>
           Login
         </Heading>
@@ -59,8 +69,6 @@ function Login() {
           </Button>
         </Pane>
       </Pane>
-      }
-      {fromDiscordRedirect && <Outlet />}
     </Pane>
   )
 }

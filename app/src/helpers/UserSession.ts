@@ -1,0 +1,46 @@
+import PaperTraderApi from "./PaperTraderApi";
+import {v4 as uuidv4} from "uuid";
+
+class UserSession {
+	static storeCsrfStateString() {
+		if (localStorage.getItem('csrfStateString') === null) {
+			localStorage.setItem('csrfStateString', uuidv4());
+		}
+	};
+
+	static async getCurrentUser(token: string | null) {
+		if (token !== null) {
+			try {
+				PaperTraderApi.token = token;
+				let resultUser = await PaperTraderApi.getCurrentUser()
+				return resultUser;
+			} catch (err) {
+				// todo: Change to properly throw an Error?
+				console.error("Can't load user", err);
+			}
+		}
+	};
+	
+	static async login(searchParams: URLSearchParams) {
+		try {
+			if (localStorage.getItem('csrfStateString') !== searchParams.get('state')) {
+				throw new Error("Clickjacked!!");
+			}
+
+			const discordOAuthCode = searchParams.get('code');
+
+			if (discordOAuthCode) {
+				const token = await PaperTraderApi.getDiscordUser(discordOAuthCode);
+				localStorage.setItem('userToken', token);
+				return token;
+			} else {
+				throw new Error('Missing Discord OAuth code');
+			}
+		} catch (err) {
+			// todo: Change to properly throw an Error
+			console.error(err);
+		}
+	};
+}
+
+export default UserSession;
