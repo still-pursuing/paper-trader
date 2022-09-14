@@ -29,7 +29,7 @@ interface UserData {
  */
 
 function App() {
-	const [token, setToken] = useState(localStorage.getItem('userToken'));
+	const [token, setToken] = useState(localStorage.getItem('userToken') ?? undefined);
 	const [currentUser, setCurrentUser] = useState<UserData | undefined>(undefined);
 	const [searchParams] = useSearchParams();
 	console.debug("App", { token, currentUser, searchParams });
@@ -62,7 +62,7 @@ function App() {
 	 *  clears localStorage of the userToken
 	 */
 	const handleLogout = () => {
-		setToken(null);
+		setToken(undefined);
 		setCurrentUser(undefined);
 		localStorage.removeItem('userToken');
 	}
