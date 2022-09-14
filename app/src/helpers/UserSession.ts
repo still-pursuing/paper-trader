@@ -2,14 +2,16 @@ import PaperTraderApi from "./PaperTraderApi";
 import {v4 as uuidv4} from "uuid";
 
 class UserSession {
+	static storedCsrfStateString = localStorage.getItem('csrfStateString') ?? undefined;
+
 	static storeCsrfStateString() {
-		if (localStorage.getItem('csrfStateString') === null) {
+		if (!this.storedCsrfStateString) {
 			localStorage.setItem('csrfStateString', uuidv4());
 		}
 	};
 
-	static async getCurrentUser(token: string | null) {
-		if (token !== null) {
+	static async getCurrentUser(token: string | undefined) {
+		if (token !== undefined) {
 			try {
 				PaperTraderApi.token = token;
 				let resultUser = await PaperTraderApi.getCurrentUser()
@@ -23,7 +25,7 @@ class UserSession {
 	
 	static async login(searchParams: URLSearchParams) {
 		try {
-			if (localStorage.getItem('csrfStateString') !== searchParams.get('state')) {
+			if (this.storedCsrfStateString !== searchParams.get('state')) {
 				throw new Error("Clickjacked!!");
 			}
 
