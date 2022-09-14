@@ -29,7 +29,7 @@ interface UserData {
  */
 
 function App() {
-	const [token, setToken] = useState(localStorage.getItem('userToken'));
+	const [token, setToken] = useState(localStorage.getItem('userToken') ?? undefined);
 	const [currentUser, setCurrentUser] = useState<UserData | undefined>(undefined);
 	const [searchParams] = useSearchParams();
 	console.debug("App", { token, currentUser, searchParams });
@@ -56,10 +56,21 @@ function App() {
 		setToken(await UserSession.login(searchParams));
 	}, [searchParams]);
 
+	/** Handles site-wide logout.
+	 *
+	 *  Logouts a user, removing them from the application context and
+	 *  clears localStorage of the userToken
+	 */
+	const handleLogout = () => {
+		setToken(undefined);
+		setCurrentUser(undefined);
+		localStorage.removeItem('userToken');
+	}
+
 	return (
 		<UserContext.Provider value={currentUser}>
 			<Pane padding={16}>
-				<Navbar></Navbar>
+				<Navbar handleLogout={handleLogout} ></Navbar>
 				<Routes>
 					<Route path="/" element={<Splash />} />
 					<Route path="home" element={<Splash />} />

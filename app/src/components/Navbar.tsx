@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { Link as ReactRouterLink } from 'react-router-dom'
+import { useContext } from "react";
+import { Link as ReactRouterLink, useLocation } from 'react-router-dom'
 import { Pane, Tab, TabNavigation, WaterfallChartIcon } from 'evergreen-ui';
 
+import UserContext from "../UserContext";
 
-function Navbar() {
-    const [selectedIndex, setSelectedIndex] = useState(0)
-    const [tabs] = useState(['Home', 'Profile', 'Login'])
+function Navbar({ handleLogout }: any) {
+    const user = useContext(UserContext)
+    const { pathname } = useLocation();
+
     return (
         <Pane flex={10} display="flex" justifyContent="space-between" marginBottom={10} >
             <TabNavigation display="flex" alignItems="center" marginRight={10} paddingLeft={0}>
@@ -13,22 +15,25 @@ function Navbar() {
                     Paper Trader
                     <WaterfallChartIcon size={20} marginLeft={5} />
                 </Tab>
-
             </TabNavigation>
-            <TabNavigation alignItems="center" flexBasis={216} display="flex">
-                {tabs.map((tab, index) => (
-                    <Tab
-                        key={tab}
-                        is={ReactRouterLink}
-                        to={tab}
-                        id={tab}
-                        onSelect={() => setSelectedIndex(index)}
-                        isSelected={index === selectedIndex}>
-                        {tab}
+            <TabNavigation alignItems="center" display="flex">
+                {user && <>
+                    <Tab is={ReactRouterLink} to="home" isSelected={pathname === "/home" || pathname === "/"}>
+                        Home
                     </Tab>
-                ))}
+                    <Tab is={ReactRouterLink} to="profile" isSelected={pathname === "/profile"}>
+                        Profile
+                    </Tab>
+                    <Tab is={ReactRouterLink} to="login" onSelect={handleLogout}>
+                        Logout
+                    </Tab>
+                </>}
+                {!user &&
+                    <Tab is={ReactRouterLink} to="login" isSelected={pathname === "/login"}>
+                        Login
+                    </Tab>}
             </TabNavigation>
-        </Pane>
+        </Pane >
     )
 }
 
