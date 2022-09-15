@@ -1,7 +1,7 @@
 
 import { useEffect, useContext } from 'react';
 import { Navigate, useSearchParams } from 'react-router-dom'
-import { Button, Pane, EditIcon, Heading } from "evergreen-ui";
+import { Button, Pane, EditIcon, Heading, Spinner } from "evergreen-ui";
 import UserContext from "../../UserContext";
 
 import UserSession from '../../helpers/UserSession';
@@ -27,11 +27,11 @@ function Login({ handleLogin }: any) {
 
   console.debug("Login", { user });
 
-  const authCode = searchParams.get('code')
+  const authCode = searchParams.get('code') ?? undefined;
 
   /** Checks if this component is mounted after a Discord OAuth redirect */
   useEffect(function loadUser() {
-    if (authCode !== null) {
+    if (authCode !== undefined) {
       handleLogin();
     }
   }, [handleLogin, authCode]);
@@ -53,22 +53,30 @@ function Login({ handleLogin }: any) {
 
   return (
     <Pane display="flex" flexDirection="column" alignItems="center">
-      <Pane display="flex" flexDirection="column" alignItems="center">
-        <Heading is="h1" size={900}>
-          Login
-        </Heading>
-        <Pane>
-          <Button
-            marginY={8}
-            marginRight={12}
-            iconBefore={EditIcon}
-            size="large"
-            onClick={getDiscordOAuthCode}
-          >
-            Login With Discord
-          </Button>
-        </Pane>
-      </Pane>
+      {authCode &&
+        <Pane display="flex" flexDirection="column" alignItems="center">
+          <Heading is="h1" size={900}>
+            Logging In...
+          </Heading>
+          <Spinner marginX="auto" marginY={50} />
+        </Pane>}
+      {!authCode &&
+        <Pane display="flex" flexDirection="column" alignItems="center">
+          <Heading is="h1" size={900}>
+            Login
+          </Heading>
+          <Pane>
+            <Button
+              marginY={8}
+              marginX="auto"
+              iconBefore={EditIcon}
+              size="large"
+              onClick={getDiscordOAuthCode}
+            >
+              Login With Discord
+            </Button>
+          </Pane>
+        </Pane>}
     </Pane>
   )
 }
