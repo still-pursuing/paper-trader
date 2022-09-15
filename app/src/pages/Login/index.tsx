@@ -9,7 +9,7 @@ import { DISCORD_REDIRECT_URI } from "../../config";
 
 /**
  * Props:
- * - None
+ * - handleLogin: function to be called in App
  * 
  * State:
  * - searchParams: null or string
