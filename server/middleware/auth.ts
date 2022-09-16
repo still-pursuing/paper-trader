@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET_KEY } from '../src/config';
 import express from 'express';
 
+import { JWT_SECRET_KEY } from '../src/config';
+import { UnauthorizedError } from '../src/errors';
 
 /** Middleware: Authenticate user.
  *
@@ -29,13 +30,13 @@ function authenticateJWT(req: express.Request, res: express.Response, next: expr
 /** Middleware to use when they must provide a valid token & be user matching
  *  username provided as route param.
  *
- *  If not, raises Error.
+ *  If not, raises UnauthorizedError.
  */
 function ensureCorrectUser(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
         const user = res.locals.user;
         if (!user) {
-            throw new Error(); // todo: need to change to Unauthorized and update docstring 
+            throw new UnauthorizedError();
         }
         return next();
     } catch (err) {
