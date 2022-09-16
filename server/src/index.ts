@@ -49,26 +49,20 @@ app.get('/login', async (req, res, next) => {
         },
       });
 
-      try {
-        const oauthData = tokenResponseData.data;
+      const oauthData = tokenResponseData.data;
 
-        const userResult = await axios({
-          method: 'GET',
-          url: 'https://discord.com/api/users/@me',
-          headers: {
-            authorization: `${oauthData.token_type} ${oauthData.access_token}`,
-          }
-        });
+      const userResult = await axios({
+        method: 'GET',
+        url: 'https://discord.com/api/users/@me',
+        headers: {
+          authorization: `${oauthData.token_type} ${oauthData.access_token}`,
+        }
+      });
 
-        const { username, discriminator } = userResult.data;
+      const { username, discriminator } = userResult.data;
 
-        const token = createToken(`${username}${discriminator}`);
-        return res.json({ token });
-      } catch (error) {
-        error.response.message = error.response.data.error_description;
-        next(error.response);
-      }
-
+      const token = createToken(`${username}${discriminator}`);
+      return res.json({ token });
     } catch (error) {
       error.response.message = error.response.data.error_description;
       next(error.response);
