@@ -29,7 +29,6 @@ app.get('/login', async (req, res, next) => {
   console.log(`The access code is: ${code}`);
 
   if (code) {
-
     let tokenResponseData = undefined;
 
     try {
@@ -50,7 +49,6 @@ app.get('/login', async (req, res, next) => {
         },
       });
 
-
       try {
         const oauthData = tokenResponseData.data;
 
@@ -63,7 +61,6 @@ app.get('/login', async (req, res, next) => {
         });
 
         const { username, discriminator } = userResult.data;
-        console.log(`Hi ${username}${discriminator}`);
 
         const token = createToken(`${username}${discriminator}`);
         return res.json({ token });
@@ -76,19 +73,16 @@ app.get('/login', async (req, res, next) => {
       error.response.message = error.response.data.error_description;
       next(error.response);
     }
-
-
   }
 })
 
-app.get('/profile', authenticateJWT, ensureCorrectUser, async (req, res) => {
+app.get('/profile', authenticateJWT, ensureCorrectUser, async (req, res, next) => {
   try {
     // query database for user's data in the future?
-
     const user = res.locals.user;
     return res.json({ user });
   } catch (err) {
-    return res.json({ user: 'Invalid username' });
+    return next(err);
   }
 })
 
@@ -106,7 +100,6 @@ app.use(function (err: ExpressError, req: express.Request, res: express.Response
     error: { message, status },
   });
 });
-
 
 app.listen(port, () => {
   console.log(`server started at http://localhost:${port}`)
