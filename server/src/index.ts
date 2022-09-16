@@ -29,7 +29,7 @@ app.get('/login', async (req, res, next) => {
   console.log(`The access code is: ${code}`);
 
   if (code) {
-    let tokenResponseData = undefined;
+    let tokenResponseData;
 
     try {
       const params = new URLSearchParams();
@@ -37,7 +37,7 @@ app.get('/login', async (req, res, next) => {
       params.append('client_secret', clientSecret);
       params.append('grant_type', 'authorization_code');
       params.append('code', `${code}`);
-      params.append('redirect_uri', REDIRECT_URI + 'a');
+      params.append('redirect_uri', REDIRECT_URI);
       params.append('scope', 'identify');
 
       tokenResponseData = await axios({
@@ -81,12 +81,12 @@ app.get('/profile', authenticateJWT, ensureCorrectUser, async (req, res, next) =
 })
 
 /** Handle 404 errors -- this matches everything */
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   return next(new NotFoundError());
 });
 
 /** Generic error handler; anything unhandled goes here. */
-app.use(function (err: ExpressError, req: express.Request, res: express.Response, next: express.NextFunction) {
+app.use((err: ExpressError, req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (process.env.NODE_ENV !== "test") console.error(err);
   const status = err.status || 500;
   const message = err.message;
