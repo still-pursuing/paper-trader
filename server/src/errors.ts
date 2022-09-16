@@ -4,7 +4,7 @@
  *  The error-handling middleware will return this.
  */
 
-class ExpressError extends Error {
+export class ExpressError extends Error {
     status: number;
 
     constructor(message: string, status: number) {
