@@ -89,7 +89,7 @@ app.use((req, res, next) => {
 app.use((err: ExpressError, req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (process.env.NODE_ENV !== "test") console.error(err);
   const status = err.status || 500;
-  const message = err.message;
+  const message = err.status < 500 ? err.message : "Something went wrong";
   return res.status(status).json({
     error: { message, status },
   });
