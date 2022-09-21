@@ -1,3 +1,15 @@
+interface configProperties {
+    headers: headers,
+    method: string,
+    url: string,
+    data: string
+}
+
+interface headers {
+    Accept: string,
+    authorization?: string
+}
+
 /** ExpressError extends normal JS error so we can
  *  add a status when we make an instance of it.
  *
@@ -6,10 +18,11 @@
 
 export class ExpressError extends Error {
     status: number;
+    headers: object;
+    config: configProperties;
 
     constructor(message: string, status: number) {
-        super();
-        this.message = message;
+        super(message);
         this.status = status;
     }
 }

@@ -13,6 +13,7 @@ import {
 import { createToken } from '../helpers/token';
 import { authenticateJWT, ensureCorrectUser } from '../middleware/auth';
 import { ExpressError, NotFoundError } from './errors';
+import { buildModifiedError } from "../helpers/buildModifiedError";
 
 const app = express();
 
@@ -49,20 +50,25 @@ app.get('/login', async (req, res, next) => {
         },
       });
 
-      const oauthData = tokenResponseData.data;
+      try {
+        const oauthData = tokenResponseData.data;
 
-      const userResult = await axios({
-        method: 'GET',
-        url: 'https://discord.com/api/users/@me',
-        headers: {
-          authorization: `${oauthData.token_type} ${oauthData.access_token}`,
-        }
-      });
+        const userResult = await axios({
+          method: 'GET',
+          url: 'https://discord.com/api/users/@me',
+          headers: {
+            authorization: `${oauthData.token_type} ${oauthData.access_token}`,
+          }
+        });
 
-      const { username, discriminator } = userResult.data;
+        const { username, discriminator } = userResult.data;
 
-      const token = createToken(`${username}${discriminator}`);
-      return res.json({ token });
+        const token = createToken(`${username}${discriminator}`);
+        return res.json({ token });
+      } catch (error) {
+        error.response.message = error.response.data.message;
+        next(error.response);
+      }
     } catch (error) {
       error.response.message = error.response.data.error_description;
       next(error.response);
@@ -87,9 +93,30 @@ app.use((req, res, next) => {
 
 /** Generic error handler; anything unhandled goes here. */
 app.use((err: ExpressError, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  if (process.env.NODE_ENV !== "test") console.error(err);
   const status = err.status || 500;
   const message = err.status < 500 ? err.message : "Something went wrong";
+
+  if (process.env.NODE_ENV === "production") {
+    const { headers, method, url, data } = err.config;
+
+    if (url === 'https://discord.com/api/oauth2/token') {
+      const redactData = "client_id=REDACTED&client_secret=REDACTED&" + `${data.substring(data.indexOf("grant_type"))}`;
+
+      const modifiedError = buildModifiedError(err.headers, headers, url, method, redactData, status, message);
+      console.error(modifiedError);
+    }
+
+    if (url === 'https://discord.com/api/users/@me') {
+      const redactAuthToken = headers.authorization.split(" ")[0];
+      headers.authorization = redactAuthToken + " REDACTED";
+
+      const modifiedError = buildModifiedError(err.headers, headers, url, method, data, status, message);
+      console.error(modifiedError);
+    }
+  } else {
+    console.error(err);
+  }
+
   return res.status(status).json({
     error: { message, status },
   });
