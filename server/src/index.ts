@@ -12,7 +12,6 @@ import {
 
 import { createToken } from '../helpers/token';
 import { authenticateJWT, ensureCorrectUser } from '../middleware/auth';
-import { redactDiscordInfo } from "../middleware/redactDiscordInfo";
 import { ExpressError, NotFoundError } from './errors';
 
 
@@ -58,7 +57,7 @@ app.get('/login', async (req, res, next) => {
           method: 'GET',
           url: 'https://discord.com/api/users/@me',
           headers: {
-            authorization: `${oauthData.token_type} ${oauthData.access_token}a`,
+            authorization: `${oauthData.token_type} ${oauthData.access_token}`,
           }
         });
 
@@ -67,10 +66,17 @@ app.get('/login', async (req, res, next) => {
         const token = createToken(`${username}${discriminator}`);
         return res.json({ token });
       } catch (error) {
+
+        error.response.config.headers.authorization = "Bearer REDACTED";
+        error.response.request._header = "REDACTED";
+
         error.response.message = error.response.data.message;
         next(error.response);
       }
     } catch (error) {
+      const { data } = error.response.config;
+      error.response.config.data = `client_id=REDACTED&client_secret=REDACTED&${data.substring(data.indexOf("grant_type"))}`;
+
       error.response.message = error.response.data.error_description;
       next(error.response);
     }
@@ -91,9 +97,6 @@ app.get('/profile', authenticateJWT, ensureCorrectUser, async (req, res, next) =
 app.use((req, res, next) => {
   return next(new NotFoundError());
 });
-
-/** Redact sensitive Discord information in errors */
-app.use(redactDiscordInfo);
 
 /** Generic error handler; anything unhandled goes here. */
 app.use((err: ExpressError, req: express.Request, res: express.Response, next: express.NextFunction) => {
