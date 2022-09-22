@@ -7,7 +7,11 @@ interface configProperties {
 
 interface headers {
     Accept: string,
-    authorization?: string
+    authorization: string
+}
+
+interface request {
+    _header: string
 }
 
 /** ExpressError extends normal JS error so we can
@@ -18,8 +22,9 @@ interface headers {
 
 export class ExpressError extends Error {
     status: number;
-    headers: object;
+    headers: headers;
     config: configProperties;
+    request: request;
 
     constructor(message: string, status: number) {
         super(message);
