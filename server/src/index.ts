@@ -12,8 +12,9 @@ import {
 
 import { createToken } from '../helpers/token';
 import { authenticateJWT, ensureCorrectUser } from '../middleware/auth';
+import { redactDiscordInfo } from "../middleware/redactDiscordInfo";
 import { ExpressError, NotFoundError } from './errors';
-import { buildModifiedError } from "../helpers/buildModifiedError";
+
 
 const app = express();
 
@@ -57,7 +58,7 @@ app.get('/login', async (req, res, next) => {
           method: 'GET',
           url: 'https://discord.com/api/users/@me',
           headers: {
-            authorization: `${oauthData.token_type} ${oauthData.access_token}`,
+            authorization: `${oauthData.token_type} ${oauthData.access_token}a`,
           }
         });
 
@@ -91,31 +92,15 @@ app.use((req, res, next) => {
   return next(new NotFoundError());
 });
 
+/** Redact sensitive Discord information in errors */
+app.use(redactDiscordInfo);
+
 /** Generic error handler; anything unhandled goes here. */
 app.use((err: ExpressError, req: express.Request, res: express.Response, next: express.NextFunction) => {
   const status = err.status || 500;
   const message = err.status < 500 ? err.message : "Something went wrong";
 
-  if (process.env.NODE_ENV === "production") {
-    const { headers, method, url, data } = err.config;
-
-    if (url === 'https://discord.com/api/oauth2/token') {
-      const redactData = "client_id=REDACTED&client_secret=REDACTED&" + `${data.substring(data.indexOf("grant_type"))}`;
-
-      const modifiedError = buildModifiedError(err.headers, headers, url, method, redactData, status, message);
-      console.error(modifiedError);
-    }
-
-    if (url === 'https://discord.com/api/users/@me') {
-      const redactAuthToken = headers.authorization.split(" ")[0];
-      headers.authorization = redactAuthToken + " REDACTED";
-
-      const modifiedError = buildModifiedError(err.headers, headers, url, method, data, status, message);
-      console.error(modifiedError);
-    }
-  } else {
-    console.error(err);
-  }
+  console.error(err);
 
   return res.status(status).json({
     error: { message, status },
