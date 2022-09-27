@@ -12,7 +12,7 @@ import {
 
 import { createToken } from '../helpers/token';
 import { authenticateJWT, ensureCorrectUser } from '../middleware/auth';
-import { ExpressError, NotFoundError } from './errors';
+import { BadRequestError, ExpressError, NotFoundError } from './errors';
 
 
 const app = express();
@@ -26,8 +26,7 @@ app.get('/test', (req, res) => {
 })
 
 app.get('/login', async (req, res, next) => {
-  const { code } = await req.query;
-  console.log(`The access code is: ${code}`);
+  const { code } = req.query;
 
   if (code) {
     let tokenResponseData;
@@ -75,11 +74,14 @@ app.get('/login', async (req, res, next) => {
       }
     } catch (error) {
       const { data } = error.response.config;
-      error.response.config.data = `client_id=REDACTED&client_secret=REDACTED&${data.substring(data.indexOf("grant_type"))}`;
+      error.response.config.data =
+        `client_id=REDACTED&client_secret=REDACTED&${data.substring(data.indexOf("grant_type"))}`;
 
       error.response.message = error.response.data.error_description;
       next(error.response);
     }
+  } else {
+    return next(new BadRequestError());
   }
 })
 
