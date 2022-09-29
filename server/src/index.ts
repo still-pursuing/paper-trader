@@ -32,62 +32,64 @@ app.use(morgan('tiny'));
 app.get('/login', async (req, res, next) => {
   const { code } = req.query;
 
-  if (code) {
-    let tokenResponseData: DiscordOAuthTokenResponseData;
-
-    try {
-      const params = new URLSearchParams();
-      params.append('client_id', clientId);
-      params.append('client_secret', clientSecret);
-      params.append('grant_type', 'authorization_code');
-      params.append('code', `${code}`);
-      params.append('redirect_uri', REDIRECT_URI);
-      params.append('scope', 'identify');
-
-      tokenResponseData = (await axios({
-        method: 'POST',
-        url: 'https://discord.com/api/oauth2/token',
-        data: params,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-      })).data;
-
-      try {
-
-        const oauthData: DiscordOAuthTokenResponseData = tokenResponseData;
-
-        const userResult: DiscordUserData = (await axios({
-          method: 'GET',
-          url: 'https://discord.com/api/users/@me',
-          headers: {
-            authorization: `${oauthData.token_type} ${oauthData.access_token}`,
-          }
-        })).data;
-
-        const { username, discriminator } = userResult;
-
-        const token = createToken(`${username}${discriminator}`);
-        return res.json({ token });
-      } catch (error) {
-
-        error.response.config.headers.authorization = "Bearer REDACTED";
-        error.response.request._header = "REDACTED";
-
-        error.response.message = error.response.data.message;
-        next(error.response);
-      }
-    } catch (error) {
-      const { data } = error.response.config;
-      error.response.config.data =
-        `client_id=REDACTED&client_secret=REDACTED&${data.substring(data.indexOf("grant_type"))}`;
-
-      error.response.message = error.response.data.error_description;
-      next(error.response);
-    }
-  } else {
+  if (!code) {
     return next(new BadRequestError());
   }
+
+  let tokenResponseData: DiscordOAuthTokenResponseData;
+
+  try {
+    const params = new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      code: `${code}`,
+      grant_type: 'authorization_code',
+      redirect_uri: REDIRECT_URI,
+      scope: 'identify'
+    });
+
+    tokenResponseData = (await axios({
+      method: 'POST',
+      url: 'https://discord.com/api/oauth2/token',
+      data: params,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+    })).data;
+
+    try {
+
+      const oauthData: DiscordOAuthTokenResponseData = tokenResponseData;
+
+      const userResult: DiscordUserData = (await axios({
+        method: 'GET',
+        url: 'https://discord.com/api/users/@me',
+        headers: {
+          authorization: `${oauthData.token_type} ${oauthData.access_token}`,
+        }
+      })).data;
+
+      const { username, discriminator } = userResult;
+
+      const token = createToken(`${username}${discriminator}`);
+      return res.json({ token });
+    } catch (error) {
+
+      error.response.config.headers.authorization = "Bearer REDACTED";
+      error.response.request._header = "REDACTED";
+
+      error.response.message = error.response.data.message;
+      next(error.response);
+    }
+  } catch (error) {
+    const { data } = error.response.config;
+    error.response.config.data =
+      `client_id=REDACTED&client_secret=REDACTED&${data.substring(data.indexOf("grant_type"))}`;
+
+    error.response.message = error.response.data.error_description;
+    next(error.response);
+  }
+
 })
 
 app.get('/profile', authenticateJWT, ensureCorrectUser, async (req, res, next) => {
