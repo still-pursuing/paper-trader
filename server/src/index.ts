@@ -36,7 +36,6 @@ app.get('/login', async (req, res, next) => {
     return next(new BadRequestError());
   }
 
-  let tokenResponseData: DiscordOAuthTokenResponseData;
 
   try {
     const params = new URLSearchParams({
@@ -48,7 +47,7 @@ app.get('/login', async (req, res, next) => {
       scope: 'identify'
     });
 
-    tokenResponseData = (await axios({
+    const oAuthTokenData: DiscordOAuthTokenResponseData = (await axios({
       method: 'POST',
       url: 'https://discord.com/api/oauth2/token',
       data: params,
@@ -58,14 +57,11 @@ app.get('/login', async (req, res, next) => {
     })).data;
 
     try {
-
-      const oauthData: DiscordOAuthTokenResponseData = tokenResponseData;
-
       const userResult: DiscordUserData = (await axios({
         method: 'GET',
         url: 'https://discord.com/api/users/@me',
         headers: {
-          authorization: `${oauthData.token_type} ${oauthData.access_token}`,
+          authorization: `${oAuthTokenData.token_type} ${oAuthTokenData.access_token}`,
         }
       })).data;
 
