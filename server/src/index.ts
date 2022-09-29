@@ -14,22 +14,22 @@ import { createToken } from '../helpers/token';
 import { authenticateJWT, ensureCorrectUser } from '../middleware/auth';
 import { BadRequestError, ExpressError, NotFoundError } from './errors';
 
+interface DiscordOAuthTokenResponseData {
+  token_type: string
+  access_token: string
+}
+
 
 const app = express();
 
 app.use(cors());
 app.use(morgan('tiny'));
 
-app.get('/test', (req, res) => {
-  console.log('connected to test')
-  res.json({ test: 'Hello world!' })
-})
-
 app.get('/login', async (req, res, next) => {
   const { code } = req.query;
 
   if (code) {
-    let tokenResponseData;
+    let tokenResponseData: DiscordOAuthTokenResponseData;
 
     try {
       const params = new URLSearchParams();
@@ -40,17 +40,18 @@ app.get('/login', async (req, res, next) => {
       params.append('redirect_uri', REDIRECT_URI);
       params.append('scope', 'identify');
 
-      tokenResponseData = await axios({
+      tokenResponseData = (await axios({
         method: 'POST',
         url: 'https://discord.com/api/oauth2/token',
         data: params,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-      });
+      })).data;
 
       try {
-        const oauthData = tokenResponseData.data;
+        console.log(tokenResponseData)
+        const oauthData: DiscordOAuthTokenResponseData = tokenResponseData;
 
         const userResult = await axios({
           method: 'GET',
