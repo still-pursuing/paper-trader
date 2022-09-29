@@ -19,6 +19,10 @@ interface DiscordOAuthTokenResponseData {
   access_token: string
 }
 
+interface DiscordUserData {
+  username: string
+  discriminator: string
+}
 
 const app = express();
 
@@ -50,18 +54,18 @@ app.get('/login', async (req, res, next) => {
       })).data;
 
       try {
-        console.log(tokenResponseData)
+
         const oauthData: DiscordOAuthTokenResponseData = tokenResponseData;
 
-        const userResult = await axios({
+        const userResult: DiscordUserData = (await axios({
           method: 'GET',
           url: 'https://discord.com/api/users/@me',
           headers: {
             authorization: `${oauthData.token_type} ${oauthData.access_token}`,
           }
-        });
+        })).data;
 
-        const { username, discriminator } = userResult.data;
+        const { username, discriminator } = userResult;
 
         const token = createToken(`${username}${discriminator}`);
         return res.json({ token });
