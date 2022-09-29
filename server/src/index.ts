@@ -42,9 +42,9 @@ app.get('/login', async (req, res, next) => {
     const params = new URLSearchParams({
       client_id: clientId,
       client_secret: clientSecret,
-      code: `${code}`,
+      code: code.toString(),
       grant_type: 'authorization_code',
-      redirect_uri: REDIRECT_URI + "a",
+      redirect_uri: REDIRECT_URI,
       scope: 'identify'
     });
 
