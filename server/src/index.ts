@@ -36,6 +36,7 @@ app.get('/login', async (req, res, next) => {
     return next(new BadRequestError());
   }
 
+  let oauthTokenData: DiscordOAuthTokenResponseData;
 
   try {
     const params = new URLSearchParams({
@@ -43,11 +44,11 @@ app.get('/login', async (req, res, next) => {
       client_secret: clientSecret,
       code: `${code}`,
       grant_type: 'authorization_code',
-      redirect_uri: REDIRECT_URI,
+      redirect_uri: REDIRECT_URI + "a",
       scope: 'identify'
     });
 
-    const oAuthTokenData: DiscordOAuthTokenResponseData = (await axios({
+    oauthTokenData = (await axios({
       method: 'POST',
       url: 'https://discord.com/api/oauth2/token',
       data: params,
@@ -55,35 +56,35 @@ app.get('/login', async (req, res, next) => {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
     })).data;
-
-    try {
-      const userResult: DiscordUserData = (await axios({
-        method: 'GET',
-        url: 'https://discord.com/api/users/@me',
-        headers: {
-          authorization: `${oAuthTokenData.token_type} ${oAuthTokenData.access_token}`,
-        }
-      })).data;
-
-      const { username, discriminator } = userResult;
-
-      const token = createToken(`${username}${discriminator}`);
-      return res.json({ token });
-    } catch (error) {
-
-      error.response.config.headers.authorization = "Bearer REDACTED";
-      error.response.request._header = "REDACTED";
-
-      error.response.message = error.response.data.message;
-      next(error.response);
-    }
   } catch (error) {
     const { data } = error.response.config;
     error.response.config.data =
       `client_id=REDACTED&client_secret=REDACTED&${data.substring(data.indexOf("grant_type"))}`;
 
     error.response.message = error.response.data.error_description;
-    next(error.response);
+    return next(error.response);
+  }
+
+  try {
+    const userResult: DiscordUserData = (await axios({
+      method: 'GET',
+      url: 'https://discord.com/api/users/@me',
+      headers: {
+        authorization: `${oauthTokenData.token_type} ${oauthTokenData.access_token}`,
+      }
+    })).data;
+
+    const { username, discriminator } = userResult;
+
+    const token = createToken(`${username}${discriminator}`);
+    return res.json({ token });
+  } catch (error) {
+
+    error.response.config.headers.authorization = "Bearer REDACTED";
+    error.response.request._header = "REDACTED";
+
+    error.response.message = error.response.data.message;
+    return next(error.response);
   }
 
 })
