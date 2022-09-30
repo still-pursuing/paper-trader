@@ -7,7 +7,7 @@ import UserContext from "../../UserContext";
 import UserSession from '../../helpers/UserSession';
 import { DISCORD_REDIRECT_URI } from "../../config";
 import { AxiosError } from 'axios';
-import { StateError } from '../../errors/errors';
+import { CsrfStateError } from '../../errors/errors';
 
 interface handleLogin {
   handleLogin: () => Promise<void>;
@@ -47,7 +47,7 @@ function Login({ handleLogin }: handleLogin) {
         try {
           await handleLogin();
         } catch (error) {
-          if (error instanceof StateError) {
+          if (error instanceof CsrfStateError) {
             localStorage.removeItem('csrfStateString');
             UserSession.storeCsrfStateString();
             setErrors("There was an issue with your request. Please try again.");
@@ -90,7 +90,7 @@ function Login({ handleLogin }: handleLogin) {
           </Heading>
           <Spinner marginX="auto" marginY={50} />
         </Pane>}
-      {(!authCode || errors) &&
+      {!authCode &&
         <Pane display="flex" flexDirection="column" alignItems="center">
           <Heading is="h1" size={900}>
             Login
