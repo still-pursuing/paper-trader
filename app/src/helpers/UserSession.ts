@@ -14,11 +14,8 @@ class UserSession {
 	static async getCurrentUser(token: string | undefined) {
 		if (token !== undefined) {
 				PaperTraderApi.token = token;
-				let resultUser = await PaperTraderApi.getCurrentUser()
+				let resultUser = await PaperTraderApi.getCurrentUser();
 				return resultUser;
-				// todo: Change to properly throw an Error?
-				// console.error("Can't load user", err);
-
 		}
 	};
 	

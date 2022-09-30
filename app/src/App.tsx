@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Route, Routes, useSearchParams } from 'react-router-dom'
-import { Pane } from 'evergreen-ui'
+import { Alert, Pane } from 'evergreen-ui'
 
 import { NotFound } from './pages/NotFound'
 import Login from './pages/Login'
@@ -31,7 +31,9 @@ interface UserData {
 function App() {
 	const [token, setToken] = useState(localStorage.getItem('userToken') ?? undefined);
 	const [currentUser, setCurrentUser] = useState<UserData | undefined>(undefined);
+	const [errors, setErrors] = useState<string | undefined>(undefined)
 	const [searchParams] = useSearchParams();
+
 	console.debug("App", { token, currentUser, searchParams });
 
 	/** 
@@ -41,9 +43,14 @@ function App() {
 	  */
 	useEffect(() => {
 		async function storeCsrfStringAndLoadUser() {
-			// don't need to wrap these in a useCallback?
 			UserSession.storeCsrfStateString();
-			setCurrentUser(await UserSession.getCurrentUser(token));
+			try {
+				const user = await UserSession.getCurrentUser(token);
+				setCurrentUser(user);
+			} catch (error) {
+				localStorage.removeItem('userToken');
+				setErrors("Please try logging in again.");
+			}
 		}
 		storeCsrfStringAndLoadUser();
 	}, [token]);
@@ -71,6 +78,9 @@ function App() {
 		<UserContext.Provider value={currentUser}>
 			<Pane padding={16}>
 				<Navbar handleLogout={handleLogout} ></Navbar>
+				{errors && <Alert intent="danger" title="Something went wrong.">
+					{errors}
+				</Alert>}
 				<Routes>
 					<Route path="/" element={<Splash />} />
 					<Route path="home" element={<Splash />} />

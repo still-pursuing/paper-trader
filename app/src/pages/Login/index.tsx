@@ -29,9 +29,9 @@ interface handleLogin {
  */
 
 function Login({ handleLogin }: handleLogin) {
-  const user = useContext(UserContext)
+  const user = useContext(UserContext);
   const [errors, setErrors] = useState<string | undefined>(undefined);
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
 
   console.debug('Login', { user, errors })
 
