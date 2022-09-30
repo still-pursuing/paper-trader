@@ -79,11 +79,11 @@ function Login({ handleLogin }: handleLogin) {
 
   return (
     <Pane display="flex" flexDirection="column" alignItems="center">
-      {(errors) &&
+      {errors &&
         <Alert intent="danger" title="Something went wrong.">
           {errors}
         </Alert>}
-      {(authCode && errors === undefined) &&
+      {authCode &&
         <Pane display="flex" flexDirection="column" alignItems="center">
           <Heading is="h1" size={900}>
             Logging In...
