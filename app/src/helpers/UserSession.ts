@@ -5,12 +5,14 @@ import { StateError } from "../errors/errors";
 class UserSession {
 	static storedCsrfStateString = localStorage.getItem('csrfStateString') ?? undefined;
 
+	/** Generate a random string ussing UUID and store in localStorage if needed */
 	static storeCsrfStateString() {
 		if (!this.storedCsrfStateString) {
 			localStorage.setItem('csrfStateString', uuidv4());
 		}
 	};
 
+	/** Check if there's an user session to restore or start */
 	static async getCurrentUser(token: string | undefined) {
 		if (token !== undefined) {
 				PaperTraderApi.token = token;
@@ -19,6 +21,7 @@ class UserSession {
 		}
 	};
 	
+	/** Make a request to Discord to get user data */
 	static async login(searchParams: URLSearchParams) {
 			if (this.storedCsrfStateString !== searchParams.get('state')) {
 				throw new StateError();
