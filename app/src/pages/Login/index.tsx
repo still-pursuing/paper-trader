@@ -33,8 +33,6 @@ function Login({ handleLogin }: handleLogin) {
   const [errors, setErrors] = useState<string | undefined>(undefined);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  console.debug('Login', { user, errors })
-
   const authCode = searchParams.get('code') ?? undefined;
 
   /** 
