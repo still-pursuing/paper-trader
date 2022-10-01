@@ -34,7 +34,7 @@ function App() {
 	const [errors, setErrors] = useState<string | undefined>(undefined)
 	const [searchParams] = useSearchParams();
 
-	console.debug("App", { userToken, currentUser, searchParams, errors });
+	console.debug("App", { userToken, currentUser, searchParams });
 
 	/** 
 	  * Stores string generated from PaperTraderApi in localStorage to
