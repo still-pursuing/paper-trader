@@ -34,8 +34,6 @@ function App() {
 	const [errors, setErrors] = useState<string | undefined>(undefined)
 	const [searchParams] = useSearchParams();
 
-	console.debug("App", { userToken, currentUser, searchParams });
-
 	/** 
 	  * Stores string generated from PaperTraderApi in localStorage to
 	  * use for Discord OAUth CSRF prevention when component mounts and updates 
