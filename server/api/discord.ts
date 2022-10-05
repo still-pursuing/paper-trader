@@ -6,13 +6,13 @@ import {
   REDIRECT_URI
 } from '../src/config';
 
-const BASE_URL = 'https://discord.com/api';
+const BASE_DISCORD_API_URL = 'https://discord.com/api';
 
 export class Discord {
 
   /** Axios request builder */
   static async request(endpoint: string, headers: any, body = {}, method = "GET") {
-    const url = `${BASE_URL}/${endpoint}`;
+    const url = `${BASE_DISCORD_API_URL}/${endpoint}`;
     const data = (method === "GET")
       ? undefined
       : body;
