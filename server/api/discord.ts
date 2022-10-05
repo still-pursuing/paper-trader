@@ -10,6 +10,7 @@ const BASE_URL = 'https://discord.com/api';
 
 export class Discord {
 
+  /** Axios request builder */
   static async request(endpoint: string, headers: any, body = {}, method = "GET") {
     const url = `${BASE_URL}/${endpoint}`;
     const data = (method === "GET")
@@ -20,6 +21,9 @@ export class Discord {
     return response;
   }
 
+  // Individual Discord API routes
+
+  /** Get an access token from Discord OAuth API */
   static async getDiscordToken(authCode: string) {
     const params = new URLSearchParams({
       client_id: clientId,
@@ -36,6 +40,7 @@ export class Discord {
     return res;
   }
 
+  /** Get a user object from Discord users API  */
   static async getDiscordUser(tokenType: string, accessToken: string) {
     const headers = { authorization: `${tokenType} ${accessToken}` };
 
