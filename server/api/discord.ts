@@ -1,0 +1,45 @@
+import axios from 'axios';
+
+import {
+  clientId,
+  clientSecret,
+  REDIRECT_URI
+} from '../src/config';
+
+const BASE_URL = 'https://discord.com/api';
+
+export class Discord {
+
+  static async request(endpoint: string, headers: any, body = {}, method = "GET") {
+    const url = `${BASE_URL}/${endpoint}`;
+    const data = (method === "GET")
+      ? undefined
+      : body;
+
+    const response = (await axios({ method, url, data, headers })).data
+    return response;
+  }
+
+  static async getDiscordToken(authCode: string) {
+    const params = new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      code: authCode,
+      grant_type: 'authorization_code',
+      redirect_uri: REDIRECT_URI,
+      scope: 'identify'
+    });
+
+    const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+
+    const res = await this.request('oauth2/token', headers, params, "POST")
+    return res;
+  }
+
+  static async getDiscordUser(tokenType: string, accessToken: string) {
+    const headers = { authorization: `${tokenType} ${accessToken}` };
+
+    const res = await this.request('users/@me', headers);
+    return res;
+  }
+}

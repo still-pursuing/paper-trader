@@ -1,11 +1,7 @@
 import axios from 'axios';
 import { Router } from 'express'
 
-import {
-	clientId,
-	clientSecret,
-	REDIRECT_URI
-} from '../src/config';
+import { Discord } from '../api/discord';
 
 import { createToken } from '../helpers/token';
 import { BadRequestError } from '../src/errors';
@@ -38,23 +34,7 @@ router.get('/', async (req, res, next) => {
 	let oauthTokenData: DiscordOAuthTokenResponseData;
 
 	try {
-		const params = new URLSearchParams({
-			client_id: clientId,
-			client_secret: clientSecret,
-			code: code.toString(),
-			grant_type: 'authorization_code',
-			redirect_uri: REDIRECT_URI,
-			scope: 'identify'
-		});
-
-		oauthTokenData = (await axios({
-			method: 'POST',
-			url: 'https://discord.com/api/oauth2/token',
-			data: params,
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-		})).data;
+		oauthTokenData = await Discord.getDiscordToken(code.toString());
 	} catch (error) {
 		const { data } = error.response.config;
 		error.response.config.data =
@@ -65,13 +45,8 @@ router.get('/', async (req, res, next) => {
 	}
 
 	try {
-		const userResult: DiscordUserData = (await axios({
-			method: 'GET',
-			url: 'https://discord.com/api/users/@me',
-			headers: {
-				authorization: `${oauthTokenData.token_type} ${oauthTokenData.access_token}`,
-			}
-		})).data;
+		const userResult: DiscordUserData =
+			await Discord.getDiscordUser(oauthTokenData.token_type, oauthTokenData.access_token);
 
 		const { username, discriminator } = userResult;
 
