@@ -1,18 +1,26 @@
 
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { Navigate, useSearchParams } from 'react-router-dom'
-import { Button, Pane, EditIcon, Heading, Spinner } from "evergreen-ui";
+import { Button, Pane, EditIcon, Heading, Spinner, Alert } from "evergreen-ui";
 import UserContext from "../../UserContext";
 
 import UserSession from '../../helpers/UserSession';
 import { DISCORD_REDIRECT_URI } from "../../config";
+import { AxiosError } from 'axios';
+import { CsrfStateError } from '../../errors/errors';
+
+interface handleLogin {
+  handleLogin: () => Promise<void>;
+}
+
 
 /**
  * Props:
  * - handleLogin: function to be called in App
  * 
  * State:
- * - searchParams: null or string
+ * - errors: undefined or string
+ * - searchParams: undefined or string
  * 
  * Events:
  * - None
@@ -20,21 +28,37 @@ import { DISCORD_REDIRECT_URI } from "../../config";
  * App --> Login
  */
 
-function Login({ handleLogin }: any) {
-  const user = useContext(UserContext)
-
-  const [searchParams] = useSearchParams()
-
-  console.debug("Login", { user });
+function Login({ handleLogin }: handleLogin) {
+  const user = useContext(UserContext);
+  const [errors, setErrors] = useState<string | undefined>(undefined);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const authCode = searchParams.get('code') ?? undefined;
 
-  /** Checks if this component is mounted after a Discord OAuth redirect */
-  useEffect(function loadUser() {
-    if (authCode !== undefined) {
-      handleLogin();
+  /** 
+   * If this component is mounted after a Discord OAuth redirect, 
+   * make a request to get user's information
+   */
+  useEffect(() => {
+    async function loadUser() {
+      if (authCode !== undefined) {
+        try {
+          await handleLogin();
+        } catch (error) {
+          if (error instanceof CsrfStateError) {
+            localStorage.removeItem('csrfStateString');
+            UserSession.storeCsrfStateString();
+            setErrors("There was an issue with your request. Please try again.");
+          }
+          if (error instanceof AxiosError) {
+            setErrors("There's an issue with getting your profile information. Please try again later.");
+          }
+          setSearchParams("");
+        }
+      }
     }
-  }, [handleLogin, authCode]);
+    loadUser()
+  }, [handleLogin, authCode, setSearchParams]);
 
   if (user) return <Navigate to="/profile" replace />
 
@@ -53,6 +77,10 @@ function Login({ handleLogin }: any) {
 
   return (
     <Pane display="flex" flexDirection="column" alignItems="center">
+      {errors &&
+        <Alert intent="danger" title="Something went wrong.">
+          {errors}
+        </Alert>}
       {authCode &&
         <Pane display="flex" flexDirection="column" alignItems="center">
           <Heading is="h1" size={900}>

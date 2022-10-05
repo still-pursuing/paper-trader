@@ -20,7 +20,6 @@ import UserContext from "../../UserContext";
 
 function Profile() {
     const user = useContext(UserContext);
-    console.debug("Profile", { user });
 
     if (!user) return <Navigate to="/login" replace />
 
