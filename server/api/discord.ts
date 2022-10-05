@@ -3,10 +3,11 @@ import axios from 'axios';
 import {
   clientId,
   clientSecret,
-  REDIRECT_URI
+  REDIRECT_URI,
+  BASE_DISCORD_API_URL
 } from '../src/config';
 
-const BASE_DISCORD_API_URL = 'https://discord.com/api';
+
 
 export class Discord {
 
