@@ -4,7 +4,6 @@ import { ensureCorrectUser } from '../middleware/auth';
 
 export const router = Router();
 
-
 /** GET / => { user }
  *
  * Returns user's username

@@ -18,7 +18,6 @@ app.use(authenticateJWT);
 app.use('/login', loginRoute);
 app.use('/profile', profileRoute);
 
-
 /** Handle 404 errors -- this matches everything */
 app.use((req, res, next) => {
   return next(new NotFoundError());
