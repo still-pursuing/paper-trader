@@ -18,7 +18,7 @@ export class Discord {
       ? undefined
       : body;
 
-    const response = (await axios({ method, url, data, headers })).data
+    const response = (await axios({ method, url, data, headers })).data;
     return response;
   }
 
@@ -37,7 +37,7 @@ export class Discord {
 
     const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
-    const res = await this.request('oauth2/token', headers, params, "POST")
+    const res = await this.request('oauth2/token', headers, params, "POST");
     return res;
   }
 
