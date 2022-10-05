@@ -7,6 +7,8 @@ export const port = process.env.PORT ?? 8080;
 export const clientId = process.env.CLIENT_ID;
 export const clientSecret = process.env.CLIENT_SECRET;
 
+export const BASE_DISCORD_API_URL = 'https://discord.com/api';
+
 export const REDIRECT_URI = process.env.NODE_ENV === "production"
     ? "https://paper-trader-182a4.web.app/login"
     : "http://localhost:3000/login";
