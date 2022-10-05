@@ -6,15 +6,7 @@ import { Discord } from '../api/discord';
 import { createToken } from '../helpers/token';
 import { BadRequestError } from '../src/errors';
 
-interface DiscordOAuthTokenResponseData {
-	token_type: string
-	access_token: string
-}
 
-interface DiscordUserData {
-	username: string
-	discriminator: string
-}
 
 export const router = Router();
 
@@ -31,7 +23,7 @@ router.get('/', async (req, res, next) => {
 
 	if (!code) return next(new BadRequestError());
 
-	let oauthTokenData: DiscordOAuthTokenResponseData;
+	let oauthTokenData;
 
 	try {
 		oauthTokenData = await Discord.getDiscordToken(code.toString());
@@ -45,8 +37,7 @@ router.get('/', async (req, res, next) => {
 	}
 
 	try {
-		const userResult: DiscordUserData =
-			await Discord.getDiscordUser(oauthTokenData.token_type, oauthTokenData.access_token);
+		const userResult = await Discord.getDiscordUser(oauthTokenData.token_type, oauthTokenData.access_token);
 
 		const { username, discriminator } = userResult;
 
