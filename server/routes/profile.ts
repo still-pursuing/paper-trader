@@ -6,9 +6,9 @@ export const router = Router();
 
 
 /** GET / => { user }
- * 
+ *
  * Returns user's username
- * 
+ *
  * Authorization required: ensureCorrectUser
  */
 

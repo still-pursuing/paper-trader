@@ -23,19 +23,17 @@ interface DiscordUserData {
 export const router = Router();
 
 /** GET / => { token }
- * 
+ *
  * Returns JWT token which can be used to authenticate further requests
  * or an error if requests to Discord OAuth API fail
- * 
+ *
  * Authorization required: none
  */
 
 router.get('/', async (req, res, next) => {
 	const { code } = req.query;
 
-	if (!code) {
-		return next(new BadRequestError());
-	}
+	if (!code) return next(new BadRequestError());
 
 	let oauthTokenData: DiscordOAuthTokenResponseData;
 
