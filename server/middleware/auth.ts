@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import express from 'express';
 
-import { JWT_SECRET_KEY } from '../config';
-import { UnauthorizedError } from '../errors';
+import { JWT_SECRET_KEY } from '../src/config';
+import { UnauthorizedError } from '../src/errors';
 
 /** Middleware: Authenticate user.
  *
