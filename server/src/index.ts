@@ -8,7 +8,7 @@ import { ExpressError, NotFoundError } from './errors';
 import { router as loginRoute } from '../routes/login';
 import { router as profileRoute } from '../routes/profile';
 import { router as stockRoute } from '../routes/stock';
-import { authenticateJWT } from '../middleware/auth';
+import { authenticateJWT } from './middleware/auth';
 
 const app = express();
 
