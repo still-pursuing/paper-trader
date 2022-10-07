@@ -22,8 +22,6 @@ export class Finnhub {
 
   /** Get a stock quote based on ticker input */
   static async getStockQuote(ticker: string): Promise<FinnhubQuote> {
-    // const res = await this.request(ticker);
-    // return res;
     return this.request(ticker)
   }
 }
