@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { ensureCorrectUser } from '../../middleware/auth';
+import { ensureCorrectUser } from '../middleware/auth';
 
 export const router = Router();
 
