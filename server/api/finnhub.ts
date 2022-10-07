@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { finnHubToken } from '../config';
+import { finnHubToken } from '../src/config';
 
 const BASE_FINNHUB_API_URL = 'https://finnhub.io/api/v1/quote';
 
