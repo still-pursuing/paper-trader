@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { BadRequestError } from '../src/errors';
+import { BadRequestError } from '../errors';
 
 import { Finnhub } from '../api/finnhub';
 import { ensureCorrectUser } from '../middleware/auth';

@@ -5,7 +5,7 @@ import {
   clientSecret,
   REDIRECT_URI,
   BASE_DISCORD_API_URL
-} from '../src/config';
+} from '../config';
 
 interface DiscordOAuthTokenResponseData {
   token_type: string
