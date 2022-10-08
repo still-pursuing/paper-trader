@@ -20,7 +20,7 @@ interface DiscordUserData {
 export class Discord {
 
   /** Axios request builder */
-  static async request(endpoint: string, headers: any, data: URLSearchParams = undefined, method = "GET") {
+  static async request(endpoint: string, headers: any, data?: URLSearchParams, method = "GET") {
     const url = `${BASE_DISCORD_API_URL}/${endpoint}`;
 
     const response = (await axios({ method, url, data, headers })).data;

@@ -6,6 +6,7 @@ export const port = process.env.PORT ?? 8080;
 
 export const clientId = process.env.CLIENT_ID;
 export const clientSecret = process.env.CLIENT_SECRET;
+export const finnHubToken = process.env.FINNHUB_API_TOKEN;
 
 export const BASE_DISCORD_API_URL = 'https://discord.com/api';
 
