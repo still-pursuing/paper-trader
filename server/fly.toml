@@ -19,9 +19,6 @@ processes = []
   allowed_public_ports = []
   auto_rollback = true
 
-[processes]
-  web = "node dist/index.js"
-
 [[services]]
   http_checks = []
   internal_port = 8080
