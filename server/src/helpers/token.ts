@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET_KEY } from '../src/config';
+import { JWT_SECRET_KEY } from '../config';
 
 /** return signed JWT from user data. */
 
