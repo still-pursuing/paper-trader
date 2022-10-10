@@ -12,12 +12,21 @@ export const router = Router();
  * Authorization required: ensureCorrectUser
  */
 
-router.get('/', ensureCorrectUser, async (req, res, next) => {
+router.get('/username', ensureCorrectUser, async (req, res, next) => {
 	try {
 		// query database for user's data in the future?
-		const user = await User.getUser(res.locals.user);
-		console.log('Profile', user);
+		const user = await User.login(res.locals.user);
 		return res.json({ user });
+	} catch (err) {
+		return next(err);
+	}
+})
+
+router.get('/summary', ensureCorrectUser, async (req, res, next) => {
+	try {
+		// query database for user's data in the future?
+		const balance = await User.login(res.locals.user);
+		return res.json({ balance });
 	} catch (err) {
 		return next(err);
 	}
