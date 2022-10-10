@@ -1,36 +1,45 @@
 import { db } from "../db";
 
-import { UnauthorizedError } from "../errors";
+import { UnauthorizedError, BadRequestError } from "../errors";
 
 export class User {
-  static async getUser(username: string) {
+  // get only the username?
+  static async login(username: string) {
     // try to find the user first
     const result = await db.query(
-      `SELECT username,
-              balance,
-              is_admin AS "isAdmin"
+      `SELECT username
         FROM users
         WHERE username=$1`,
       [username]
     );
 
     const user = result.rows[0];
-    console.log('user model', user)
-    if (user) {
-      return user;
-    } else {
-      return this.register(username, 10000, false);
-    }
+
+    if (user) return user;
+
+    throw new UnauthorizedError("No account found, please register");
   }
 
   static async register(username: string, balance: number, is_admin: boolean) {
+
+    const duplicateCheck = await db.query(
+      `SELECT username
+       FROM users
+       WHERE username = $1`,
+      [username],
+    );
+
+    if (duplicateCheck.rows[0]) {
+      throw new BadRequestError(`Duplicate username: ${username}`);
+    }
+
     const result = await db.query(
       `INSERT INTO users
         ( username,
           balance,
           is_admin )
         VALUES ($1, $2, $3)
-        RETURNING username, balance, is_admin AS isAdmin`,
+        RETURNING username`,
       [username, balance, is_admin]
     )
 
@@ -38,5 +47,16 @@ export class User {
     return user;
   }
 
+  static async getBalance(username: string) {
+    const result = await db.query(
+      `SELECT balance
+        FROM users
+        WHERE username=$1`,
+      [username]
+    );
+
+    const balance = result.rows[0];
+    return balance;
+  }
 
 }
