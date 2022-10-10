@@ -1,6 +1,6 @@
 import { db } from "../db";
 
-import { UnauthorizedError, BadRequestError } from "../errors";
+import { BadRequestError } from "../errors";
 
 export class User {
   // get only the username?
@@ -17,7 +17,7 @@ export class User {
 
     if (user) return user;
 
-    throw new UnauthorizedError("No account found, please register");
+    throw new BadRequestError("No account found, please register");
   }
 
   static async register(username: string, balance: number, is_admin: boolean) {

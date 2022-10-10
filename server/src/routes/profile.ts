@@ -25,7 +25,7 @@ router.get('/username', ensureCorrectUser, async (req, res, next) => {
 router.get('/summary', ensureCorrectUser, async (req, res, next) => {
 	try {
 		// query database for user's data in the future?
-		const balance = await User.login(res.locals.user);
+		const balance = await User.getBalance(res.locals.user);
 		return res.json({ balance });
 	} catch (err) {
 		return next(err);
