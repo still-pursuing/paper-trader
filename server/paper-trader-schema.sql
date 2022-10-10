@@ -14,17 +14,7 @@ CREATE TABLE transactions (
     REFERENCES users ON DELETE CASCADE
 );
 
--- CREATE TABLE stocks_owned (
---   PRIMARY KEY (username, ticker)
---   username VARCHAR(25)
---     REFERENCES users ON DELETE CASCADE,
---   ticker TEXT NOT NULL,
---   quantity NUMERIC,
---   avg_cost NUMERIC,
---   total_cost NUMERIC,
---   total_value NUMERIC
--- );
-
+-- todo: view setup, will need to come back to it
 -- CREATE VIEW stocks_owned AS
 --   SELECT ticker, SUM(quantity) AS total_shares, AVG(price) AS avg_cost, (total_shares * avg_cost) AS total_cost
 --   FROM transactions
