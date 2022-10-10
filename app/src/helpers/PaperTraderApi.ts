@@ -29,7 +29,7 @@ class PaperTraderApi {
         }
 
         const result = (await axios.get(
-            `${BACKEND_BASE_URL}/profile`,
+            `${BACKEND_BASE_URL}/profile/username`,
             config
             )).data.user.username;
         return result;
