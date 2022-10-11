@@ -9,7 +9,7 @@ CREATE TABLE transactions (
   ticker TEXT NOT NULL,
   quantity NUMERIC CHECK (quantity >= 0),
   price NUMERIC CHECK (price >= 0),
-  transction_time TIMESTAMP,
+  created_at TIMESTAMP,
   username VARCHAR(25) NOT NULL
     REFERENCES users ON DELETE CASCADE
 );
