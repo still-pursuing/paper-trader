@@ -6,7 +6,7 @@ CREATE TABLE users (
 
 CREATE TABLE transactions (
   id SERIAL PRIMARY KEY,
-  ticker VARCHAR(4) NOT NULL,
+  ticker VARCHAR(5) NOT NULL,
   quantity NUMERIC CHECK (quantity >= 0),
   price NUMERIC CHECK (price >= 0),
   created_at TIMESTAMP,
