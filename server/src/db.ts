@@ -1,7 +1,7 @@
 /** Database setup for paper-trader. */
+import { Client } from "pg";
+import { getDatabaseUri } from "./config";
 
-const { Client } = require("pg");
-const { getDatabaseUri } = require("./config");
 
 const db = new Client({
   connectionString: getDatabaseUri(),
