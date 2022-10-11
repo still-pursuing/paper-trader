@@ -6,6 +6,7 @@ CREATE DATABASE paper_trader;
 \connect paper_trader
 
 \i paper-trader-schema.sql
+-- todo: add a seed file to populate database
 -- \i paper-trader-seed.sql
 
 \echo 'Delete and recreate paper_trader_test db?'

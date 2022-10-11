@@ -14,7 +14,6 @@ export const router = Router();
 
 router.get('/username', ensureCorrectUser, async (req, res, next) => {
 	try {
-		// query database for user's data in the future?
 		const user = await User.login(res.locals.user);
 		return res.json({ user });
 	} catch (err) {
