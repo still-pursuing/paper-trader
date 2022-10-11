@@ -6,11 +6,11 @@ CREATE TABLE users (
 
 CREATE TABLE transactions (
   id SERIAL PRIMARY KEY,
-  ticker TEXT NOT NULL,
+  ticker VARCHAR(4) NOT NULL,
   quantity NUMERIC CHECK (quantity >= 0),
   price NUMERIC CHECK (price >= 0),
   created_at TIMESTAMP,
-  username VARCHAR(25) NOT NULL
+  username VARCHAR(36) NOT NULL
     REFERENCES users ON DELETE CASCADE
 );
 
