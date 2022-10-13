@@ -1,5 +1,6 @@
 CREATE TABLE users (
-  username VARCHAR(36) PRIMARY KEY,
+  id VARCHAR PRIMARY KEY,
+  username VARCHAR(36),
   balance NUMERIC,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
@@ -10,7 +11,7 @@ CREATE TABLE transactions (
   quantity NUMERIC CHECK (quantity >= 0),
   price NUMERIC CHECK (price >= 0),
   created_at TIMESTAMP,
-  username VARCHAR(36) NOT NULL
+  user_id VARCHAR NOT NULL
     REFERENCES users ON DELETE CASCADE
 );
 
