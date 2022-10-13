@@ -38,7 +38,7 @@ router.get('/', async (req, res, next) => {
 
 		const { id, username, discriminator } = userResult;
 
-		const user = await User.login(id, `${username}${discriminator}`);
+		const user = await User.loginOrRegister(id, `${username}#${discriminator}`);
 
 		const token = createToken(user);
 		return res.json({ token });

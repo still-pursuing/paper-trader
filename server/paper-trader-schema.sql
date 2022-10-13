@@ -1,7 +1,7 @@
 CREATE TABLE users (
   id VARCHAR PRIMARY KEY,
-  username VARCHAR(36),
-  balance NUMERIC,
+  username VARCHAR(37),
+  balance NUMERIC DEFAULT 0,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 
