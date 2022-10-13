@@ -1,8 +1,8 @@
 import { db } from "../db";
+import { INITIAL_FUNDS } from "../config";
 
 export class User {
   static async loginOrRegister(id: string, username: string): Promise<string> {
-    // try to find the user first
     const result = await db.query(
       `SELECT id
         FROM users
@@ -15,7 +15,7 @@ export class User {
     if (user) {
       return user;
     } else {
-      this.register(id, username, 10000, false);
+      this.register(id, username, INITIAL_FUNDS, false);
     }
   }
 

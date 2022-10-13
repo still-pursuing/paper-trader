@@ -10,6 +10,8 @@ export const finnHubToken = process.env.FINNHUB_API_TOKEN;
 
 export const BASE_DISCORD_API_URL = 'https://discord.com/api';
 
+export const INITIAL_FUNDS = 10000;
+
 // Use dev database, testing database, or via env var, production database
 export function getDatabaseUri() {
     return (process.env.NODE_ENV === "test")
