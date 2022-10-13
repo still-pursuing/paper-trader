@@ -19,9 +19,9 @@ export function authenticateJWT(req: express.Request, res: express.Response, nex
             const verifiedUser = jwt.verify(token, JWT_SECRET_KEY)
             if (typeof verifiedUser !== 'string') {
                 res.locals.user = verifiedUser.user.id;
-            } else {
-                throw new UnauthorizedError();
             }
+        } else {
+            throw new UnauthorizedError();
         }
         return next();
     } catch (err) {
