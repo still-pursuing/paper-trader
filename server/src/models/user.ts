@@ -1,62 +1,52 @@
 import { db } from "../db";
 
-import { BadRequestError } from "../errors";
-
 export class User {
-  // get only the username?
-  static async login(username: string) {
+  static async login(id: string, username: string): Promise<string> {
     // try to find the user first
     const result = await db.query(
-      `SELECT username
+      `SELECT id
         FROM users
-        WHERE username=$1`,
-      [username]
+        WHERE id=$1`,
+      [id]
     );
 
     const user = result.rows[0];
 
-    if (user) return user;
-
-    throw new BadRequestError("No account found, please register");
+    if (user) {
+      return user;
+    } else {
+      this.register(id, username, 10000, false);
+    }
   }
 
-  static async register(username: string, balance: number, is_admin: boolean) {
-
-    const duplicateCheck = await db.query(
-      `SELECT username
-       FROM users
-       WHERE username = $1`,
-      [username],
-    );
-
-    if (duplicateCheck.rows[0]) {
-      throw new BadRequestError(`Duplicate username: ${username}`);
-    }
+  static async register(id: string, username: string, balance: number, is_admin: boolean): Promise<string> {
 
     const result = await db.query(
       `INSERT INTO users
-        ( username,
+        ( id,
+          username,
           balance,
           is_admin )
-        VALUES ($1, $2, $3)
-        RETURNING username`,
-      [username, balance, is_admin]
+        VALUES ($1, $2, $3, $4)
+        RETURNING id`,
+      [id, username, balance, is_admin]
     )
 
     const user = result.rows[0];
     return user;
   }
 
-  static async getBalance(username: string) {
+  static async getProfile(id: string): Promise<string> {
     const result = await db.query(
-      `SELECT balance
+      `SELECT username, balance
         FROM users
-        WHERE username=$1`,
-      [username]
+        WHERE id=$1`,
+      [id]
     );
-
     const balance = result.rows[0];
     return balance;
   }
 
+
+  // todo: add an update method if user changed their Discord username
 }
