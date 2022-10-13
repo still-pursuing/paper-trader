@@ -3,6 +3,7 @@ import { Router } from 'express'
 import { Discord } from '../api/discord';
 import { createToken } from '../helpers/token';
 import { BadRequestError } from '../errors';
+import { User } from '../models/user';
 
 export const router = Router();
 
@@ -35,9 +36,11 @@ router.get('/', async (req, res, next) => {
 	try {
 		const userResult = await Discord.getDiscordUser(oauthTokenData.token_type, oauthTokenData.access_token);
 
-		const { username, discriminator } = userResult;
+		const { id, username, discriminator } = userResult;
 
-		const token = createToken(`${username}${discriminator}`);
+		const user = await User.login(id, `${username}${discriminator}`);
+
+		const token = createToken(user);
 		return res.json({ token });
 	} catch (error) {
 

@@ -6,7 +6,7 @@ import { JWT_SECRET_KEY } from '../config';
 export function createToken(user: string) {
 
     const payload = {
-        username: user
+        user
     };
 
     return jwt.sign(payload, JWT_SECRET_KEY);
