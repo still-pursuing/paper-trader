@@ -25,6 +25,6 @@ export function authenticateJWT(req: express.Request, res: express.Response, nex
         }
         return next();
     } catch (err) {
-        return next();
+        return next(err);
     }
 }
