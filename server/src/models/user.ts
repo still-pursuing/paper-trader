@@ -1,7 +1,7 @@
 import { db } from "../db";
 
 export class User {
-  static async login(id: string, username: string): Promise<string> {
+  static async loginOrRegister(id: string, username: string): Promise<string> {
     // try to find the user first
     const result = await db.query(
       `SELECT id
