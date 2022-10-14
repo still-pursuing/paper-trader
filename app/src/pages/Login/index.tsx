@@ -6,7 +6,6 @@ import UserContext from "../../UserContext";
 
 import UserSession from '../../helpers/UserSession';
 import { DISCORD_REDIRECT_URI } from "../../config";
-import { AxiosError } from 'axios';
 import { CsrfStateError } from '../../errors/errors';
 
 interface handleLogin {
@@ -49,8 +48,7 @@ function Login({ handleLogin }: handleLogin) {
             localStorage.removeItem('csrfStateString');
             UserSession.storeCsrfStateString();
             setErrors("There was an issue with your request. Please try again.");
-          }
-          if (error instanceof AxiosError) {
+          } else {
             setErrors("There's an issue with getting your profile information. Please try again later.");
           }
           setSearchParams("");
