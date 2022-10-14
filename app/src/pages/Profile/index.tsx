@@ -1,4 +1,4 @@
-import { Pane, Heading, Paragraph, Spinner, Alert } from "evergreen-ui";
+import { Pane, Heading, Paragraph, Spinner } from "evergreen-ui";
 import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
