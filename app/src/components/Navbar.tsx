@@ -4,7 +4,7 @@ import { Pane, Tab, TabNavigation, WaterfallChartIcon } from 'evergreen-ui';
 
 import UserContext from "../UserContext";
 
-function Navbar({ handleLogout }: any) {
+function Navbar({ logout }: any) {
     const user = useContext(UserContext)
     const { pathname } = useLocation();
 
@@ -24,7 +24,7 @@ function Navbar({ handleLogout }: any) {
                     <Tab is={ReactRouterLink} to="profile" isSelected={pathname === "/profile"}>
                         Profile
                     </Tab>
-                    <Tab is={ReactRouterLink} to="login" onSelect={handleLogout}>
+                    <Tab is={ReactRouterLink} to="login" onSelect={logout}>
                         Logout
                     </Tab>
                 </>}
