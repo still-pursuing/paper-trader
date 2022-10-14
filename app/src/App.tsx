@@ -83,7 +83,7 @@ function App() {
 					<Route path="/" element={<Splash />} />
 					<Route path="home" element={<Splash />} />
 					<Route path="login" element={<Login login={login} />} />
-					<Route path="profile" element={<Profile />} />
+					<Route path="profile" element={<Profile logout={logout} />} />
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</Pane>

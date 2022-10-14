@@ -18,14 +18,17 @@ import UserContext from "../../UserContext";
  * Routes --> Profile
  */
 
-interface Portfolio {
+type Portfolio = {
     username: string,
     balance: string
 }
 
-function Profile() {
+type Logout = {
+    logout: () => void
+}
+
+function Profile({ logout }: Logout) {
     const user = useContext(UserContext);
-    const [errors, setErrors] = useState<string | undefined>(undefined);
     const [portfolio, setPortfolio] = useState<Portfolio | undefined>(undefined);
 
     // make requests to get username and balance, transactions
@@ -36,21 +39,16 @@ function Profile() {
                 const userProfile = await PaperTraderApi.getUserProfile();
                 setPortfolio(userProfile);
             } catch (error) {
-                setErrors("There's an issue with getting your profile information. Please try again later.");
+                logout(); // need to change - considering react error boundary
             }
         }
         if (user) loadPortfolio();
-    }, [user])
+    }, [user, logout])
 
     if (!user) return <Navigate to="/login" replace />
 
     return (
         <Pane display="flex" flexDirection="column" alignItems="center">
-            {errors &&
-                <Alert intent="danger" title="Something went wrong.">
-                    {errors}
-                </Alert>
-            }
             <Heading is="h1" size={900}>
                 Profile Page
             </Heading>
