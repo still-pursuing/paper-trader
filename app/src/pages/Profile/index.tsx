@@ -1,8 +1,8 @@
-import { Pane, Heading, Paragraph } from "evergreen-ui";
+import { Pane, Heading, Paragraph, Spinner, Alert } from "evergreen-ui";
 import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import PaperTraderApi from "../../helpers/PaperTraderApi";
 
+import PaperTraderApi from "../../helpers/PaperTraderApi";
 import UserContext from "../../UserContext";
 
 /**
@@ -25,14 +25,19 @@ interface Portfolio {
 
 function Profile() {
     const user = useContext(UserContext);
+    const [errors, setErrors] = useState<string | undefined>(undefined);
     const [portfolio, setPortfolio] = useState<Portfolio | undefined>(undefined);
 
     // make requests to get username and balance, transactions
     // add a try catch in case accessing db has issues
     useEffect(() => {
         async function loadPortfolio() {
-            const userProfile = await PaperTraderApi.getUserProfile();
-            setPortfolio(userProfile);
+            try {
+                const userProfile = await PaperTraderApi.getUserProfile();
+                setPortfolio(userProfile);
+            } catch (error) {
+                setErrors("There's an issue with getting your profile information. Please try again later.");
+            }
         }
         if (user) loadPortfolio();
     }, [user])
@@ -41,11 +46,22 @@ function Profile() {
 
     return (
         <Pane display="flex" flexDirection="column" alignItems="center">
+            {errors &&
+                <Alert intent="danger" title="Something went wrong.">
+                    {errors}
+                </Alert>
+            }
             <Heading is="h1" size={900}>
                 Profile Page
             </Heading>
             {portfolio && <Paragraph> Hi <>{portfolio.username}!</> </Paragraph>}
             {portfolio && <Paragraph> You have <>${portfolio.balance} available funds to trade with!</> </Paragraph>}
+            {!portfolio &&
+                <Pane display="flex" flexDirection="column" alignItems="center">
+                    <Paragraph>Loading...</Paragraph>
+                    <Spinner marginX="auto" marginY={30} />
+                </Pane>
+            }
 
         </Pane >
     );
