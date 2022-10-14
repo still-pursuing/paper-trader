@@ -15,9 +15,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny'));
-app.use(authenticateJWT);
 
 app.use('/login', loginRoute);
+
+app.use(authenticateJWT);
 app.use('/profile', profileRoute);
 app.use('/stock', stockRoute);
 

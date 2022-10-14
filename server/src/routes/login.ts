@@ -3,6 +3,7 @@ import { Router } from 'express'
 import { Discord } from '../api/discord';
 import { createToken } from '../helpers/token';
 import { BadRequestError } from '../errors';
+import { User } from '../models/user';
 
 export const router = Router();
 
@@ -15,37 +16,39 @@ export const router = Router();
  */
 
 router.get('/', async (req, res, next) => {
-	const { code } = req.query;
+  const { code } = req.query;
 
-	if (!code) return next(new BadRequestError());
+  if (!code) return next(new BadRequestError());
 
-	let oauthTokenData;
+  let oauthTokenData;
 
-	try {
-		oauthTokenData = await Discord.getDiscordToken(code.toString());
-	} catch (error) {
-		const { data } = error.response.config;
-		error.response.config.data =
-			`client_id=REDACTED&client_secret=REDACTED&${data.substring(data.indexOf("grant_type"))}`;
+  try {
+    oauthTokenData = await Discord.getDiscordToken(code.toString());
+  } catch (error) {
+    const { data } = error.response.config;
+    error.response.config.data =
+      `client_id=REDACTED&client_secret=REDACTED&${data.substring(data.indexOf("grant_type"))}`;
 
-		error.response.message = error.response.data.error_description;
-		return next(error.response);
-	}
+    error.response.message = error.response.data.error_description;
+    return next(error.response);
+  }
 
-	try {
-		const userResult = await Discord.getDiscordUser(oauthTokenData.token_type, oauthTokenData.access_token);
+  try {
+    const userResult = await Discord.getDiscordUser(oauthTokenData.token_type, oauthTokenData.access_token);
 
-		const { username, discriminator } = userResult;
+    const { id, username, discriminator } = userResult;
 
-		const token = createToken(`${username}${discriminator}`);
-		return res.json({ token });
-	} catch (error) {
+    const user = await User.loginOrRegister(id, `${username}#${discriminator}`);
 
-		error.response.config.headers.authorization = "Bearer REDACTED";
-		error.response.request._header = "REDACTED";
+    const token = createToken(user);
+    return res.json({ token });
+  } catch (error) {
 
-		error.response.message = error.response.data.message;
-		return next(error.response);
-	}
+    error.response.config.headers.authorization = "Bearer REDACTED";
+    error.response.request._header = "REDACTED";
+
+    error.response.message = error.response.data.message;
+    return next(error.response);
+  }
 
 })

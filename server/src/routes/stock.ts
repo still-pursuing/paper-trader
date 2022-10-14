@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { BadRequestError } from '../errors';
 
 import { Finnhub } from '../api/finnhub';
-import { ensureCorrectUser } from '../middleware/auth';
 
 export const router = Router();
 
@@ -11,9 +10,8 @@ export const router = Router();
  * Returns stock quote information if a valid ticker is provided.
  * Otherwise, returns BadRequestError.
  *
- * Authorization required: ensureCorrectUser
  */
-router.get('/search', ensureCorrectUser, async (req, res, next) => {
+router.get('/search', async (req, res, next) => {
   const { ticker } = req.query;
 
   if (!ticker) return next(new BadRequestError("Missing ticker"));
@@ -36,9 +34,8 @@ router.get('/search', ensureCorrectUser, async (req, res, next) => {
  * Returns stock price, quantity bought, and total cost if valid ticker and quantity is provided
  * Otherwise, returns BadRequestError.
  *
- * Authorization required: ensureCorrectUser
  */
-router.post('/buy', ensureCorrectUser, async (req, res, next) => {
+router.post('/buy', async (req, res, next) => {
   const { ticker, quantity } = req.body;
   const qty = Number(quantity);
 
@@ -65,9 +62,8 @@ router.post('/buy', ensureCorrectUser, async (req, res, next) => {
  * Returns stock price and quantity sold if valid ticker and quantity is provided
  * Otherwise, returns BadRequestError.
  *
- * Authorization required: ensureCorrectUser
  */
-router.post('/sell', ensureCorrectUser, async (req, res, next) => {
+router.post('/sell', async (req, res, next) => {
   const { ticker, quantity } = req.body;
   const qty = Number(quantity);
 

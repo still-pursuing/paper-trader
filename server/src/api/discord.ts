@@ -13,6 +13,7 @@ interface DiscordOAuthTokenResponseData {
 }
 
 interface DiscordUserData {
+  id: string
   username: string
   discriminator: string
 }

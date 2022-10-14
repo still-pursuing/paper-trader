@@ -1,6 +1,5 @@
 import { Router } from "express";
-
-import { ensureCorrectUser } from '../middleware/auth';
+import { User } from "../models/user";
 
 export const router = Router();
 
@@ -8,15 +7,13 @@ export const router = Router();
  *
  * Returns user's username
  *
- * Authorization required: ensureCorrectUser
  */
 
-router.get('/', ensureCorrectUser, async (req, res, next) => {
-	try {
-		// query database for user's data in the future?
-		const user = res.locals.user;
-		return res.json({ user });
-	} catch (err) {
-		return next(err);
-	}
+router.get('/', async (req, res, next) => {
+  try {
+    const userPortfolio = await User.getProfile(res.locals.user);
+    return res.json({ userPortfolio });
+  } catch (err) {
+    return next(err);
+  }
 })
