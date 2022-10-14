@@ -11,15 +11,6 @@ class UserSession {
 			localStorage.setItem('csrfStateString', uuidv4());
 		}
 	};
-
-	/** Check if there's a user session to restore or start */
-	static async getCurrentUser(token: string | undefined) {
-		if (token !== undefined) {
-				PaperTraderApi.token = token;
-				let resultUser = await PaperTraderApi.getCurrentUser();
-				return resultUser;
-		}
-	};
 	
 	/** Make a request to Discord to get user data */
 	static async login(searchParams: URLSearchParams) {
