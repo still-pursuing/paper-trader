@@ -7,10 +7,9 @@ class PaperTraderApi {
     /** 
      * Makes a request to server with Discord OAuth authorization code input
      * 
-     * Returns: 
-     *  "discord_username"
+     * Returns a JWT
      */
-    static async getDiscordUser(code: string) {
+    static async getDiscordUser(code: string): Promise<string> {
         const userToken = (await axios.get(`${BACKEND_BASE_URL}/login?code=${code}`)).data.token;
         return userToken;
     }
@@ -19,7 +18,7 @@ class PaperTraderApi {
      * Makes a request to server with JWT token from localStorage
      * 
      * Returns: 
-     *  "username"
+     *  {username, balance}
      */
     static async getUserProfile() {
         const config = {
