@@ -9,10 +9,7 @@ import Navbar from './components/Navbar';
 import { Splash } from './pages/Splash'
 import UserContext from "./UserContext";
 import UserSession from "./helpers/UserSession";
-
-interface UserData {
-	username: string
-}
+import PaperTraderApi from './helpers/PaperTraderApi'
 
 /**
  * Props:
@@ -29,25 +26,27 @@ interface UserData {
  */
 
 function App() {
-	const [userToken, setUserToken] = useState(localStorage.getItem('userToken') ?? undefined);
-	const [currentUser, setCurrentUser] = useState<UserData | undefined>(undefined);
+	const [userToken, setUserToken] = useState<string | undefined>(localStorage.getItem('userToken') ?? undefined);
+	const [currentUser, setCurrentUser] = useState<string | undefined>(undefined);
 	const [errors, setErrors] = useState<string | undefined>(undefined)
 	const [searchParams] = useSearchParams();
 
 	/** 
-	  * Stores string generated from PaperTraderApi in localStorage to
-	  * use for Discord OAUth CSRF prevention when component mounts and updates 
-	  * currentUser state if there userToken changes from default/previous value
-	  */
+		* Stores string generated from PaperTraderApi in localStorage to
+		* use for Discord OAUth CSRF prevention when component mounts and updates 
+		* currentUser state if there userToken changes from default/previous value
+		*/
 	useEffect(() => {
 		async function storeCsrfStringAndLoadUser() {
 			UserSession.storeCsrfStateString();
-			try {
-				const user = await UserSession.getCurrentUser(userToken);
-				setCurrentUser(user);
-			} catch (error) {
-				localStorage.removeItem('userToken');
-				setErrors("Please try logging in again.");
+			if (userToken) {
+				try {
+					PaperTraderApi.token = userToken;
+					setCurrentUser(userToken);
+				} catch (error) {
+					localStorage.removeItem('userToken');
+					setErrors("Please try logging in again.");
+				}
 			}
 		}
 		storeCsrfStringAndLoadUser();

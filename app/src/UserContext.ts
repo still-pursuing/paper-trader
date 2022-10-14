@@ -1,9 +1,5 @@
 import {createContext} from 'react';
 
-interface UserContextInterface{
-    username: string;
-}
-
-const UserContext = createContext<UserContextInterface | undefined>(undefined);
+const UserContext = createContext<string | undefined>(undefined);
 
 export default UserContext;
