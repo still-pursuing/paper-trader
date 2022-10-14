@@ -1,8 +1,17 @@
 import { db } from "../db";
 import { INITIAL_FUNDS } from "../config";
 
+type Profile = {
+  username: string
+  balance: string
+}
+
+type UserId = {
+  id: string
+}
+
 export class User {
-  static async loginOrRegister(id: string, username: string): Promise<string> {
+  static async loginOrRegister(id: string, username: string): Promise<UserId> {
     const result = await db.query(
       `SELECT id
         FROM users
@@ -19,7 +28,7 @@ export class User {
     }
   }
 
-  static async register(id: string, username: string, balance: number, is_admin: boolean): Promise<string> {
+  static async register(id: string, username: string, balance: number, is_admin: boolean): Promise<UserId> {
 
     const result = await db.query(
       `INSERT INTO users
@@ -36,15 +45,19 @@ export class User {
     return user;
   }
 
-  static async getProfile(id: string): Promise<string> {
+  /** Query the database for user's profile
+   * 
+   * Returns either their profile or undefined if there's no entry
+   */
+  static async getProfile(id: string): Promise<Profile | undefined> {
     const result = await db.query(
       `SELECT username, balance
         FROM users
         WHERE id=$1`,
       [id]
     );
-    const balance = result.rows[0];
-    return balance;
+    const profile = result.rows[0];
+    return profile;
   }
 
 
