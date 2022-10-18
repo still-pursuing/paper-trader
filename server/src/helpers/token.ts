@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET_KEY } from '../config';
 
-type UserId = {
+interface UserId {
   id: string
 }
 

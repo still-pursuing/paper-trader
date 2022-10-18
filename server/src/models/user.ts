@@ -1,12 +1,12 @@
 import { db } from "../db";
 import { INITIAL_FUNDS } from "../config";
 
-type Profile = {
+interface Profile {
   username: string
   balance: string
 }
 
-type UserId = {
+interface UserId {
   id: string
 }
 
@@ -46,7 +46,7 @@ export class User {
   }
 
   /** Query the database for user's profile
-   * 
+   *
    * Returns either their profile or undefined if there's no entry
    */
   static async getProfile(id: string): Promise<Profile | undefined> {
