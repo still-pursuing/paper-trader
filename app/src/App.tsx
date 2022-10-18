@@ -56,7 +56,7 @@ function App() {
 	 *
 	 *  Logs in a user and sets localStorage with userToken
 	 */
-	const login = useCallback(async () => {
+	const handleLogin = useCallback(async () => {
 		setUserToken(await UserSession.login(searchParams));
 	}, [searchParams]);
 
@@ -65,7 +65,7 @@ function App() {
 	 *  Logouts a user, removing them from the application context and
 	 *  clears localStorage of the userToken
 	 */
-	const logout = () => {
+	const handleLogout = () => {
 		setUserToken(undefined);
 		setCurrentUser(undefined);
 		localStorage.removeItem('userToken');
@@ -74,7 +74,7 @@ function App() {
 	return (
 		<UserContext.Provider value={currentUser}>
 			<Pane padding={16}>
-				<Navbar logout={logout} />
+				<Navbar handleLogout={handleLogout} />
 				{errors &&
 					<Alert intent="danger" title="Something went wrong.">
 						{errors}
@@ -82,8 +82,8 @@ function App() {
 				<Routes>
 					<Route path="/" element={<Splash />} />
 					<Route path="home" element={<Splash />} />
-					<Route path="login" element={<Login login={login} />} />
-					<Route path="profile" element={<Profile logout={logout} />} />
+					<Route path="login" element={<Login handleLogin={handleLogin} />} />
+					<Route path="profile" element={<Profile handleLogout={handleLogout} />} />
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</Pane>

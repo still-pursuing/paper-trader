@@ -18,16 +18,16 @@ import UserContext from "../../UserContext";
  * Routes --> Profile
  */
 
-type Portfolio = {
+interface Portfolio {
     username: string,
     balance: string
 }
 
-type Logout = {
-    logout: () => void
+interface LogoutParams {
+    handleLogout: () => void
 }
 
-function Profile({ logout }: Logout) {
+function Profile({ handleLogout }: LogoutParams) {
     const user = useContext(UserContext);
     const [portfolio, setPortfolio] = useState<Portfolio | undefined>(undefined);
 
@@ -39,11 +39,11 @@ function Profile({ logout }: Logout) {
                 const userProfile = await PaperTraderApi.getUserProfile();
                 setPortfolio(userProfile);
             } catch (error) {
-                logout(); // need to change - considering react error boundary
+                handleLogout(); // need to change - considering react error boundary
             }
         }
         if (user) loadPortfolio();
-    }, [user, logout])
+    }, [user, handleLogout])
 
     if (!user) return <Navigate to="/login" replace />
 

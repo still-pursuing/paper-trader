@@ -8,8 +8,8 @@ import UserSession from '../../helpers/UserSession';
 import { DISCORD_REDIRECT_URI } from "../../config";
 import { CsrfStateError } from '../../errors/errors';
 
-interface login {
-  login: () => Promise<void>;
+interface LoginParams {
+  handleLogin: () => Promise<void>;
 }
 
 
@@ -27,7 +27,7 @@ interface login {
  * App --> Login
  */
 
-function Login({ login }: login) {
+function Login({ handleLogin }: LoginParams) {
   const user = useContext(UserContext);
   const [errors, setErrors] = useState<string | undefined>(undefined);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -42,7 +42,7 @@ function Login({ login }: login) {
     async function loadUser() {
       if (authCode !== undefined) {
         try {
-          await login();
+          await handleLogin();
         } catch (error) {
           if (error instanceof CsrfStateError) {
             localStorage.removeItem('csrfStateString');
@@ -56,7 +56,7 @@ function Login({ login }: login) {
       }
     }
     loadUser()
-  }, [login, authCode, setSearchParams]);
+  }, [handleLogin, authCode, setSearchParams]);
 
   if (user) return <Navigate to="/profile" replace />
 
