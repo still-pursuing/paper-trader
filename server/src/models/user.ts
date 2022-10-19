@@ -28,7 +28,7 @@ export class User {
     }
   }
 
-  static async register(id: string, username: string, balance: number, is_admin: boolean): Promise<UserId> {
+  static async register(id: string, username: string, balance: number, isAdmin: boolean): Promise<UserId> {
 
     const result = await db.query(
       `INSERT INTO users
@@ -38,7 +38,7 @@ export class User {
           is_admin )
         VALUES ($1, $2, $3, $4)
         RETURNING id`,
-      [id, username, balance, is_admin]
+      [id, username, balance, isAdmin]
     )
 
     const user = result.rows[0];
