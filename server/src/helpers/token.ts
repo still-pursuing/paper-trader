@@ -1,12 +1,16 @@
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET_KEY } from '../config';
 
+interface UserId {
+  id: string
+}
+
 /** return signed JWT from user data. */
 
-export function createToken(user: string) {
+export function createToken({ id }: UserId) {
 
   const payload = {
-    user
+    id
   };
 
   return jwt.sign(payload, JWT_SECRET_KEY);

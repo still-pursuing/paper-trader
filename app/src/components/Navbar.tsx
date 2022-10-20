@@ -4,7 +4,11 @@ import { Pane, Tab, TabNavigation, WaterfallChartIcon } from 'evergreen-ui';
 
 import UserContext from "../UserContext";
 
-function Navbar({ handleLogout }: any) {
+interface LogoutParams {
+    handleLogout: () => void;
+}
+
+function Navbar({ handleLogout }: LogoutParams) {
     const user = useContext(UserContext)
     const { pathname } = useLocation();
 

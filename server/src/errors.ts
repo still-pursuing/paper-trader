@@ -1,16 +1,16 @@
-interface configProperties {
-  headers: headers,
+interface ConfigProperties {
+  headers: Headers,
   method: string,
   url: string,
   data: string
 }
 
-interface headers {
+interface Headers {
   Accept: string,
   authorization: string
 }
 
-interface request {
+interface Request {
   _header: string
 }
 
@@ -22,9 +22,9 @@ interface request {
 
 export class ExpressError extends Error {
   status: number;
-  headers: headers;
-  config: configProperties;
-  request: request;
+  headers: Headers;
+  config: ConfigProperties;
+  request: Request;
 
   constructor(message: string, status: number) {
     super(message);
