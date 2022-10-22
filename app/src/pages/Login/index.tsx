@@ -1,6 +1,6 @@
 
 import { useEffect, useContext, useState } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom'
+import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { Button, Pane, EditIcon, Heading, Spinner, Alert } from "evergreen-ui";
 import UserContext from "../../UserContext";
 
@@ -12,6 +12,11 @@ interface LoginParams {
   handleLogin: () => Promise<void>;
 }
 
+interface LocationStateMessage {
+  state: {
+    message: string;
+  };
+}
 
 /**
  * Props:
@@ -33,6 +38,8 @@ function Login({ handleLogin }: LoginParams) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const authCode = searchParams.get('code') ?? undefined;
+  const { state } = useLocation() as LocationStateMessage;
+
 
   /** 
    * If this component is mounted after a Discord OAuth redirect, 
@@ -40,23 +47,27 @@ function Login({ handleLogin }: LoginParams) {
    */
   useEffect(() => {
     async function loadUser() {
-      if (authCode !== undefined) {
-        try {
-          await handleLogin();
-        } catch (error) {
-          if (error instanceof CsrfStateError) {
-            localStorage.removeItem('csrfStateString');
-            UserSession.storeCsrfStateString();
-            setErrors("There was an issue with your request. Please try again.");
-          } else {
-            setErrors("There's an issue with getting your profile information. Please try again later.");
-          }
-          setSearchParams("");
+      try {
+        await handleLogin();
+      } catch (error) {
+        if (error instanceof CsrfStateError) {
+          localStorage.removeItem('csrfStateString');
+          UserSession.storeCsrfStateString();
+          setErrors("There was an issue with your request. Please try again.");
+        } else {
+          setErrors("There's an issue with getting your profile information. Please try again later.");
         }
+        setSearchParams("");
       }
     }
-    loadUser()
-  }, [handleLogin, authCode, setSearchParams]);
+    if (authCode !== undefined) loadUser()
+
+    if (state !== null) {
+      const { message } = state;
+      setErrors(message);
+    }
+
+  }, [authCode, handleLogin, setSearchParams, state]);
 
   if (user) return <Navigate to="/profile" replace />
 

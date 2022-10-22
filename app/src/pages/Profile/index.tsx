@@ -1,6 +1,6 @@
 import { Pane, Heading, Paragraph, Spinner } from "evergreen-ui";
 import { useContext, useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 import PaperTraderApi from "../../helpers/PaperTraderApi";
 import UserContext from "../../UserContext";
@@ -30,6 +30,7 @@ interface LogoutParams {
 function Profile({ handleLogout }: LogoutParams) {
     const user = useContext(UserContext);
     const [portfolio, setPortfolio] = useState<Portfolio | undefined>(undefined);
+    const navigate = useNavigate();
 
     // make requests to get username and balance, transactions
     // add a try catch in case accessing db has issues
@@ -38,12 +39,15 @@ function Profile({ handleLogout }: LogoutParams) {
             try {
                 const userProfile = await PaperTraderApi.getUserProfile();
                 setPortfolio(userProfile);
-            } catch (error) {
-                handleLogout(); // need to change - considering react error boundary
+            }
+            catch (error) {
+                const message: string = "Couldn't load profile, please log in again";
+                handleLogout();
+                return navigate("/login", { state: { message }, replace: true });
             }
         }
         if (user) loadPortfolio();
-    }, [user, handleLogout])
+    }, [user, navigate, handleLogout])
 
     if (!user) return <Navigate to="/login" replace />
 
@@ -60,7 +64,6 @@ function Profile({ handleLogout }: LogoutParams) {
                     <Spinner marginX="auto" marginY={30} />
                 </Pane>
             }
-
         </Pane >
     );
 }
