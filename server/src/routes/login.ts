@@ -2,7 +2,7 @@ import { Router } from 'express'
 
 import { Discord } from '../api/discord';
 import { createToken } from '../helpers/token';
-import { BadRequestError } from '../errors';
+import { BadRequestError, ExpressError } from '../errors';
 import { User } from '../models/user';
 
 export const router = Router();
@@ -33,15 +33,10 @@ router.get('/', async (req, res, next) => {
     return next(error.response);
   }
 
+  let userResult;
+
   try {
-    const userResult = await Discord.getDiscordUser(oauthTokenData.token_type, oauthTokenData.access_token);
-
-    const { id, username, discriminator } = userResult;
-
-    const user = await User.loginOrRegister(id, `${username}#${discriminator}`);
-
-    const token = createToken(user);
-    return res.json({ token });
+    userResult = await Discord.getDiscordUser(oauthTokenData.token_type, oauthTokenData.access_token);
   } catch (error) {
 
     error.response.config.headers.authorization = "Bearer REDACTED";
@@ -49,6 +44,16 @@ router.get('/', async (req, res, next) => {
 
     error.response.message = error.response.data.message;
     return next(error.response);
+  }
+
+  try {
+    const { id, username, discriminator } = userResult;
+    const user = await User.loginOrRegister(id, `${username}#${discriminator}`);
+
+    const token = createToken(user);
+    return res.json({ token });
+  } catch (error) {
+    return next(error);
   }
 
 })
