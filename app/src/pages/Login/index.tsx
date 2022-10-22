@@ -14,7 +14,7 @@ interface LoginParams {
 
 interface LocationStateMessage {
   state: {
-    errMessage: string;
+    message: string;
   };
 }
 
@@ -63,8 +63,8 @@ function Login({ handleLogin }: LoginParams) {
     if (authCode !== undefined) loadUser()
 
     if (state !== null) {
-      const { errMessage } = state;
-      setErrors(errMessage);
+      const { message } = state;
+      setErrors(message);
     }
 
   }, [authCode, handleLogin, setSearchParams, state]);

@@ -41,12 +41,9 @@ function Profile({ handleLogout }: LogoutParams) {
                 setPortfolio(userProfile);
             }
             catch (error) {
-                // Show some error message when server down, database down, or database query error
-                console.log(error)
-                const errMessage: string = "Couldn't load profile, please log in again";
+                const message: string = "Couldn't load profile, please log in again";
                 handleLogout();
-                // using a Navigate component unable to pass state values
-                return navigate("/login", { state: { errMessage }, replace: true });
+                return navigate("/login", { state: { message }, replace: true });
             }
         }
         if (user) loadPortfolio();
