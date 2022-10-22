@@ -2,7 +2,7 @@ import { Router } from 'express'
 
 import { Discord } from '../api/discord';
 import { createToken } from '../helpers/token';
-import { BadRequestError, ExpressError } from '../errors';
+import { BadRequestError } from '../errors';
 import { User } from '../models/user';
 
 export const router = Router();

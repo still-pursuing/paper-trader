@@ -18,12 +18,12 @@ import UserContext from "../../UserContext";
  * Routes --> Profile
  */
 
-type Portfolio = {
+interface Portfolio {
     username: string,
     balance: string
 }
 
-type LogoutParams = {
+interface LogoutParams {
     handleLogout: () => void
 }
 
