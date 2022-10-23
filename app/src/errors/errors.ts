@@ -7,5 +7,5 @@ export class CsrfStateError extends Error {
   constructor(message = 'Clickjacked!') {
     super(message);
     this.message = message;
-  }
+  };
 }

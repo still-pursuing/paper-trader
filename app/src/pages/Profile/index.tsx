@@ -1,9 +1,9 @@
-import { Pane, Heading, Paragraph, Spinner } from "evergreen-ui";
-import { useContext, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Pane, Heading, Paragraph, Spinner } from 'evergreen-ui';
+import { useContext, useEffect, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 
-import PaperTraderApi from "../../helpers/PaperTraderApi";
-import UserContext from "../../UserContext";
+import PaperTraderApi from '../../helpers/PaperTraderApi';
+import UserContext from '../../UserContext';
 
 /**
  * Props:
@@ -43,25 +43,25 @@ function Profile({ handleLogout }: LogoutParams) {
       catch (error) {
         const message: string = "Couldn't load profile, please log in again";
         handleLogout();
-        return navigate("/login", { state: { message }, replace: true });
+        return navigate('/login', { state: { message }, replace: true });
       }
     }
     if (user) loadPortfolio();
-  }, [user, navigate, handleLogout])
+  }, [user, navigate, handleLogout]);
 
-  if (!user) return <Navigate to="/login" replace />
+  if (!user) return <Navigate to='/login' replace />;
 
   return (
-    <Pane display="flex" flexDirection="column" alignItems="center">
-      <Heading is="h1" size={900}>
+    <Pane display='flex' flexDirection='column' alignItems='center'>
+      <Heading is='h1' size={900}>
         Profile Page
       </Heading>
       {portfolio && <Paragraph> Hi <>{portfolio.username}!</> </Paragraph>}
       {portfolio && <Paragraph> You have <>${portfolio.balance} available funds to trade with!</> </Paragraph>}
       {!portfolio &&
-        <Pane display="flex" flexDirection="column" alignItems="center">
+        <Pane display='flex' flexDirection='column' alignItems='center'>
           <Paragraph>Loading...</Paragraph>
-          <Spinner marginX="auto" marginY={30} />
+          <Spinner marginX='auto' marginY={30} />
         </Pane>
       }
     </Pane >

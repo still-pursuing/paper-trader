@@ -1,11 +1,11 @@
 
 import { useEffect, useContext, useState } from 'react';
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
-import { Button, Pane, EditIcon, Heading, Spinner, Alert } from "evergreen-ui";
-import UserContext from "../../UserContext";
+import { Button, Pane, EditIcon, Heading, Spinner, Alert } from 'evergreen-ui';
+import UserContext from '../../UserContext';
 
 import UserSession from '../../helpers/UserSession';
-import { DISCORD_REDIRECT_URI } from "../../config";
+import { DISCORD_REDIRECT_URI } from '../../config';
 import { CsrfStateError } from '../../errors/errors';
 
 interface LoginParams {
@@ -53,14 +53,14 @@ function Login({ handleLogin }: LoginParams) {
         if (error instanceof CsrfStateError) {
           localStorage.removeItem('csrfStateString');
           UserSession.storeCsrfStateString();
-          setErrors("There was an issue with your request. Please try again.");
+          setErrors('There was an issue with your request. Please try again.');
         } else {
           setErrors("There's an issue with getting your profile information. Please try again later.");
         }
-        setSearchParams("");
+        setSearchParams('');
       }
     }
-    if (authCode !== undefined) loadUser()
+    if (authCode !== undefined) loadUser();
 
     if (state !== null) {
       const { message } = state;
@@ -69,7 +69,7 @@ function Login({ handleLogin }: LoginParams) {
 
   }, [authCode, handleLogin, setSearchParams, state]);
 
-  if (user) return <Navigate to="/profile" replace />
+  if (user) return <Navigate to='/profile' replace />;
 
   /** Makes a request to Discord's OAuth authorization page */
   async function getDiscordOAuthCode() {
@@ -85,29 +85,29 @@ function Login({ handleLogin }: LoginParams) {
   }
 
   return (
-    <Pane display="flex" flexDirection="column" alignItems="center">
+    <Pane display='flex' flexDirection='column' alignItems='center'>
       {errors &&
-        <Alert intent="danger" title="Something went wrong.">
+        <Alert intent='danger' title='Something went wrong.'>
           {errors}
         </Alert>}
       {authCode &&
-        <Pane display="flex" flexDirection="column" alignItems="center">
-          <Heading is="h1" size={900}>
+        <Pane display='flex' flexDirection='column' alignItems='center'>
+          <Heading is='h1' size={900}>
             Logging In...
           </Heading>
-          <Spinner marginX="auto" marginY={50} />
+          <Spinner marginX='auto' marginY={50} />
         </Pane>}
       {!authCode &&
-        <Pane display="flex" flexDirection="column" alignItems="center">
-          <Heading is="h1" size={900}>
+        <Pane display='flex' flexDirection='column' alignItems='center'>
+          <Heading is='h1' size={900}>
             Login
           </Heading>
           <Pane>
             <Button
               marginY={8}
-              marginX="auto"
+              marginX='auto'
               iconBefore={EditIcon}
-              size="large"
+              size='large'
               onClick={getDiscordOAuthCode}
             >
               Login With Discord
@@ -115,7 +115,7 @@ function Login({ handleLogin }: LoginParams) {
           </Pane>
         </Pane>}
     </Pane>
-  )
+  );
 }
 
 export default Login;

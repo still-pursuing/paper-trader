@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Route, Routes, useSearchParams } from 'react-router-dom'
-import { Alert, Pane } from 'evergreen-ui'
+import { useCallback, useEffect, useState } from 'react';
+import { Route, Routes, useSearchParams } from 'react-router-dom';
+import { Alert, Pane } from 'evergreen-ui';
 
-import { NotFound } from './pages/NotFound'
-import Login from './pages/Login'
-import Profile from './pages/Profile'
+import { NotFound } from './pages/NotFound';
+import Login from './pages/Login';
+import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
-import { Splash } from './pages/Splash'
-import UserContext from "./UserContext";
-import UserSession from "./helpers/UserSession";
-import PaperTraderApi from './helpers/PaperTraderApi'
+import { Splash } from './pages/Splash';
+import UserContext from './UserContext';
+import UserSession from './helpers/UserSession';
+import PaperTraderApi from './helpers/PaperTraderApi';
 
 /**
  * Props:
@@ -45,7 +45,7 @@ function App() {
           setCurrentUser(userToken);
         } catch (error) {
           localStorage.removeItem('userToken');
-          setErrors("Please try logging in again.");
+          setErrors('Please try logging in again.');
         }
       }
     }
@@ -76,19 +76,19 @@ function App() {
       <Pane padding={16}>
         <Navbar handleLogout={handleLogout} />
         {errors &&
-          <Alert intent="danger" title="Something went wrong.">
+          <Alert intent='danger' title='Something went wrong.'>
             {errors}
           </Alert>}
         <Routes>
-          <Route path="/" element={<Splash />} />
-          <Route path="home" element={<Splash />} />
-          <Route path="login" element={<Login handleLogin={handleLogin} />} />
-          <Route path="profile" element={<Profile handleLogout={handleLogout} />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path='/' element={<Splash />} />
+          <Route path='home' element={<Splash />} />
+          <Route path='login' element={<Login handleLogin={handleLogin} />} />
+          <Route path='profile' element={<Profile handleLogout={handleLogout} />} />
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </Pane>
     </UserContext.Provider>
-  )
+  );
 }
 
 export default App;
