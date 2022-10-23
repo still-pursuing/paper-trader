@@ -21,7 +21,7 @@ interface DiscordUserData {
 export class Discord {
 
   /** Axios request builder */
-  static async request(endpoint: string, headers: any, data?: URLSearchParams, method = "GET") {
+  static async request(endpoint: string, headers: any, data?: URLSearchParams, method = 'GET') {
     const url = `${BASE_DISCORD_API_URL}/${endpoint}`;
 
     const response = (await axios({ method, url, data, headers })).data;
@@ -43,7 +43,7 @@ export class Discord {
 
     const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
-    const res = await this.request('oauth2/token', headers, params, "POST");
+    const res = await this.request('oauth2/token', headers, params, 'POST');
     return res;
   }
 

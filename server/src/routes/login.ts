@@ -27,7 +27,7 @@ router.get('/', async (req, res, next) => {
   } catch (error) {
     const { data } = error.response.config;
     error.response.config.data =
-      `client_id=REDACTED&client_secret=REDACTED&${data.substring(data.indexOf("grant_type"))}`;
+      `client_id=REDACTED&client_secret=REDACTED&${data.substring(data.indexOf('grant_type'))}`;
 
     error.response.message = error.response.data.error_description;
     return next(error.response);
@@ -39,8 +39,8 @@ router.get('/', async (req, res, next) => {
     userResult = await Discord.getDiscordUser(oauthTokenData.token_type, oauthTokenData.access_token);
   } catch (error) {
 
-    error.response.config.headers.authorization = "Bearer REDACTED";
-    error.response.request._header = "REDACTED";
+    error.response.config.headers.authorization = 'Bearer REDACTED';
+    error.response.request._header = 'REDACTED';
 
     error.response.message = error.response.data.message;
     return next(error.response);

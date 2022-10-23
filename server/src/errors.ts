@@ -35,7 +35,7 @@ export class ExpressError extends Error {
 /** 404 NOT FOUND error. */
 
 export class NotFoundError extends ExpressError {
-  constructor(message = "Not Found") {
+  constructor(message = 'Not Found') {
     super(message, 404);
   }
 }
@@ -43,7 +43,7 @@ export class NotFoundError extends ExpressError {
 /** 401 UNAUTHORIZED error. */
 
 export class UnauthorizedError extends ExpressError {
-  constructor(message = "Unauthorized") {
+  constructor(message = 'Unauthorized') {
     super(message, 401);
   }
 }
@@ -51,7 +51,7 @@ export class UnauthorizedError extends ExpressError {
 /** 400 BAD REQUEST error. */
 
 export class BadRequestError extends ExpressError {
-  constructor(message = "Bad Request") {
+  constructor(message = 'Bad Request') {
     super(message, 400);
   }
 }
@@ -59,7 +59,7 @@ export class BadRequestError extends ExpressError {
 /** 403 BAD REQUEST error. */
 
 export class ForbiddenError extends ExpressError {
-  constructor(message = "Forbidden") {
+  constructor(message = 'Forbidden') {
     super(message, 403);
   }
 }

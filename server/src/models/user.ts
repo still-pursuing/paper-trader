@@ -1,5 +1,5 @@
-import { db } from "../db";
-import { INITIAL_FUNDS } from "../config";
+import { db } from '../db';
+import { INITIAL_FUNDS } from '../config';
 
 interface Profile {
   username: string;
