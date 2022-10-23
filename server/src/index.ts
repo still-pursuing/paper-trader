@@ -40,5 +40,5 @@ app.use((err: ExpressError, req: express.Request, res: express.Response, next: e
 });
 
 app.listen(port, () => {
-  console.log(`server started at http://localhost:${port}`)
+  console.log(`server started at http://localhost:${port}`);
 })

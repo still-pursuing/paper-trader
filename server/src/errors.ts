@@ -1,17 +1,17 @@
 interface ConfigProperties {
-  headers: Headers,
-  method: string,
-  url: string,
-  data: string
+  headers: Headers;
+  method: string;
+  url: string;
+  data: string;
 }
 
 interface Headers {
-  Accept: string,
-  authorization: string
+  Accept: string;
+  authorization: string;
 }
 
 interface Request {
-  _header: string
+  _header: string;
 }
 
 /** ExpressError extends normal JS error so we can

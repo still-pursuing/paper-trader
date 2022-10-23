@@ -14,7 +14,7 @@ router.get('/', async (req, res, next) => {
   try {
     const userPortfolio = await User.getProfile(res.locals.user);
     if (userPortfolio === undefined) {
-      throw new NotFoundError("No user found")
+      throw new NotFoundError("No user found");
     }
     return res.json({ userPortfolio });
   } catch (err) {

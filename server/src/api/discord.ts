@@ -8,14 +8,14 @@ import {
 } from '../config';
 
 interface DiscordOAuthTokenResponseData {
-  token_type: string
-  access_token: string
+  token_type: string;
+  access_token: string;
 }
 
 interface DiscordUserData {
-  id: string
-  username: string
-  discriminator: string
+  id: string;
+  username: string;
+  discriminator: string;
 }
 
 export class Discord {

@@ -2,12 +2,12 @@ import { db } from "../db";
 import { INITIAL_FUNDS } from "../config";
 
 interface Profile {
-  username: string
-  balance: string
+  username: string;
+  balance: string;
 }
 
 interface UserId {
-  id: string
+  id: string;
 }
 
 export class User {
@@ -39,7 +39,7 @@ export class User {
         VALUES ($1, $2, $3, $4)
         RETURNING id`,
       [id, username, balance, isAdmin]
-    )
+    );
 
     const user = result.rows[0];
     return user;
