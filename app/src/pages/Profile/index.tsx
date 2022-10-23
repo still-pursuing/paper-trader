@@ -19,53 +19,53 @@ import UserContext from "../../UserContext";
  */
 
 interface Portfolio {
-    username: string,
-    balance: string
+  username: string;
+  balance: string;
 }
 
 interface LogoutParams {
-    handleLogout: () => void
+  handleLogout: () => void;
 }
 
 function Profile({ handleLogout }: LogoutParams) {
-    const user = useContext(UserContext);
-    const [portfolio, setPortfolio] = useState<Portfolio | undefined>(undefined);
-    const navigate = useNavigate();
+  const user = useContext(UserContext);
+  const [portfolio, setPortfolio] = useState<Portfolio | undefined>(undefined);
+  const navigate = useNavigate();
 
-    // make requests to get username and balance, transactions
-    // add a try catch in case accessing db has issues
-    useEffect(() => {
-        async function loadPortfolio() {
-            try {
-                const userProfile = await PaperTraderApi.getUserProfile();
-                setPortfolio(userProfile);
-            }
-            catch (error) {
-                const message: string = "Couldn't load profile, please log in again";
-                handleLogout();
-                return navigate("/login", { state: { message }, replace: true });
-            }
-        }
-        if (user) loadPortfolio();
-    }, [user, navigate, handleLogout])
+  // make requests to get username and balance, transactions
+  // add a try catch in case accessing db has issues
+  useEffect(() => {
+    async function loadPortfolio() {
+      try {
+        const userProfile = await PaperTraderApi.getUserProfile();
+        setPortfolio(userProfile);
+      }
+      catch (error) {
+        const message: string = "Couldn't load profile, please log in again";
+        handleLogout();
+        return navigate("/login", { state: { message }, replace: true });
+      }
+    }
+    if (user) loadPortfolio();
+  }, [user, navigate, handleLogout])
 
-    if (!user) return <Navigate to="/login" replace />
+  if (!user) return <Navigate to="/login" replace />
 
-    return (
+  return (
+    <Pane display="flex" flexDirection="column" alignItems="center">
+      <Heading is="h1" size={900}>
+        Profile Page
+      </Heading>
+      {portfolio && <Paragraph> Hi <>{portfolio.username}!</> </Paragraph>}
+      {portfolio && <Paragraph> You have <>${portfolio.balance} available funds to trade with!</> </Paragraph>}
+      {!portfolio &&
         <Pane display="flex" flexDirection="column" alignItems="center">
-            <Heading is="h1" size={900}>
-                Profile Page
-            </Heading>
-            {portfolio && <Paragraph> Hi <>{portfolio.username}!</> </Paragraph>}
-            {portfolio && <Paragraph> You have <>${portfolio.balance} available funds to trade with!</> </Paragraph>}
-            {!portfolio &&
-                <Pane display="flex" flexDirection="column" alignItems="center">
-                    <Paragraph>Loading...</Paragraph>
-                    <Spinner marginX="auto" marginY={30} />
-                </Pane>
-            }
-        </Pane >
-    );
+          <Paragraph>Loading...</Paragraph>
+          <Spinner marginX="auto" marginY={30} />
+        </Pane>
+      }
+    </Pane >
+  );
 }
 
 export default Profile;
