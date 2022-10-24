@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { BadRequestError } from '../errors';
 
 import { Finnhub } from '../api/finnhub';
+import { Transaction } from '../models/transactions';
 
 export const router = Router();
 
@@ -23,7 +24,7 @@ router.get('/search', async (req, res, next) => {
       throw new BadRequestError('Invalid Stock Ticker');
     }
 
-    return res.json(quote);
+    return res.json({ quote });
   } catch (err) {
     return next(err);
   }
@@ -37,6 +38,7 @@ router.get('/search', async (req, res, next) => {
  */
 router.post('/buy', async (req, res, next) => {
   const { ticker, quantity } = req.body;
+  console.log(req.body)
   const qty = Number(quantity);
 
   if (!ticker) return next(new BadRequestError('Missing ticker'));
@@ -51,7 +53,10 @@ router.post('/buy', async (req, res, next) => {
     const price: number = quote.c;
     const total = Number((price * qty).toFixed(2));
 
-    return res.json({ price, qty, total });
+    const transactionID = (await Transaction.buyTransction(ticker, qty, price, res.locals.user)).id;
+
+
+    return res.json({ price, qty, total, transactionID });
   } catch (err) {
     return next(err);
   }

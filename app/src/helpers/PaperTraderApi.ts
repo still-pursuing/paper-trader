@@ -3,7 +3,7 @@ import axios from 'axios';
 import { BACKEND_BASE_URL } from '../config';
 
 class PaperTraderApi {
-  static token : string;
+  static token: string;
   /** 
    * Makes a request to server with Discord OAuth authorization code input
    * 
@@ -22,15 +22,33 @@ class PaperTraderApi {
    */
   static async getUserProfile() {
     const config = {
-        headers: {
-            'Authorization': `Bearer ${PaperTraderApi.token}`
-        }
+      headers: {
+        'Authorization': `Bearer ${PaperTraderApi.token}`
+      }
     };
 
     const result = (await axios.get(
         `${BACKEND_BASE_URL}/profile`,
         config
-        )).data.userPortfolio;
+      )).data.userPortfolio;
+    return result;
+  }
+
+
+  static async buyStock(ticker: string) {
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${PaperTraderApi.token}`
+      }
+    };
+
+    const result = (await axios.post(
+          `${BACKEND_BASE_URL}/stock/buy`, {
+            ticker: ticker, 
+            quantity: 5
+          },
+          config
+        )).data
     return result;
   }
 }
