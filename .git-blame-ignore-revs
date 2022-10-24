@@ -1,7 +1,5 @@
-<!-- 
-Run below command to ignore commit for git blame
-git config --global blame.ignoreRevsFile .git-blame-ignore-revs
- -->
+# Run below command to ignore commit for git blame 
+# git config --global blame.ignoreRevsFile .git-blame-ignore-revs
 
 # Change indentation of server files down to 2 spaces
 ce971029b818859ca439e6817a698310502a2b74
