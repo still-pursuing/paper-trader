@@ -53,10 +53,10 @@ router.post('/buy', async (req, res, next) => {
     const price: number = quote.c;
     const total = Number((price * qty).toFixed(2));
 
-    const transactionID = (await Transaction.buyTransction(ticker, qty, price, res.locals.user)).id;
+    await Transaction.buyTransction(ticker, qty, price, res.locals.user);
 
 
-    return res.json({ price, qty, total, transactionID });
+    return res.json({ price, qty, total });
   } catch (err) {
     return next(err);
   }
