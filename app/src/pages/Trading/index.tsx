@@ -1,27 +1,62 @@
-import { Pane, Heading, TextInputField, Button } from 'evergreen-ui';
-import { ChangeEvent, useState } from 'react';
+import { Pane, Heading, TextInputField, Button, RadioGroup } from 'evergreen-ui';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import PaperTraderApi from '../../helpers/PaperTraderApi';
 
+const options = [
+  { label: 'Buy', value: 'buy' },
+  { label: 'Sell', value: 'sell' },
+  { label: 'Get Quote', value: 'quote' }
+];
+
 function Trading() {
-  const [value, setValue] = useState('');
+  const [formData, setFormData] = useState({
+    ticker: "",
+    quantity: 0
+  });
+  const [transactionType, setTransactionType] = useState<string>('quote');
 
   /** Update form data field */
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
-    // console.log(evt.target.value);
-    const { value } = evt.target;
-    setValue(value);
+    const { name, value } = evt.target;
+    setFormData(data => ({ ...data, [name]: value }));
   }
 
-  async function buyRequest() {
-    if (value.length > 0) {
-      const stock = await PaperTraderApi.buyStock(value.trim().toUpperCase());
-      setValue(value.trim().toUpperCase());
-      console.log(stock);
+  async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
+    evt.preventDefault();
+    const { ticker, quantity } = formData;
+    const cleanTicker = ticker.trim().toUpperCase();
+
+    if (cleanTicker.length > 0) {
+      if (transactionType === 'quote') {
+        quoteRequest(ticker);
+      } else if (transactionType === 'buy' && quantity > 0) {
+        buyRequest(cleanTicker, quantity);
+      } else if (transactionType === 'sell' && quantity > 0) {
+        sellRequest(cleanTicker);
+      } else {
+        console.log('Throw an error: Quantity needs to be > 0')
+      }
+    } else {
+      console.log('Throw an error: Ticker needs to be length > 0')
+    }
+    setFormData(data => ({ ...data, ticker: cleanTicker }));
+  }
+
+  async function buyRequest(ticker: string, quantity: number) {
+    try {
+      const stock = await PaperTraderApi.buyStock(ticker, quantity);
+      console.log(stock)
+    } catch (error) {
+      console.log(error); // change to error handling
     }
   }
 
-  async function sellRequest() {
-    console.log('To implement');
+  async function sellRequest(ticker: string) {
+    console.log('To implement sell');
+  }
+
+  async function quoteRequest(ticker: string) {
+    console.log('To implement quote');
   }
 
   return (
@@ -30,16 +65,35 @@ function Trading() {
         Trade Stocks
       </Heading>
       <Pane>
-        <TextInputField
-          label='Please enter a stock symbol:'
-          value={value}
-          onChange={handleChange}
-          maxLength={5}
-        />
-      </Pane>
-      <Pane>
-        <Button onClick={buyRequest}>Buy</Button>
-        <Button onClick={sellRequest}>Sell</Button>
+        <form onSubmit={handleSubmit} >
+          <TextInputField
+            label='Please enter a stock symbol:'
+            name='ticker'
+            value={formData.ticker}
+            onChange={handleChange}
+            maxLength={5}
+          />
+          <TextInputField
+            label='Please enter a quantity:'
+            name='quantity'
+            value={formData.quantity}
+            type='number'
+            onChange={handleChange}
+            min={0}
+          />
+          <Pane display='flex' justifyContent='center' >
+            <RadioGroup
+              label='Transction Type:'
+              size={16}
+              value={transactionType}
+              options={options}
+              onChange={event => setTransactionType(event.target.value)}
+            />
+          </Pane>
+          <Pane display='flex' justifyContent='center'>
+            <Button>Submit</Button>
+          </Pane>
+        </form>
       </Pane>
     </Pane >
   );

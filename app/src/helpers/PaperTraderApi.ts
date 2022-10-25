@@ -35,7 +35,7 @@ class PaperTraderApi {
   }
 
 
-  static async buyStock(ticker: string) {
+  static async buyStock(ticker: string, quantity: number) {
     const config = {
       headers: {
         'Authorization': `Bearer ${PaperTraderApi.token}`
@@ -45,7 +45,7 @@ class PaperTraderApi {
     const result = (await axios.post(
           `${BACKEND_BASE_URL}/stock/buy`, {
             ticker: ticker, 
-            quantity: 5
+            quantity: quantity
           },
           config
         )).data
