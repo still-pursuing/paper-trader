@@ -9,7 +9,6 @@ interface FinnhubQuote {
 }
 
 export class Finnhub {
-
   /** Axios request builder */
   static async request(ticker: string, method = 'GET') {
     const url = `${BASE_FINNHUB_API_URL}?symbol=${ticker}&token=${finnHubToken}`;

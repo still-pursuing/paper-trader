@@ -28,8 +28,12 @@ export class User {
     }
   }
 
-  static async register(id: string, username: string, balance: number, isAdmin: boolean): Promise<UserId> {
-
+  static async register(
+    id: string,
+    username: string,
+    balance: number,
+    isAdmin: boolean
+  ): Promise<UserId> {
     const result = await db.query(
       `INSERT INTO users
         ( id,
@@ -59,7 +63,6 @@ export class User {
     const profile = result.rows[0];
     return profile;
   }
-
 
   // todo: add an update method if user changed their Discord username
 }
