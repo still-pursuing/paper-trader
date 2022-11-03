@@ -1,3 +1,3 @@
 export function Trading() {
-  return <h1>Trade Stocks</h1>
+  return <h1>Trade Stocks</h1>;
 }

@@ -14,20 +14,20 @@ export const router = Router();
 router.get('/search', async (req, res, next) => {
   const { ticker } = req.query;
 
-  if (!ticker) return next(new BadRequestError("Missing ticker"));
+  if (!ticker) return next(new BadRequestError('Missing ticker'));
 
   try {
     const quote = await Finnhub.getStockQuote(ticker.toString().toUpperCase());
 
     if (quote.c === 0) {
-      throw new BadRequestError("Invalid Stock Ticker");
+      throw new BadRequestError('Invalid Stock Ticker');
     }
 
     return res.json(quote);
   } catch (err) {
     return next(err);
   }
-})
+});
 
 /** POST /buy { ticker, quantity } => { price, qty, total }
  *
@@ -39,13 +39,13 @@ router.post('/buy', async (req, res, next) => {
   const { ticker, quantity } = req.body;
   const qty = Number(quantity);
 
-  if (!ticker) return next(new BadRequestError("Missing ticker"));
+  if (!ticker) return next(new BadRequestError('Missing ticker'));
 
   try {
     const quote = await Finnhub.getStockQuote(ticker.toString().toUpperCase());
 
     if (quote.c === 0) {
-      throw new BadRequestError("Invalid Stock Ticker");
+      throw new BadRequestError('Invalid Stock Ticker');
     }
 
     const price: number = quote.c;
@@ -55,7 +55,7 @@ router.post('/buy', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-})
+});
 
 /** POST /sell { ticker, quantity } => { price, qty, total }
  *
@@ -67,13 +67,13 @@ router.post('/sell', async (req, res, next) => {
   const { ticker, quantity } = req.body;
   const qty = Number(quantity);
 
-  if (!ticker) return next(new BadRequestError("Missing ticker"));
+  if (!ticker) return next(new BadRequestError('Missing ticker'));
 
   try {
     const quote = await Finnhub.getStockQuote(ticker.toString().toUpperCase());
 
     if (quote.c === 0) {
-      throw new BadRequestError("Invalid Stock Ticker");
+      throw new BadRequestError('Invalid Stock Ticker');
     }
 
     const price: number = quote.c;
@@ -82,4 +82,4 @@ router.post('/sell', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-})
+});
