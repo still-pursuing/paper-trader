@@ -8,13 +8,13 @@ import UserContext from '../../UserContext';
 /**
  * Props:
  * - None
- * 
+ *
  * State:
  * - None
- * 
+ *
  * Events:
  * - None
- * 
+ *
  * Routes --> Profile
  */
 
@@ -39,8 +39,7 @@ function Profile({ handleLogout }: LogoutParams) {
       try {
         const userProfile = await PaperTraderApi.getUserProfile();
         setPortfolio(userProfile);
-      }
-      catch (error) {
+      } catch (error) {
         const message: string = "Couldn't load profile, please log in again";
         handleLogout();
         return navigate('/login', { state: { message }, replace: true });
@@ -56,15 +55,23 @@ function Profile({ handleLogout }: LogoutParams) {
       <Heading is='h1' size={900}>
         Profile Page
       </Heading>
-      {portfolio && <Paragraph> Hi <>{portfolio.username}!</> </Paragraph>}
-      {portfolio && <Paragraph> You have <>${portfolio.balance} available funds to trade with!</> </Paragraph>}
-      {!portfolio &&
+      {portfolio && (
+        <Paragraph>
+          Hi <>{portfolio.username}!</>
+        </Paragraph>
+      )}
+      {portfolio && (
+        <Paragraph>
+          You have <>${portfolio.balance} available funds to trade with!</>
+        </Paragraph>
+      )}
+      {!portfolio && (
         <Pane display='flex' flexDirection='column' alignItems='center'>
           <Paragraph>Loading...</Paragraph>
           <Spinner marginX='auto' marginY={30} />
         </Pane>
-      }
-    </Pane >
+      )}
+    </Pane>
   );
 }
 

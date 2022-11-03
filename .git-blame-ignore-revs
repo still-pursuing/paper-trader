@@ -1,17 +1,27 @@
-# Run below command to ignore commit for git blame 
+# Run below command to ignore commit for git blame
+
 # git config --global blame.ignoreRevsFile .git-blame-ignore-revs
 
 # Change indentation of server files down to 2 spaces
+
 ce971029b818859ca439e6817a698310502a2b74
 
 # Change indentation of client files down to 2 spaces
+
 4e8c61c65d7c55c3a09b893ee3f3d6c546456191
 
 # Change double quotes to single quotes and add missing semicolons in client files
+
 7e35a2f9bc7a26898cd15b0fa3f8b076f06e88da
 
 # Add missing semicolons in server files
+
 ae2ed69fb6ac3ce455dedfa50cb7e2f90fccf0eb
 
 # Change double quotes to single quotes in server files
+
 d875c37a46ffc5e040c5c057dbbeb595e149c3f2
+
+# Apply style changes based on Prettier formatter
+
+3705f05502236d560e1e1b67a12b481b8cc65822

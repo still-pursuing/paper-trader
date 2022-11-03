@@ -28,17 +28,24 @@ app.use((req, res, next) => {
 });
 
 /** Generic error handler; anything unhandled goes here. */
-app.use((err: ExpressError, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const status = err.status || 500;
-  const message = err.status < 500 ? err.message : 'Something went wrong';
+app.use(
+  (
+    err: ExpressError,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    const status = err.status || 500;
+    const message = err.status < 500 ? err.message : 'Something went wrong';
 
-  console.error(err);
+    console.error(err);
 
-  return res.status(status).json({
-    error: { message, status },
-  });
-});
+    return res.status(status).json({
+      error: { message, status },
+    });
+  }
+);
 
 app.listen(port, () => {
   console.log(`server started at http://localhost:${port}`);
-})
+});

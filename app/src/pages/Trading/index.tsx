@@ -1,24 +1,30 @@
-import { Pane, Heading, TextInputField, Button, RadioGroup } from 'evergreen-ui';
+import {
+  Pane,
+  Heading,
+  TextInputField,
+  Button,
+  RadioGroup,
+} from 'evergreen-ui';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import PaperTraderApi from '../../helpers/PaperTraderApi';
 
 const options = [
   { label: 'Buy', value: 'buy' },
   { label: 'Sell', value: 'sell' },
-  { label: 'Get Quote', value: 'quote' }
+  { label: 'Get Quote', value: 'quote' },
 ];
 
 function Trading() {
   const [formData, setFormData] = useState({
-    ticker: "",
-    quantity: 0
+    ticker: '',
+    quantity: 0,
   });
   const [transactionType, setTransactionType] = useState<string>('quote');
 
   /** Update form data field */
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
     const { name, value } = evt.target;
-    setFormData(data => ({ ...data, [name]: value }));
+    setFormData((data) => ({ ...data, [name]: value }));
   }
 
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
@@ -34,18 +40,18 @@ function Trading() {
       } else if (transactionType === 'sell' && quantity > 0) {
         sellRequest(cleanTicker);
       } else {
-        console.log('Throw an error: Quantity needs to be > 0')
+        console.log('Throw an error: Quantity needs to be > 0');
       }
     } else {
-      console.log('Throw an error: Ticker needs to be length > 0')
+      console.log('Throw an error: Ticker needs to be length > 0');
     }
-    setFormData(data => ({ ...data, ticker: cleanTicker }));
+    setFormData((data) => ({ ...data, ticker: cleanTicker }));
   }
 
   async function buyRequest(ticker: string, quantity: number) {
     try {
       const stock = await PaperTraderApi.buyStock(ticker, quantity);
-      console.log(stock)
+      console.log(stock);
     } catch (error) {
       console.log(error); // change to error handling
     }
@@ -65,7 +71,7 @@ function Trading() {
         Trade Stocks
       </Heading>
       <Pane>
-        <form onSubmit={handleSubmit} >
+        <form onSubmit={handleSubmit}>
           <TextInputField
             label='Please enter a stock symbol:'
             name='ticker'
@@ -81,13 +87,13 @@ function Trading() {
             onChange={handleChange}
             min={0}
           />
-          <Pane display='flex' justifyContent='center' >
+          <Pane display='flex' justifyContent='center'>
             <RadioGroup
               label='Transction Type:'
               size={16}
               value={transactionType}
               options={options}
-              onChange={event => setTransactionType(event.target.value)}
+              onChange={(event) => setTransactionType(event.target.value)}
             />
           </Pane>
           <Pane display='flex' justifyContent='center'>
@@ -95,9 +101,8 @@ function Trading() {
           </Pane>
         </form>
       </Pane>
-    </Pane >
+    </Pane>
   );
-
 }
 
 export default Trading;

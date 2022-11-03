@@ -28,7 +28,7 @@ router.get('/search', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-})
+});
 
 /** POST /buy { ticker, quantity } => { price, qty, total }
  *
@@ -60,7 +60,7 @@ router.post('/buy', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-})
+});
 
 /** POST /sell { ticker, quantity } => { price, qty, total }
  *
@@ -87,4 +87,4 @@ router.post('/sell', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-})
+});

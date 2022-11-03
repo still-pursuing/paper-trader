@@ -4,7 +4,7 @@ import {
   clientId,
   clientSecret,
   REDIRECT_URI,
-  BASE_DISCORD_API_URL
+  BASE_DISCORD_API_URL,
 } from '../config';
 
 interface DiscordOAuthTokenResponseData {
@@ -19,9 +19,13 @@ interface DiscordUserData {
 }
 
 export class Discord {
-
   /** Axios request builder */
-  static async request(endpoint: string, headers: any, data?: URLSearchParams, method = 'GET') {
+  static async request(
+    endpoint: string,
+    headers: any,
+    data?: URLSearchParams,
+    method = 'GET'
+  ) {
     const url = `${BASE_DISCORD_API_URL}/${endpoint}`;
 
     const response = (await axios({ method, url, data, headers })).data;
@@ -31,14 +35,16 @@ export class Discord {
   // Individual Discord API routes
 
   /** Get an access token from Discord OAuth API */
-  static async getDiscordToken(authCode: string): Promise<DiscordOAuthTokenResponseData> {
+  static async getDiscordToken(
+    authCode: string
+  ): Promise<DiscordOAuthTokenResponseData> {
     const params = new URLSearchParams({
       client_id: clientId,
       client_secret: clientSecret,
       code: authCode,
       grant_type: 'authorization_code',
       redirect_uri: REDIRECT_URI,
-      scope: 'identify'
+      scope: 'identify',
     });
 
     const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
@@ -48,7 +54,10 @@ export class Discord {
   }
 
   /** Get a user object from Discord users API  */
-  static async getDiscordUser(tokenType: string, accessToken: string): Promise<DiscordUserData> {
+  static async getDiscordUser(
+    tokenType: string,
+    accessToken: string
+  ): Promise<DiscordUserData> {
     const headers = { authorization: `${tokenType} ${accessToken}` };
 
     const res = await this.request('users/@me', headers);
