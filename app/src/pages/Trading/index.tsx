@@ -5,8 +5,10 @@ import {
   Button,
   RadioGroup,
 } from 'evergreen-ui';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState, useContext } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
 import PaperTraderApi from '../../helpers/PaperTraderApi';
+import UserContext from '../../UserContext';
 
 const options = [
   { label: 'Buy', value: 'buy' },
@@ -15,11 +17,12 @@ const options = [
 ];
 
 function Trading() {
-  const [formData, setFormData] = useState({
-    ticker: '',
-    quantity: 0,
-  });
+  const user = useContext(UserContext);
+  const [formData, setFormData] = useState({ ticker: '', quantity: 0 });
   const [transactionType, setTransactionType] = useState<string>('quote');
+  const navigate = useNavigate();
+
+  if (!user) return <Navigate to='/login' replace />;
 
   /** Update form data field */
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
@@ -50,8 +53,15 @@ function Trading() {
 
   async function buyRequest(ticker: string, quantity: number) {
     try {
-      const stock = await PaperTraderApi.buyStock(ticker, quantity);
-      console.log(stock);
+      const { price, qty, total } = await PaperTraderApi.buyStock(
+        ticker,
+        quantity
+      );
+
+      return navigate('/success', {
+        state: { ticker, qty, price, total },
+        replace: true,
+      });
     } catch (error) {
       console.log(error); // change to error handling
     }
