@@ -11,6 +11,7 @@ import UserContext from './UserContext';
 import UserSession from './helpers/UserSession';
 import PaperTraderApi from './helpers/PaperTraderApi';
 import Trading from './pages/Trading';
+import Success from './pages/Trading/Success';
 
 /**
  * Props:
@@ -92,6 +93,7 @@ function App() {
             element={<Profile handleLogout={handleLogout} />}
           />
           <Route path='trading' element={<Trading />} />
+          <Route path='success' element={<Success />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </Pane>
