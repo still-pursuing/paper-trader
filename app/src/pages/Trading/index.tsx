@@ -32,10 +32,13 @@ function Trading() {
 
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
+
     const { ticker, quantity } = formData;
     const cleanTicker = ticker.trim().toUpperCase();
 
-    if (cleanTicker.length > 0) {
+    if (cleanTicker.length === 0) {
+      console.log('Throw an error: Ticker needs to be length > 0');
+    } else {
       if (transactionType === 'quote') {
         quoteRequest(ticker);
       } else if (transactionType === 'buy' && quantity > 0) {
@@ -45,9 +48,8 @@ function Trading() {
       } else {
         console.log('Throw an error: Quantity needs to be > 0');
       }
-    } else {
-      console.log('Throw an error: Ticker needs to be length > 0');
     }
+
     setFormData((data) => ({ ...data, ticker: cleanTicker }));
   }
 

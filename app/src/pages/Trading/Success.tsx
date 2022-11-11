@@ -24,8 +24,13 @@ function Success() {
         Successful Trade
       </Heading>
       <Paragraph>
-        Successfully bought {qty} share(s) of {ticker} for ${price.toFixed(2)}{' '}
-        each, for a total of ${total.toFixed(2)}!
+        Successfully bought {qty} share(s) of {ticker} for{' '}
+        {price.toLocaleString('en', {
+          style: 'currency',
+          currency: 'USD',
+        })}{' '}
+        each, for a total of{' '}
+        {total.toLocaleString('en', { style: 'currency', currency: 'USD' })}.
       </Paragraph>
     </Pane>
   );
