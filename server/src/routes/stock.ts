@@ -38,7 +38,7 @@ router.get('/search', async (req, res, next) => {
  */
 router.post('/buy', async (req, res, next) => {
   const { ticker, quantity } = req.body;
-  console.log(req.body)
+  console.log(req.body);
   const qty = Number(quantity);
 
   if (!ticker) return next(new BadRequestError('Missing ticker'));
@@ -54,7 +54,6 @@ router.post('/buy', async (req, res, next) => {
     const total = Number((price * qty).toFixed(2));
 
     await Transaction.buyTransction(ticker, qty, price, res.locals.user);
-
 
     return res.json({ price, qty, total });
   } catch (err) {
@@ -81,9 +80,10 @@ router.post('/sell', async (req, res, next) => {
       throw new BadRequestError('Invalid Stock Ticker');
     }
 
-    const price: number = quote.c;
+    const price: number = -quote.c;
+    const total = Number((price * qty).toFixed(2));
 
-    return res.json({ price, qty });
+    return res.json({ price, qty, total });
   } catch (err) {
     return next(err);
   }
