@@ -11,7 +11,7 @@ interface LocationState {
   };
 }
 
-function Success() {
+function SuccessPage() {
   const { state } = useLocation() as LocationState;
 
   if (!state) return <Navigate to='/trading' replace />;
@@ -24,7 +24,7 @@ function Success() {
         Successful Trade
       </Heading>
       <Paragraph>
-        Successfully bought {qty} share(s) of {ticker} for{' '}
+        Successfully bought {qty} share{qty > 1 ? 's' : ''} of {ticker} for{' '}
         {price.toLocaleString('en', {
           style: 'currency',
           currency: 'USD',
@@ -36,4 +36,4 @@ function Success() {
   );
 }
 
-export default Success;
+export default SuccessPage;

@@ -16,7 +16,7 @@ const options = [
   { label: 'Get Quote', value: 'quote' },
 ];
 
-function Trading() {
+function TradingPage() {
   const user = useContext(UserContext);
   const [formData, setFormData] = useState({ ticker: '', quantity: 0 });
   const [transactionType, setTransactionType] = useState<string>('quote');
@@ -41,12 +41,12 @@ function Trading() {
     } else {
       if (transactionType === 'quote') {
         quoteRequest(ticker);
-      } else if (transactionType === 'buy' && quantity > 0) {
-        buyRequest(cleanTicker, quantity);
-      } else if (transactionType === 'sell' && quantity > 0) {
-        sellRequest(cleanTicker);
-      } else {
+      } else if (quantity <= 0) {
         console.log('Throw an error: Quantity needs to be > 0');
+      } else if (transactionType === 'buy') {
+        buyRequest(cleanTicker, quantity);
+      } else {
+        sellRequest(cleanTicker);
       }
     }
 
@@ -117,4 +117,4 @@ function Trading() {
   );
 }
 
-export default Trading;
+export default TradingPage;
