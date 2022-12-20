@@ -3,6 +3,7 @@ import { BadRequestError } from '../errors';
 
 import { Finnhub } from '../api/finnhub';
 import { Transaction } from '../models/transactions';
+import { User } from '../models/user';
 
 export const router = Router();
 
@@ -53,6 +54,14 @@ router.post('/buy', async (req, res, next) => {
     const price: number = quote.c;
     const total = Number((price * qty).toFixed(2));
 
+    const userBalance = (await User.getProfile(res.locals.user)).balance;
+
+    if (+userBalance < total) {
+      throw new BadRequestError(
+        `Insufficient Funds: Transaction total of ${total} exceeds account balance of ${userBalance}`
+      );
+    }
+
     await Transaction.buy(ticker, qty, price, res.locals.user);
 
     return res.json({ price, qty, total });
@@ -79,6 +88,8 @@ router.post('/sell', async (req, res, next) => {
     if (quote.c === 0) {
       throw new BadRequestError('Invalid Stock Ticker');
     }
+
+    //TODO: need to implement a check to see if qty exceeds owned shares
 
     const price: number = -quote.c;
     const total = Number((price * qty).toFixed(2));
