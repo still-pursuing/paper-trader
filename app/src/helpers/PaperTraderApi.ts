@@ -2,18 +2,27 @@ import axios from 'axios';
 
 import { BACKEND_BASE_URL } from '../config';
 
-class PaperTraderApi {
+export default class PaperTraderApi {
   static token: string;
+
+  /** Axios request builder */
+  static async request(endpoint: string, data?: any, method = 'GET') {
+    const url = `${BACKEND_BASE_URL}/${endpoint}`;
+    let headers = { Authorization: `Bearer ${PaperTraderApi.token}` };
+
+    const response = (await axios({ method, url, data, headers })).data;
+    return response;
+  }
+
   /**
    * Makes a request to server with Discord OAuth authorization code input
    *
    * Returns a JWT
    */
   static async getDiscordUser(code: string): Promise<string> {
-    const userToken = (
-      await axios.get(`${BACKEND_BASE_URL}/login?code=${code}`)
-    ).data.token;
-    return userToken;
+    const res = (await this.request(`login?code=${code}`)).token;
+
+    return res;
   }
 
   /**
@@ -23,16 +32,21 @@ class PaperTraderApi {
    *  {username, balance}
    */
   static async getUserProfile() {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${PaperTraderApi.token}`,
-      },
-    };
+    const res = (await this.request('profile')).userPortfolio;
 
-    const result = (await axios.get(`${BACKEND_BASE_URL}/profile`, config)).data
-      .userPortfolio;
-    return result;
+    return res;
+  }
+
+  /**
+   * Makes a request to server with stock ticker and quantity
+   *
+   * Returns:
+   *  {price, qty, total}
+   */
+  static async buyStock(ticker: string, quantity: number) {
+    const transactionDetails = { ticker, quantity };
+    const res = await this.request('stock/buy', transactionDetails, 'POST');
+
+    return res;
   }
 }
-
-export default PaperTraderApi;

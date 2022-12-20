@@ -2,7 +2,7 @@ import PaperTraderApi from './PaperTraderApi';
 import { v4 as uuidv4 } from 'uuid';
 import { CsrfStateError } from '../errors/errors';
 
-class UserSession {
+export default class UserSession {
   static storedCsrfStateString =
     localStorage.getItem('csrfStateString') ?? undefined;
 
@@ -28,5 +28,3 @@ class UserSession {
     }
   }
 }
-
-export default UserSession;

@@ -24,7 +24,7 @@ export class User {
     if (user) {
       return user;
     } else {
-      this.register(id, username, INITIAL_FUNDS, false);
+      return this.register(id, username, INITIAL_FUNDS, false);
     }
   }
 

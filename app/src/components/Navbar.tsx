@@ -47,6 +47,13 @@ function Navbar({ handleLogout }: LogoutParams) {
             >
               Profile
             </Tab>
+            <Tab
+              is={ReactRouterLink}
+              to='trading'
+              isSelected={pathname === '/trading'}
+            >
+              Trading
+            </Tab>
             <Tab is={ReactRouterLink} to='login' onSelect={handleLogout}>
               Logout
             </Tab>

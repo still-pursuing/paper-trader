@@ -10,6 +10,8 @@ import { Splash } from './pages/Splash';
 import UserContext from './UserContext';
 import UserSession from './helpers/UserSession';
 import PaperTraderApi from './helpers/PaperTraderApi';
+import TradingPage from './pages/Trading';
+import SuccessPage from './pages/Trading/Success';
 
 /**
  * Props:
@@ -90,6 +92,8 @@ function App() {
             path='profile'
             element={<Profile handleLogout={handleLogout} />}
           />
+          <Route path='trading' element={<TradingPage />} />
+          <Route path='success' element={<SuccessPage />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </Pane>
