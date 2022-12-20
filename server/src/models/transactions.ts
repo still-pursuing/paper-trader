@@ -1,7 +1,7 @@
 import { db } from '../db';
 
 export class Transaction {
-  static async buyTransction(
+  static async buy(
     ticker: string,
     quantity: number,
     price: number,
