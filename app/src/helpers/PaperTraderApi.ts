@@ -38,7 +38,7 @@ export default class PaperTraderApi {
   }
 
   /**
-   * Makes a request to server with stock ticker and quantity
+   * Makes a request to server with stock ticker and quantity to buy a stock
    *
    * Returns:
    *  {price, qty, total}
@@ -46,6 +46,18 @@ export default class PaperTraderApi {
   static async buyStock(ticker: string, quantity: number) {
     const transactionDetails = { ticker, quantity };
     const res = await this.request('stock/buy', transactionDetails, 'POST');
+
+    return res;
+  }
+
+  /**
+   * Makes a request to server with stock ticker to get a quote
+   *
+   * Returns:
+   *  { c } which represents the price of a share
+   */
+  static async getStock(ticker: string) {
+    const res = (await this.request(`stock/search?ticker=${ticker}`)).quote;
 
     return res;
   }

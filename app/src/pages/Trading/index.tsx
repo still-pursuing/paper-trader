@@ -6,11 +6,19 @@ import {
   Button,
   RadioGroup,
   Alert,
+  Paragraph,
 } from 'evergreen-ui';
 import { ChangeEvent, FormEvent, useState, useContext } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import PaperTraderApi from '../../helpers/PaperTraderApi';
 import UserContext from '../../UserContext';
+
+interface StockQuote {
+  ticker: string;
+  price: number;
+  quantity: number;
+  total: number;
+}
 
 const options = [
   { label: 'Buy', value: 'buy' },
@@ -23,6 +31,7 @@ function TradingPage() {
   const [errors, setErrors] = useState<string | undefined>(undefined);
   const [formData, setFormData] = useState({ ticker: '', quantity: 0 });
   const [transactionType, setTransactionType] = useState<string>('quote');
+  const [quoteData, setQuoteData] = useState<StockQuote | undefined>(undefined);
   const navigate = useNavigate();
 
   if (!user) return <Navigate to='/login' replace />;
@@ -43,7 +52,7 @@ function TradingPage() {
       console.log('Throw an error: Ticker needs to be length > 0');
     } else {
       if (transactionType === 'quote') {
-        quoteRequest(ticker);
+        quoteRequest(ticker, quantity);
       } else if (quantity <= 0) {
         console.log('Throw an error: Quantity needs to be > 0');
       } else if (transactionType === 'buy') {
@@ -78,8 +87,14 @@ function TradingPage() {
     console.log('To implement sell');
   }
 
-  async function quoteRequest(ticker: string) {
-    console.log('To implement quote');
+  async function quoteRequest(ticker: string, quantity: number) {
+    try {
+      const { c: price } = await PaperTraderApi.getStock(ticker);
+      const total = price * quantity;
+      setQuoteData({ ticker, price, quantity, total });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -123,6 +138,30 @@ function TradingPage() {
           </Pane>
         </form>
       </Pane>
+      {quoteData && (
+        <Pane paddingTop={12}>
+          <Paragraph>
+            {' '}
+            <strong>{quoteData.quantity}</strong> share
+            {quoteData.quantity > 1 ? 's' : ''} of{' '}
+            <strong>{quoteData.ticker}</strong> at a price of{' '}
+            <strong>
+              {quoteData.price.toLocaleString('en', {
+                style: 'currency',
+                currency: 'USD',
+              })}
+            </strong>{' '}
+            will cost a total of{' '}
+            <strong>
+              {quoteData.total.toLocaleString('en', {
+                style: 'currency',
+                currency: 'USD',
+              })}
+            </strong>
+            .
+          </Paragraph>
+        </Pane>
+      )}
     </Pane>
   );
 }
