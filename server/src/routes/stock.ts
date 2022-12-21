@@ -54,11 +54,17 @@ router.post('/buy', async (req, res, next) => {
     const price: number = quote.c;
     const total = Number((price * qty).toFixed(2));
 
-    const userBalance = (await User.getProfile(res.locals.user)).balance;
+    const userBalance = +(await User.getProfile(res.locals.user)).balance;
 
-    if (+userBalance < total) {
+    if (userBalance < total) {
       throw new BadRequestError(
-        `Insufficient Funds: Transaction total of ${total} exceeds account balance of ${userBalance}`
+        `Insufficient Funds: Transaction total of ${total.toLocaleString('en', {
+          style: 'currency',
+          currency: 'USD',
+        })} exceeds account balance of ${userBalance.toLocaleString('en', {
+          style: 'currency',
+          currency: 'USD',
+        })}`
       );
     }
 
