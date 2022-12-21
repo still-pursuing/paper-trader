@@ -62,9 +62,11 @@ router.post('/buy', async (req, res, next) => {
       );
     }
 
-    await Transaction.buy(ticker, qty, price, res.locals.user);
+    const remainingBalance = Number(
+      await Transaction.buy(ticker, qty, price, res.locals.user)
+    );
 
-    return res.json({ price, qty, total });
+    return res.json({ price, qty, total, remainingBalance });
   } catch (err) {
     return next(err);
   }
@@ -89,7 +91,7 @@ router.post('/sell', async (req, res, next) => {
       throw new BadRequestError('Invalid Stock Ticker');
     }
 
-    //TODO: need to implement a check to see if qty exceeds owned shares
+    // TODO: need to implement a check to see if qty exceeds owned shares
 
     const price: number = -quote.c;
     const total = Number((price * qty).toFixed(2));

@@ -55,13 +55,11 @@ function TradingPage() {
 
   async function buyRequest(ticker: string, quantity: number) {
     try {
-      const { price, qty, total } = await PaperTraderApi.buyStock(
-        ticker,
-        quantity
-      );
+      const { price, qty, total, remainingBalance } =
+        await PaperTraderApi.buyStock(ticker, quantity);
 
       return navigate('/success', {
-        state: { ticker, qty, price, total },
+        state: { ticker, qty, price, total, remainingBalance },
         replace: true,
       });
     } catch (error) {
