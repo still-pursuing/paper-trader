@@ -1,9 +1,11 @@
+import { AxiosError } from 'axios';
 import {
   Pane,
   Heading,
   TextInputField,
   Button,
   RadioGroup,
+  Alert,
 } from 'evergreen-ui';
 import { ChangeEvent, FormEvent, useState, useContext } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
@@ -18,6 +20,7 @@ const options = [
 
 function TradingPage() {
   const user = useContext(UserContext);
+  const [errors, setErrors] = useState<string | undefined>(undefined);
   const [formData, setFormData] = useState({ ticker: '', quantity: 0 });
   const [transactionType, setTransactionType] = useState<string>('quote');
   const navigate = useNavigate();
@@ -63,7 +66,11 @@ function TradingPage() {
         replace: true,
       });
     } catch (error) {
-      console.log(error); // change to error handling
+      if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
+        setErrors(error.response?.data.error.message);
+      } else {
+        setErrors('There was an issue with your request. Please try again.');
+      }
     }
   }
 
@@ -80,6 +87,11 @@ function TradingPage() {
       <Heading is='h1' size={900}>
         Trade Stocks
       </Heading>
+      {errors && (
+        <Alert intent='danger' title='Something went wrong.'>
+          {errors}
+        </Alert>
+      )}
       <Pane>
         <form onSubmit={handleSubmit}>
           <TextInputField
