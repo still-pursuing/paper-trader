@@ -8,8 +8,7 @@ export const router = Router();
 
 /** GET /search => { stock }
  *
- * Returns stock quote information if a valid ticker is provided.
- * Otherwise, returns BadRequestError.
+ * Returns stock quote information from a valid ticker.
  *
  */
 router.get('/search', validateTicker, async (req, res, next) => {
@@ -20,7 +19,7 @@ router.get('/search', validateTicker, async (req, res, next) => {
 /** POST /buy { ticker, quantity } => { price, qty, total }
  *
  * Returns stock price, quantity bought, and total cost if valid ticker and quantity is provided
- * Otherwise, returns BadRequestError.
+ * Otherwise, returns an error.
  *
  */
 router.post('/buy', validateTicker, async (req, res, next) => {
@@ -59,8 +58,7 @@ router.post('/buy', validateTicker, async (req, res, next) => {
 
 /** POST /sell { ticker, quantity } => { price, qty, total }
  *
- * Returns stock price and quantity sold if valid ticker and quantity is provided
- * Otherwise, returns BadRequestError.
+ * Returns stock price and quantity sold if valid ticker and quantity is provided.
  *
  */
 router.post('/sell', async (req, res, next) => {
@@ -68,14 +66,10 @@ router.post('/sell', async (req, res, next) => {
   const qty = Number(quantity);
   const quote = res.locals.quote;
 
-  try {
-    // TODO: need to implement a check to see if qty exceeds owned shares
+  // TODO: need to implement a check to see if qty exceeds owned shares
 
-    const price: number = -quote.c;
-    const total = Number((price * qty).toFixed(2));
+  const price: number = -quote.c;
+  const total = Number((price * qty).toFixed(2));
 
-    return res.json({ price, qty, total });
-  } catch (err) {
-    return next(err);
-  }
+  return res.json({ price, qty, total });
 });
