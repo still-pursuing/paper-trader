@@ -30,6 +30,10 @@ function TradingPage() {
   const user = useContext(UserContext);
   const [errors, setErrors] = useState<string | undefined>(undefined);
   const [formData, setFormData] = useState({ ticker: '', quantity: 0 });
+  const [isInputInvalid, setIsInputInvalid] = useState({
+    ticker: false,
+    quantity: false,
+  });
   const [transactionType, setTransactionType] = useState<string>('quote');
   const [quoteData, setQuoteData] = useState<StockQuote | undefined>(undefined);
   const navigate = useNavigate();
@@ -49,12 +53,18 @@ function TradingPage() {
     const cleanTicker = ticker.trim().toUpperCase();
 
     if (cleanTicker.length === 0) {
-      console.log('Throw an error: Ticker needs to be length > 0');
+      setIsInputInvalid((inputValidity) => ({
+        ...inputValidity,
+        ticker: true,
+      }));
     } else {
       if (transactionType === 'quote') {
         quoteRequest(ticker, quantity);
       } else if (quantity <= 0) {
-        console.log('Throw an error: Quantity needs to be > 0');
+        setIsInputInvalid((inputValidity) => ({
+          ...inputValidity,
+          quantity: true,
+        }));
       } else if (transactionType === 'buy') {
         buyRequest(cleanTicker, quantity);
       } else {
@@ -78,7 +88,9 @@ function TradingPage() {
       if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
         setErrors(error.response?.data.error.message);
       } else {
-        setErrors('There was an issue with your request. Please try again.');
+        setErrors(
+          'There was an issue with your request. Please try again later.'
+        );
       }
     }
   }
@@ -93,7 +105,13 @@ function TradingPage() {
       const total = price * quantity;
       setQuoteData({ ticker, price, quantity, total });
     } catch (error) {
-      console.log(error);
+      if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
+        setErrors(error.response?.data.error.message);
+      } else {
+        setErrors(
+          'There was an issue with your request. Please try again later.'
+        );
+      }
     }
   }
 
@@ -115,6 +133,11 @@ function TradingPage() {
             value={formData.ticker}
             onChange={handleChange}
             maxLength={5}
+            required
+            isInvalid={isInputInvalid.ticker}
+            validationMessage={
+              isInputInvalid.ticker ? 'Missing stock symbol' : undefined
+            }
           />
           <TextInputField
             label='Please enter a quantity:'
@@ -123,6 +146,12 @@ function TradingPage() {
             type='number'
             onChange={handleChange}
             min={0}
+            isInvalid={isInputInvalid.quantity}
+            validationMessage={
+              isInputInvalid.quantity
+                ? 'Please enter a quantity greater than zero'
+                : undefined
+            }
           />
           <Pane display='flex' justifyContent='center'>
             <RadioGroup
@@ -143,7 +172,7 @@ function TradingPage() {
           <Paragraph>
             {' '}
             <strong>{quoteData.quantity}</strong> share
-            {quoteData.quantity > 1 ? 's' : ''} of{' '}
+            {quoteData.quantity !== 1 && 's'} of{' '}
             <strong>{quoteData.ticker}</strong> at a price of{' '}
             <strong>
               {quoteData.price.toLocaleString('en', {

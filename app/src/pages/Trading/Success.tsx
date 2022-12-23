@@ -25,7 +25,7 @@ function SuccessPage() {
         Successful Trade
       </Heading>
       <Paragraph>
-        Successfully bought {qty} share{qty > 1 ? 's' : ''} of {ticker} for{' '}
+        Successfully bought {qty} share{qty !== 1 && 's'} of {ticker} for{' '}
         {price.toLocaleString('en', {
           style: 'currency',
           currency: 'USD',
