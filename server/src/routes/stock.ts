@@ -1,9 +1,8 @@
 import { Router } from 'express';
 import { BadRequestError } from '../errors';
-
-import { Finnhub } from '../api/finnhub';
 import { Transaction } from '../models/transactions';
 import { User } from '../models/user';
+import { validateTicker } from '../middleware/validateTicker';
 
 export const router = Router();
 
@@ -13,22 +12,9 @@ export const router = Router();
  * Otherwise, returns BadRequestError.
  *
  */
-router.get('/search', async (req, res, next) => {
-  const { ticker } = req.query;
-
-  if (!ticker) return next(new BadRequestError('Missing ticker'));
-
-  try {
-    const quote = await Finnhub.getStockQuote(ticker.toString().toUpperCase());
-
-    if (quote.c === 0) {
-      throw new BadRequestError('Invalid Stock Ticker');
-    }
-
-    return res.json({ quote });
-  } catch (err) {
-    return next(err);
-  }
+router.get('/search', validateTicker, async (req, res, next) => {
+  const quote = res.locals.quote;
+  return res.json({ quote });
 });
 
 /** POST /buy { ticker, quantity } => { price, qty, total }
@@ -37,20 +23,13 @@ router.get('/search', async (req, res, next) => {
  * Otherwise, returns BadRequestError.
  *
  */
-router.post('/buy', async (req, res, next) => {
+router.post('/buy', validateTicker, async (req, res, next) => {
   const { ticker, quantity } = req.body;
   console.log(req.body);
+  const quote = res.locals.quote;
   const qty = Number(quantity);
 
-  if (!ticker) return next(new BadRequestError('Missing ticker'));
-
   try {
-    const quote = await Finnhub.getStockQuote(ticker.toString().toUpperCase());
-
-    if (quote.c === 0) {
-      throw new BadRequestError('Invalid Stock Ticker');
-    }
-
     const price: number = quote.c;
     const total = Number((price * qty).toFixed(2));
 
@@ -85,18 +64,11 @@ router.post('/buy', async (req, res, next) => {
  *
  */
 router.post('/sell', async (req, res, next) => {
-  const { ticker, quantity } = req.body;
+  const { quantity } = req.body;
   const qty = Number(quantity);
-
-  if (!ticker) return next(new BadRequestError('Missing ticker'));
+  const quote = res.locals.quote;
 
   try {
-    const quote = await Finnhub.getStockQuote(ticker.toString().toUpperCase());
-
-    if (quote.c === 0) {
-      throw new BadRequestError('Invalid Stock Ticker');
-    }
-
     // TODO: need to implement a check to see if qty exceeds owned shares
 
     const price: number = -quote.c;
