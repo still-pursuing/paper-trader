@@ -36,6 +36,7 @@ function TradingPage() {
   });
   const [transactionType, setTransactionType] = useState<string>('quote');
   const [quoteData, setQuoteData] = useState<StockQuote | undefined>(undefined);
+  const [isProcessingRequest, setIsProcessingRequest] = useState(false);
   const navigate = useNavigate();
 
   if (!user) return <Navigate to='/login' replace />;
@@ -48,6 +49,13 @@ function TradingPage() {
 
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
+    setIsProcessingRequest(true);
+
+    setIsInputInvalid((inputValidity) => ({
+      ...inputValidity,
+      ticker: false,
+      quantity: false,
+    }));
 
     const { ticker, quantity } = formData;
     const cleanTicker = ticker.trim().toUpperCase();
@@ -59,29 +67,39 @@ function TradingPage() {
       }));
     } else {
       if (transactionType === 'quote') {
-        quoteRequest(ticker, quantity);
+        await quoteRequest(cleanTicker, quantity);
       } else if (quantity <= 0) {
         setIsInputInvalid((inputValidity) => ({
           ...inputValidity,
           quantity: true,
         }));
       } else if (transactionType === 'buy') {
-        buyRequest(cleanTicker, quantity);
+        await buyRequest(cleanTicker, quantity);
       } else {
-        sellRequest(cleanTicker);
+        await sellRequest(cleanTicker, quantity);
       }
     }
 
     setFormData((data) => ({ ...data, ticker: cleanTicker }));
+    setIsProcessingRequest(false);
   }
 
   async function buyRequest(ticker: string, quantity: number) {
     try {
-      const { price, qty, total, remainingBalance } =
-        await PaperTraderApi.buyStock(ticker, quantity);
+      const { price, qty, total, balance } = await PaperTraderApi.buyStock(
+        ticker,
+        quantity
+      );
 
       return navigate('/success', {
-        state: { ticker, qty, price, total, remainingBalance },
+        state: {
+          ticker,
+          qty,
+          price,
+          total,
+          balance,
+          buyTransaction: true,
+        },
         replace: true,
       });
     } catch (error) {
@@ -95,8 +113,35 @@ function TradingPage() {
     }
   }
 
-  async function sellRequest(ticker: string) {
-    console.log('To implement sell');
+  async function sellRequest(ticker: string, quantity: number) {
+    try {
+      console.log('Sell request');
+
+      const { price, qty, total, balance } = await PaperTraderApi.sellStock(
+        ticker,
+        quantity
+      );
+
+      return navigate('/success', {
+        state: {
+          ticker,
+          price,
+          qty,
+          total,
+          balance,
+          buyTransaction: false,
+        },
+        replace: true,
+      });
+    } catch (error) {
+      if (error instanceof AxiosError && error.code === 'ERR_BAD_REQUEST') {
+        setErrors(error.response?.data.error.message);
+      } else {
+        setErrors(
+          'There was an issue with your request. Please try again later.'
+        );
+      }
+    }
   }
 
   async function quoteRequest(ticker: string, quantity: number) {
@@ -121,7 +166,12 @@ function TradingPage() {
         Trade Stocks
       </Heading>
       {errors && (
-        <Alert intent='danger' title='Something went wrong.'>
+        <Alert
+          intent='danger'
+          title='Something went wrong.'
+          marginTop={12}
+          marginBottom={12}
+        >
           {errors}
         </Alert>
       )}
@@ -149,7 +199,7 @@ function TradingPage() {
             isInvalid={isInputInvalid.quantity}
             validationMessage={
               isInputInvalid.quantity
-                ? 'Please enter a quantity greater than zero'
+                ? 'Please enter a quantity greater than zero.'
                 : undefined
             }
           />
@@ -163,12 +213,12 @@ function TradingPage() {
             />
           </Pane>
           <Pane display='flex' justifyContent='center'>
-            <Button>Submit</Button>
+            <Button isLoading={isProcessingRequest}>Submit</Button>
           </Pane>
         </form>
       </Pane>
       {quoteData && (
-        <Pane paddingTop={12}>
+        <Pane marginTop={12}>
           <Paragraph>
             {' '}
             <strong>{quoteData.quantity}</strong> share
