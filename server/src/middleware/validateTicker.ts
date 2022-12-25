@@ -3,13 +3,13 @@ import express from 'express';
 import { BadRequestError } from '../errors';
 import { Finnhub } from '../api/finnhub';
 
-/** Checks if a stock ticker is included in the request and if it's a valid ticker on the NYSE*/
+/** Checks if a stock ticker is included in the request and if it's a valid ticker on the NYSE */
 export async function validateTicker(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
-  const ticker = req.query.ticker || req.body.ticker;
+  const ticker = req.query.ticker ?? req.body.ticker;
 
   try {
     if (!ticker) throw new BadRequestError('Missing Ticker');
