@@ -7,8 +7,9 @@ interface LocationState {
     qty: number;
     price: number;
     total: number;
-    remainingBalance: number;
+    balance: number;
     fromTrading: boolean;
+    buyTransaction: boolean;
   };
 }
 
@@ -17,7 +18,7 @@ function SuccessPage() {
 
   if (!state) return <Navigate to='/trading' replace />;
 
-  const { ticker, qty, price, total, remainingBalance } = state;
+  const { ticker, qty, price, total, balance, buyTransaction } = state;
 
   return (
     <Pane display='flex' flexDirection='column' alignItems='center'>
@@ -25,22 +26,23 @@ function SuccessPage() {
         Successful Trade
       </Heading>
       <Paragraph>
-        Successfully bought {qty} share{qty !== 1 && 's'} of {ticker} for{' '}
+        Successfully {buyTransaction ? 'bought' : 'sold'} {qty} share
+        {qty > 1 && 's'} of {ticker} for{' '}
         {price.toLocaleString('en', {
           style: 'currency',
           currency: 'USD',
-        })}{' '}
-        each, for a total of{' '}
+        })}
+        {qty > 1 && ' each'}, for a total of{' '}
         {total.toLocaleString('en', { style: 'currency', currency: 'USD' })}.
       </Paragraph>
       <Paragraph>
         {' '}
         You now have{' '}
-        {remainingBalance.toLocaleString('en', {
+        {balance.toLocaleString('en', {
           style: 'currency',
           currency: 'USD',
         })}{' '}
-        left to trade with.
+        in cash left to trade with.
       </Paragraph>
     </Pane>
   );
