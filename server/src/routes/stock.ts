@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { BadRequestError } from '../errors';
 import { Transaction } from '../models/transactions';
 import { User } from '../models/user';
-import { validateTicker } from '../middleware/validateTicker';
 
 export const router = Router();
 
@@ -11,18 +10,18 @@ export const router = Router();
  * Returns stock quote information from a valid ticker.
  *
  */
-router.get('/search', validateTicker, async (req, res, next) => {
+router.get('/search', async (req, res, next) => {
   const quote = res.locals.quote;
   return res.json({ quote });
 });
 
-/** POST /buy { ticker, quantity } => { price, qty, total }
+/** POST /buy {  quantity } => { price, qty, total }
  *
- * Returns stock price, quantity bought, and total cost if valid ticker and quantity is provided
+ * Returns stock price, quantity bought, and total cost if valid ticker and quantity is provided.
  * Otherwise, returns an error.
  *
  */
-router.post('/buy', validateTicker, async (req, res, next) => {
+router.post('/buy', async (req, res, next) => {
   const { ticker, quantity } = req.body;
   console.log(req.body);
   const quote = res.locals.quote;
@@ -46,30 +45,51 @@ router.post('/buy', validateTicker, async (req, res, next) => {
       );
     }
 
-    const remainingBalance = Number(
+    const balance = Number(
       await Transaction.buy(ticker, qty, price, res.locals.user)
     );
 
-    return res.json({ price, qty, total, remainingBalance });
+    return res.json({ price, qty, total, balance });
   } catch (err) {
     return next(err);
   }
 });
 
-/** POST /sell { ticker, quantity } => { price, qty, total }
+/** POST /sell { quantity } => { price, qty, total }
  *
  * Returns stock price and quantity sold if valid ticker and quantity is provided.
  *
  */
 router.post('/sell', async (req, res, next) => {
-  const { quantity } = req.body;
+  const { ticker, quantity } = req.body;
   const qty = Number(quantity);
   const quote = res.locals.quote;
 
   // TODO: need to implement a check to see if qty exceeds owned shares
 
-  const price: number = -quote.c;
-  const total = Number((price * qty).toFixed(2));
+  try {
+    const totalOwned: number = await Transaction.checkQuantity(
+      ticker,
+      res.locals.user
+    );
 
-  return res.json({ price, qty, total });
+    if (totalOwned < qty) {
+      throw new BadRequestError(
+        `Sell volume of ${qty} ${ticker} shares exceeds total owned ${ticker} shares of ${totalOwned}.`
+      );
+    }
+
+    const price: number = quote.c;
+    const total = Number((price * qty).toFixed(2));
+
+    const balance = Number(
+      await Transaction.sell(ticker, qty, price, res.locals.user)
+    );
+
+    console.log({ price, qty, total, balance });
+
+    return res.json({ price, qty, total, balance });
+  } catch (error) {
+    return next(error);
+  }
 });
