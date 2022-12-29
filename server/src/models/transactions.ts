@@ -2,7 +2,11 @@ import { BadRequestError } from '../errors';
 import { db } from '../db';
 
 export class Transaction {
-  /** Reduce user's cash balance and record stock purchase details */
+  /** Reduce user's cash balance and record stock purchase details
+   *
+   * Accepts ticker, quantity, price, and user
+   * Returns balance from database
+   */
   static async buy(
     ticker: string,
     quantity: number,
@@ -35,6 +39,11 @@ export class Transaction {
     return balance;
   }
 
+  /** Check the total number of shares owned by a user for a provided ticker
+   *
+   * Accepts ticker and user
+   * Returns total from database
+   */
   static async checkQuantity(ticker: string, user: string) {
     const totalResult = await db.query(
       `SELECT sum(quantity) as total
@@ -50,6 +59,11 @@ export class Transaction {
     return total;
   }
 
+  /** Increase user's cash balance and record stock sell details
+   *
+   * Accepts ticker, quantity, price, and user
+   * Returns balance from database
+   */
   static async sell(
     ticker: string,
     quantity: number,

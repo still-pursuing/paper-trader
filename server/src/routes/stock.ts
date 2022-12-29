@@ -17,9 +17,10 @@ router.get('/search', async (req, res, next) => {
 
 /** POST /buy {  quantity } => { price, qty, total }
  *
- * Returns stock price, quantity bought, and total cost if valid ticker and quantity is provided.
- * Otherwise, returns an error.
+ * Returns stock price, quantity bought, and total cost if valid ticker and
+ * valid quantity is provided.
  *
+ * Otherwise, returns an error.
  */
 router.post('/buy', async (req, res, next) => {
   const { ticker, quantity } = req.body;
@@ -57,15 +58,15 @@ router.post('/buy', async (req, res, next) => {
 
 /** POST /sell { quantity } => { price, qty, total }
  *
- * Returns stock price and quantity sold if valid ticker and quantity is provided.
+ * Returns stock price and quantity sold if valid ticker and
+ * valid quantity is provided.
  *
+ * Otherwise, returns an error.
  */
 router.post('/sell', async (req, res, next) => {
   const { ticker, quantity } = req.body;
   const qty = Number(quantity);
   const quote = res.locals.quote;
-
-  // TODO: need to implement a check to see if qty exceeds owned shares
 
   try {
     const totalOwned: number = await Transaction.checkQuantity(
