@@ -7,10 +7,10 @@ import UserContext from '../../UserContext';
 
 /**
  * Props:
- * - None
+ * - handleLogout: function to be called in App component
  *
  * State:
- * - None
+ * - portfolio: Portfolio interface or undefined
  *
  * Events:
  * - None

@@ -41,7 +41,7 @@ export default class PaperTraderApi {
    * Makes a request to server with stock ticker and quantity to buy a stock
    *
    * Returns:
-   *  {price, qty, total}
+   *  {price, qty, total, balance}
    */
   static async buyStock(ticker: string, quantity: number) {
     const transactionDetails = { ticker, quantity };
@@ -50,7 +50,12 @@ export default class PaperTraderApi {
     return res;
   }
 
-  /** Sell stock */
+  /**
+   * Makes a request to server with stock ticker and quantity to buy a stock
+   *
+   * Returns:
+   *  {price, qty, total, balance}
+   */
   static async sellStock(ticker: string, quantity: number) {
     const transactionDetails = { ticker, quantity };
     const res = await this.request('stock/sell', transactionDetails, 'POST');

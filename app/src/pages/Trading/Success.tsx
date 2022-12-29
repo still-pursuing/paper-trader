@@ -13,6 +13,20 @@ interface LocationState {
   };
 }
 
+/**
+ * Props:
+ *  - None
+ *
+ * State:
+ *  - None
+ *
+ * Events:
+ *  - None
+ *
+ * TradingPage -> SuccessPage
+ * Routes as /success
+ */
+
 function SuccessPage() {
   const { state } = useLocation() as LocationState;
 

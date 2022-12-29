@@ -13,6 +13,32 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import PaperTraderApi from '../../helpers/PaperTraderApi';
 import UserContext from '../../UserContext';
 
+const options = [
+  { label: 'Buy', value: 'buy' },
+  { label: 'Sell', value: 'sell' },
+  { label: 'Get Quote', value: 'quote' },
+];
+
+/**
+ * Props:
+ *  - None
+ *
+ * State:
+ *  - errors: stores error state if any occur during form submission
+ *  - formData: manages state changes in form inputs
+ *  - isInputInvalid: object with keys representing form input name and boolean for if input is valid
+ *  - transactionType: string representing form transaction type
+ *  - quoteData: undefined or object containing stock quote information
+ *  - isProcessingRequest: boolean representing processing of form submissions
+ *
+ * Events:
+ *  - handleChange
+ *  - handleSubmit
+ *
+ * Routes -> TradingPage -> SuccessPage
+ * Routed as /trading
+ */
+
 interface StockQuote {
   ticker: string;
   price: number;
@@ -20,23 +46,31 @@ interface StockQuote {
   total: number;
 }
 
-const options = [
-  { label: 'Buy', value: 'buy' },
-  { label: 'Sell', value: 'sell' },
-  { label: 'Get Quote', value: 'quote' },
-];
+interface TradingFormInput {
+  ticker: string;
+  quantity: number;
+}
+
+interface InputValidity {
+  ticker: boolean;
+  quantity: boolean;
+}
 
 function TradingPage() {
   const user = useContext(UserContext);
   const [errors, setErrors] = useState<string | undefined>(undefined);
-  const [formData, setFormData] = useState({ ticker: '', quantity: 0 });
-  const [isInputInvalid, setIsInputInvalid] = useState({
+  const [formData, setFormData] = useState<TradingFormInput>({
+    ticker: '',
+    quantity: 0,
+  });
+  const [isInputInvalid, setIsInputInvalid] = useState<InputValidity>({
     ticker: false,
     quantity: false,
   });
   const [transactionType, setTransactionType] = useState<string>('quote');
   const [quoteData, setQuoteData] = useState<StockQuote | undefined>(undefined);
-  const [isProcessingRequest, setIsProcessingRequest] = useState(false);
+  const [isProcessingRequest, setIsProcessingRequest] =
+    useState<boolean>(false);
   const navigate = useNavigate();
 
   if (!user) return <Navigate to='/login' replace />;
@@ -47,6 +81,11 @@ function TradingPage() {
     setFormData((data) => ({ ...data, [name]: value }));
   }
 
+  /** Handle form submission
+   *
+   * Calls corresponding transaction type request functions. If not successful
+   * then sets errors.
+   */
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     setIsProcessingRequest(true);
@@ -84,6 +123,12 @@ function TradingPage() {
     setIsProcessingRequest(false);
   }
 
+  /** Makes a stock buy request to server
+   *
+   * Accepts a ticker and quantity, redirecting user to Success page if successful.
+   * Otherwise, updates error state with an error message.
+   *
+   */
   async function buyRequest(ticker: string, quantity: number) {
     try {
       const { price, qty, total, balance } = await PaperTraderApi.buyStock(
@@ -113,6 +158,12 @@ function TradingPage() {
     }
   }
 
+  /** Makes a stock sell request to server
+   *
+   * Accepts a ticker and quantity, redirecting user to Success page if successful.
+   * Otherwise, updates error state with an error message.
+   *
+   */
   async function sellRequest(ticker: string, quantity: number) {
     try {
       console.log('Sell request');
@@ -144,6 +195,12 @@ function TradingPage() {
     }
   }
 
+  /** Makes a stock quote request to server
+   *
+   * Accepts a ticker and quantity, updating quoteData state is successful.
+   * Otherwise, updates error state with an error message.
+   *
+   */
   async function quoteRequest(ticker: string, quantity: number) {
     try {
       const { c: price } = await PaperTraderApi.getStock(ticker);
@@ -186,7 +243,7 @@ function TradingPage() {
             required
             isInvalid={isInputInvalid.ticker}
             validationMessage={
-              isInputInvalid.ticker ? 'Missing stock symbol' : undefined
+              isInputInvalid.ticker ? 'Missing stock symbol.' : undefined
             }
           />
           <TextInputField
@@ -199,7 +256,7 @@ function TradingPage() {
             isInvalid={isInputInvalid.quantity}
             validationMessage={
               isInputInvalid.quantity
-                ? 'Please enter a quantity greater than zero.'
+                ? 'Quantity must be greater than zero.'
                 : undefined
             }
           />
