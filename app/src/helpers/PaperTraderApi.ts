@@ -2,6 +2,17 @@ import axios from 'axios';
 
 import { BACKEND_BASE_URL } from '../config';
 
+interface TransactionResult {
+  price: number;
+  qty: number;
+  total: number;
+  balance: number;
+}
+
+interface FinnhubQuote {
+  c: number; // current price of the stock symbol provided
+}
+
 export default class PaperTraderApi {
   static token: string;
 
@@ -41,9 +52,12 @@ export default class PaperTraderApi {
    * Makes a request to server with stock ticker and quantity to buy a stock
    *
    * Returns:
-   *  {price, qty, total, balance}
+   *  TransactionResult which is {price, qty, total, balance}
    */
-  static async buyStock(ticker: string, quantity: number) {
+  static async buyStock(
+    ticker: string,
+    quantity: number
+  ): Promise<TransactionResult> {
     const transactionDetails = { ticker, quantity };
     const res = await this.request('stock/buy', transactionDetails, 'POST');
 
@@ -54,9 +68,12 @@ export default class PaperTraderApi {
    * Makes a request to server with stock ticker and quantity to buy a stock
    *
    * Returns:
-   *  {price, qty, total, balance}
+   *  TransactionResult which is {price, qty, total, balance}
    */
-  static async sellStock(ticker: string, quantity: number) {
+  static async sellStock(
+    ticker: string,
+    quantity: number
+  ): Promise<TransactionResult> {
     const transactionDetails = { ticker, quantity };
     const res = await this.request('stock/sell', transactionDetails, 'POST');
 
@@ -67,9 +84,9 @@ export default class PaperTraderApi {
    * Makes a request to server with stock ticker to get a quote
    *
    * Returns:
-   *  { c } which represents the price of a share
+   *  FinnhubQuote { c } which represents the price of a share
    */
-  static async getStock(ticker: string) {
+  static async getStock(ticker: string): Promise<FinnhubQuote> {
     const res = (await this.request(`stock/search?ticker=${ticker}`)).quote;
 
     return res;
