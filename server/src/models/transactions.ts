@@ -26,9 +26,10 @@ export class Transaction {
         ( ticker,
           quantity,
           price,
-          user_id
+          user_id,
+          type
         )
-        VALUES ($1, $2, $3, $4)
+        VALUES ($1, $2, $3, $4, 'buy')
         RETURNING id`,
       [ticker, quantity, price, user]
     );
@@ -46,9 +47,11 @@ export class Transaction {
    */
   static async checkQuantity(ticker: string, user: string) {
     const totalResult = await db.query(
-      `SELECT sum(quantity) as total
-        FROM transactions
-        WHERE user_id = $1 AND ticker = $2`,
+      `SELECT ((SELECT SUM(quantity)
+      FROM transactions
+      WHERE user_id = $1 AND ticker = $2 AND type = 'buy') - (SELECT SUM(quantity)
+      FROM transactions
+      WHERE user_id = $1 AND ticker = $2 AND type = 'sell')) as total`,
       [user, ticker]
     );
 
@@ -83,11 +86,12 @@ export class Transaction {
         ( ticker,
           quantity,
           price,
-          user_id
+          user_id,
+          type
         )
-        VALUES ($1, $2, $3, $4)
+        VALUES ($1, $2, $3, $4, 'sell')
         RETURNING id`,
-      [ticker, -quantity, price, user]
+      [ticker, quantity, price, user]
     );
 
     const results = [await balanceResult, await transactionResult];
