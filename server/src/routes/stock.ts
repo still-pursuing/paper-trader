@@ -1,7 +1,5 @@
 import { Router } from 'express';
 import { BadRequestError } from '../errors';
-
-import { Finnhub } from '../api/finnhub';
 import { Transaction } from '../models/transactions';
 import { User } from '../models/user';
 
@@ -9,93 +7,90 @@ export const router = Router();
 
 /** GET /search => { stock }
  *
- * Returns stock quote information if a valid ticker is provided.
- * Otherwise, returns BadRequestError.
+ * Returns stock quote information from a valid ticker.
  *
  */
 router.get('/search', async (req, res, next) => {
-  const { ticker } = req.query;
+  const quote = res.locals.quote;
+  return res.json({ quote });
+});
 
-  if (!ticker) return next(new BadRequestError('Missing ticker'));
+/** POST /buy {  quantity } => { price, qty, total }
+ *
+ * Returns stock price, quantity bought, and total cost if valid ticker and
+ * valid quantity is provided.
+ *
+ * Otherwise, returns an error.
+ */
+router.post('/buy', async (req, res, next) => {
+  const { ticker, quantity } = req.body;
+  console.log(req.body);
+  const quote = res.locals.quote;
+  const qty = Number(quantity);
 
   try {
-    const quote = await Finnhub.getStockQuote(ticker.toString().toUpperCase());
+    const price: number = quote.c;
+    const total = Number((price * qty).toFixed(2));
 
-    if (quote.c === 0) {
-      throw new BadRequestError('Invalid Stock Ticker');
+    const userBalance = +(await User.getProfile(res.locals.user)).balance;
+
+    if (userBalance < total) {
+      throw new BadRequestError(
+        `Insufficient Funds: Transaction total of ${total.toLocaleString('en', {
+          style: 'currency',
+          currency: 'USD',
+        })} exceeds account balance of ${userBalance.toLocaleString('en', {
+          style: 'currency',
+          currency: 'USD',
+        })}`
+      );
     }
 
-    return res.json({ quote });
+    const balance = Number(
+      await Transaction.buy(ticker, qty, price, res.locals.user)
+    );
+
+    return res.json({ price, qty, total, balance });
   } catch (err) {
     return next(err);
   }
 });
 
-/** POST /buy { ticker, quantity } => { price, qty, total }
+/** POST /sell { quantity } => { price, qty, total }
  *
- * Returns stock price, quantity bought, and total cost if valid ticker and quantity is provided
- * Otherwise, returns BadRequestError.
+ * Returns stock price and quantity sold if valid ticker and
+ * valid quantity is provided.
  *
+ * Otherwise, returns an error.
  */
-router.post('/buy', async (req, res, next) => {
+router.post('/sell', async (req, res, next) => {
   const { ticker, quantity } = req.body;
-  console.log(req.body);
   const qty = Number(quantity);
-
-  if (!ticker) return next(new BadRequestError('Missing ticker'));
+  const quote = res.locals.quote;
 
   try {
-    const quote = await Finnhub.getStockQuote(ticker.toString().toUpperCase());
+    const totalOwned: number = await Transaction.checkQuantity(
+      ticker,
+      res.locals.user
+    );
 
-    if (quote.c === 0) {
-      throw new BadRequestError('Invalid Stock Ticker');
+    if (totalOwned < qty) {
+      throw new BadRequestError(
+        `Sell volume of ${qty} ${ticker} shares exceeds total owned ${ticker} shares of ${totalOwned}.`
+      );
     }
 
     const price: number = quote.c;
     const total = Number((price * qty).toFixed(2));
 
-    const userBalance = (await User.getProfile(res.locals.user)).balance;
+    const balance = Number(
+      await Transaction.sell(ticker, qty, price, res.locals.user)
+    );
 
-    if (+userBalance < total) {
-      throw new BadRequestError(
-        `Insufficient Funds: Transaction total of ${total} exceeds account balance of ${userBalance}`
-      );
-    }
+    console.log({ price, qty, total, balance });
 
-    await Transaction.buy(ticker, qty, price, res.locals.user);
-
-    return res.json({ price, qty, total });
-  } catch (err) {
-    return next(err);
-  }
-});
-
-/** POST /sell { ticker, quantity } => { price, qty, total }
- *
- * Returns stock price and quantity sold if valid ticker and quantity is provided
- * Otherwise, returns BadRequestError.
- *
- */
-router.post('/sell', async (req, res, next) => {
-  const { ticker, quantity } = req.body;
-  const qty = Number(quantity);
-
-  if (!ticker) return next(new BadRequestError('Missing ticker'));
-
-  try {
-    const quote = await Finnhub.getStockQuote(ticker.toString().toUpperCase());
-
-    if (quote.c === 0) {
-      throw new BadRequestError('Invalid Stock Ticker');
-    }
-
-    //TODO: need to implement a check to see if qty exceeds owned shares
-
-    const price: number = -quote.c;
-    const total = Number((price * qty).toFixed(2));
-
-    return res.json({ price, qty, total });
-  } catch (err) {
-    return next(err);
+    return res.json({ price, qty, total, balance });
+  } catch (error) {
+    return next(error);
   }
 });

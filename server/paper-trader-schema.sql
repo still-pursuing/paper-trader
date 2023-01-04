@@ -1,7 +1,7 @@
 CREATE TABLE users (
   id VARCHAR PRIMARY KEY,
   username VARCHAR(37),
-  balance NUMERIC DEFAULT 0,
+  balance NUMERIC DEFAULT 0 CHECK (balance >= 0),
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 
@@ -10,6 +10,7 @@ CREATE TABLE transactions (
   ticker VARCHAR(5) NOT NULL,
   quantity NUMERIC CHECK (quantity >= 0),
   price NUMERIC CHECK (price >= 0),
+  type VARCHAR(4) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   user_id VARCHAR NOT NULL
     REFERENCES users ON DELETE CASCADE

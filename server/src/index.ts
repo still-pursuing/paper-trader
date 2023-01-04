@@ -9,6 +9,7 @@ import { router as loginRoute } from './routes/login';
 import { router as profileRoute } from './routes/profile';
 import { router as stockRoute } from './routes/stock';
 import { authenticateJWT } from './middleware/auth';
+import { validateTicker } from './middleware/validateTicker';
 
 const app = express();
 
@@ -20,7 +21,7 @@ app.use('/login', loginRoute);
 
 app.use(authenticateJWT);
 app.use('/profile', profileRoute);
-app.use('/stock', stockRoute);
+app.use('/stock', validateTicker, stockRoute);
 
 /** Handle 404 errors -- this matches everything */
 app.use((req, res, next) => {

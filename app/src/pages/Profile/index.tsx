@@ -7,10 +7,10 @@ import UserContext from '../../UserContext';
 
 /**
  * Props:
- * - None
+ * - handleLogout: function to be called in App component
  *
  * State:
- * - None
+ * - portfolio: Portfolio interface or undefined
  *
  * Events:
  * - None
@@ -62,7 +62,12 @@ function Profile({ handleLogout }: LogoutParams) {
       )}
       {portfolio && (
         <Paragraph>
-          You have <>${portfolio.balance} available funds to trade with!</>
+          You have a balance of{' '}
+          {Number(portfolio.balance).toLocaleString('en', {
+            style: 'currency',
+            currency: 'USD',
+          })}{' '}
+          to trade with.
         </Paragraph>
       )}
       {!portfolio && (
