@@ -47,17 +47,16 @@ export class Transaction {
    */
   static async checkQuantity(ticker: string, user: string) {
     const totalResult = await db.query(
-      `SELECT ((SELECT SUM(quantity)
-      FROM transactions
-      WHERE user_id = $1 AND ticker = $2 AND type = 'buy') - (SELECT SUM(quantity)
-      FROM transactions
-      WHERE user_id = $1 AND ticker = $2 AND type = 'sell')) as total`,
+      `SELECT (SELECT COALESCE((SELECT SUM(quantity)
+                FROM transactions
+                WHERE user_id = $1 AND ticker = $2 AND type = 'buy'), 0) - 
+              (SELECT COALESCE((SELECT SUM(quantity)
+                FROM transactions
+                WHERE user_id = $1 AND ticker = $2 AND type = 'sell'), 0))) as total`,
       [user, ticker]
     );
 
     let { total } = totalResult.rows[0];
-
-    total = total === null ? 0 : total;
 
     return total;
   }

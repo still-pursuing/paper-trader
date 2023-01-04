@@ -69,9 +69,8 @@ router.post('/sell', async (req, res, next) => {
   const quote = res.locals.quote;
 
   try {
-    const totalOwned: number = await Transaction.checkQuantity(
-      ticker,
-      res.locals.user
+    const totalOwned = Number(
+      await Transaction.checkQuantity(ticker, res.locals.user)
     );
 
     if (totalOwned < qty) {
