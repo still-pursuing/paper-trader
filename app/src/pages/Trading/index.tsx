@@ -108,7 +108,7 @@ function TradingPage() {
     }));
 
     const { ticker, quantity } = formData;
-    const cleanTicker = ticker ? ticker.trim().toUpperCase() : undefined;
+    const cleanTicker = ticker?.trim().toUpperCase();
 
     if (!cleanTicker) {
       setIsInputInvalid((inputValidity) => ({
