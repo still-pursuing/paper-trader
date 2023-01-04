@@ -8,7 +8,7 @@ import {
   Alert,
   Paragraph,
 } from 'evergreen-ui';
-import { ChangeEvent, FormEvent, useState, useContext } from 'react';
+import { ChangeEvent, FormEvent, useState, useContext, useEffect } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import PaperTraderApi from '../../helpers/PaperTraderApi';
 import UserContext from '../../UserContext';
@@ -47,7 +47,7 @@ interface StockQuote {
 }
 
 interface TradingFormInput {
-  ticker: string;
+  ticker?: string;
   quantity: number;
 }
 
@@ -60,7 +60,6 @@ function TradingPage() {
   const user = useContext(UserContext);
   const [errors, setErrors] = useState<string | undefined>(undefined);
   const [formData, setFormData] = useState<TradingFormInput>({
-    ticker: '',
     quantity: 0,
   });
   const [isInputInvalid, setIsInputInvalid] = useState<InputValidity>({
@@ -72,6 +71,16 @@ function TradingPage() {
   const [isProcessingRequest, setIsProcessingRequest] =
     useState<boolean>(false);
   const navigate = useNavigate();
+
+  /**
+   * When component unmounts, useEffect clears the remaining
+   * setIsProcessingRequest function in the handleSubmit function
+   */
+  useEffect(() => {
+    return () => {
+      setIsProcessingRequest(false);
+    };
+  }, []);
 
   if (!user) return <Navigate to='/login' replace />;
 
@@ -89,6 +98,8 @@ function TradingPage() {
   async function handleSubmit(evt: FormEvent<HTMLFormElement>) {
     evt.preventDefault();
     setIsProcessingRequest(true);
+    setErrors(undefined);
+    setQuoteData(undefined);
 
     setIsInputInvalid((inputValidity) => ({
       ...inputValidity,
@@ -97,14 +108,16 @@ function TradingPage() {
     }));
 
     const { ticker, quantity } = formData;
-    const cleanTicker = ticker.trim().toUpperCase();
+    const cleanTicker = ticker ? ticker.trim().toUpperCase() : undefined;
 
-    if (cleanTicker.length === 0) {
+    if (!cleanTicker) {
       setIsInputInvalid((inputValidity) => ({
         ...inputValidity,
         ticker: true,
       }));
     } else {
+      setFormData((data) => ({ ...data, ticker: cleanTicker }));
+
       if (transactionType === 'quote') {
         await quoteRequest(cleanTicker, quantity);
       } else if (quantity <= 0) {
@@ -119,7 +132,6 @@ function TradingPage() {
       }
     }
 
-    setFormData((data) => ({ ...data, ticker: cleanTicker }));
     setIsProcessingRequest(false);
   }
 
@@ -166,8 +178,6 @@ function TradingPage() {
    */
   async function sellRequest(ticker: string, quantity: number) {
     try {
-      console.log('Sell request');
-
       const { price, qty, total, balance } = await PaperTraderApi.sellStock(
         ticker,
         quantity
