@@ -91,4 +91,10 @@ export default class PaperTraderApi {
 
     return res;
   }
+
+  static async getHomeFeed() {
+    const res = await this.request('');
+
+    return res;
+  }
 }
