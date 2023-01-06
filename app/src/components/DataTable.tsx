@@ -1,4 +1,4 @@
-import { Paragraph, Table, Pane, Alert } from 'evergreen-ui';
+import { Paragraph, Table, Pane, Alert, Spinner, Heading } from 'evergreen-ui';
 import { useEffect, useState } from 'react';
 
 import PaperTraderApi from '../helpers/PaperTraderApi';
@@ -39,7 +39,9 @@ interface Activity {
 }
 
 function DataTable() {
-  const [tradeActivity, setTradeActivity] = useState<ActivityList>([]);
+  const [tradeActivity, setTradeActivity] = useState<ActivityList | undefined>(
+    undefined
+  );
   const [errors, setErrors] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -47,6 +49,7 @@ function DataTable() {
       try {
         const activity = await PaperTraderApi.getHomeFeed();
         setTradeActivity(activity);
+        setErrors(undefined);
       } catch (error) {
         setErrors(
           'There was an issue with accessing the activity database. Please try again later.'
@@ -60,48 +63,58 @@ function DataTable() {
     <Pane>
       {errors ? (
         <Pane>
-          {' '}
           <Alert intent='danger' title='Something went wrong'>
             {errors}
           </Alert>
         </Pane>
       ) : (
         <Pane>
-          {tradeActivity.length === 0 ? (
-            <Paragraph>No activity! Login and start trading!</Paragraph>
-          ) : (
-            <Table>
-              <Table.Head>
-                {tableHeaders.map((header) => (
-                  <Table.TextHeaderCell key={header}>
-                    {header}
-                  </Table.TextHeaderCell>
-                ))}
-              </Table.Head>
-              {tradeActivity.length && (
-                <Table.VirtualBody height={240}>
-                  {tradeActivity.map((transaction, idx) => (
-                    <Table.Row
-                      key={idx}
-                      isSelectable
-                      onSelect={() => alert(transaction.ticker)}
-                    >
-                      <Table.TextCell>{transaction.ticker}</Table.TextCell>
-                      <Table.TextCell isNumber>
-                        {transaction.quantity}
-                      </Table.TextCell>
-                      <Table.TextCell isNumber>
-                        ${transaction.price}
-                      </Table.TextCell>
-                      <Table.TextCell>
-                        {transaction.transactionType}
-                      </Table.TextCell>
-                      <Table.TextCell>{transaction.from}</Table.TextCell>
-                    </Table.Row>
-                  ))}
-                </Table.VirtualBody>
+          {tradeActivity ? (
+            <Pane>
+              {tradeActivity.length === 0 ? (
+                <Paragraph>No activity! Login and start trading!</Paragraph>
+              ) : (
+                <Table>
+                  <Table.Head>
+                    {tableHeaders.map((header) => (
+                      <Table.TextHeaderCell key={header}>
+                        {header}
+                      </Table.TextHeaderCell>
+                    ))}
+                  </Table.Head>
+                  {tradeActivity.length && (
+                    <Table.VirtualBody height={240}>
+                      {tradeActivity.map((transaction, idx) => (
+                        <Table.Row
+                          key={idx}
+                          isSelectable
+                          onSelect={() => alert(transaction.ticker)}
+                        >
+                          <Table.TextCell>{transaction.ticker}</Table.TextCell>
+                          <Table.TextCell isNumber>
+                            {transaction.quantity}
+                          </Table.TextCell>
+                          <Table.TextCell isNumber>
+                            ${transaction.price}
+                          </Table.TextCell>
+                          <Table.TextCell>
+                            {transaction.transactionType}
+                          </Table.TextCell>
+                          <Table.TextCell>{transaction.from}</Table.TextCell>
+                        </Table.Row>
+                      ))}
+                    </Table.VirtualBody>
+                  )}
+                </Table>
               )}
-            </Table>
+            </Pane>
+          ) : (
+            <Pane display='flex' flexDirection='column' alignItems='center'>
+              <Heading is='h4' size={900}>
+                Loading Transaction Activity...
+              </Heading>
+              <Spinner marginX='auto' marginY={50} />
+            </Pane>
           )}
         </Pane>
       )}

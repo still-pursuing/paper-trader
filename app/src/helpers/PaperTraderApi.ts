@@ -93,7 +93,7 @@ export default class PaperTraderApi {
   }
 
   static async getHomeFeed() {
-    const res = await this.request('');
+    const res = this.request('');
 
     return res;
   }
