@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import { port } from './config';
 
 import { ExpressError, NotFoundError } from './errors';
+import { router as homeRoute } from './routes/home';
 import { router as loginRoute } from './routes/login';
 import { router as profileRoute } from './routes/profile';
 import { router as stockRoute } from './routes/stock';
@@ -17,6 +18,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny'));
 
+app.use('/', homeRoute);
 app.use('/login', loginRoute);
 
 app.use(authenticateJWT);

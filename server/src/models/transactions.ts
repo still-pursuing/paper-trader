@@ -49,14 +49,14 @@ export class Transaction {
     const totalResult = await db.query(
       `SELECT (SELECT COALESCE((SELECT SUM(quantity)
                 FROM transactions
-                WHERE user_id = $1 AND ticker = $2 AND type = 'buy'), 0) - 
+                WHERE user_id = $1 AND ticker = $2 AND type = 'buy'), 0) -
               (SELECT COALESCE((SELECT SUM(quantity)
                 FROM transactions
                 WHERE user_id = $1 AND ticker = $2 AND type = 'sell'), 0))) as total`,
       [user, ticker]
     );
 
-    let { total } = totalResult.rows[0];
+    const { total } = totalResult.rows[0];
 
     return total;
   }
@@ -99,4 +99,20 @@ export class Transaction {
 
     return balance;
   }
+
+  static async allRecentActivity(limit: number) {
+    const recentActivityResult = await db.query(
+      `SELECT ticker, quantity, price, type, created_at
+        FROM transactions
+        ORDER BY created_at DESC
+        LIMIT $1`,
+      [limit]
+    );
+
+    const recentActivity = recentActivityResult.rows;
+
+    return recentActivity;
+  }
+
+  static async userRecentAtivity() {}
 }
