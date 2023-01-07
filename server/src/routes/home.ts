@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { Transaction } from '../models/transactions';
 
+import { timeDifference } from '../helpers/relativeTime';
+
 export const router = Router();
 
 const ACTIVITY_LIMIT = 10;
@@ -19,9 +21,14 @@ router.get('/', async (req, res, next) => {
 
     const activity = databaseActivity.map((entry) => {
       entry.transactionType = entry.type;
-      entry.from = entry.created_at;
+
+      entry.from = timeDifference(
+        Date.now(),
+        new Date(entry.created_at).valueOf()
+      );
       delete entry.type;
       delete entry.created_at;
+
       return entry;
     });
 
