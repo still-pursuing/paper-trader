@@ -47,7 +47,7 @@ interface StockQuote {
 }
 
 interface TradingFormInput {
-  ticker?: string;
+  ticker: string;
   quantity: number;
 }
 
@@ -60,6 +60,7 @@ function TradingPage() {
   const user = useContext(UserContext);
   const [errors, setErrors] = useState<string | undefined>(undefined);
   const [formData, setFormData] = useState<TradingFormInput>({
+    ticker: '',
     quantity: 0,
   });
   const [isInputInvalid, setIsInputInvalid] = useState<InputValidity>({
