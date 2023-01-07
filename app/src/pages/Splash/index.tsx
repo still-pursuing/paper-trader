@@ -1,5 +1,4 @@
-import { Link as ReactRouterLink } from 'react-router-dom';
-import { Heading, Link, Pane, Paragraph, Alert, Spinner } from 'evergreen-ui';
+import { Heading, Pane, Paragraph, Alert, Spinner } from 'evergreen-ui';
 import { useEffect, useState } from 'react';
 
 import PaperTraderApi from '../../helpers/PaperTraderApi';
@@ -69,10 +68,6 @@ export function Splash() {
           </Pane>
         )}
       </Pane>
-      <Link is={ReactRouterLink} to='/login'>
-        Discord Log In
-      </Link>
-      <p>Deployed on Firebase.</p>
     </Pane>
   );
 }
