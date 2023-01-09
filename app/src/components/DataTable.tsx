@@ -19,7 +19,7 @@ const tableHeaders = [
   'Quantity',
   'Price',
   'Transaction Type',
-  'Time',
+  'From',
 ];
 
 function DataTable({ tradeActivity }: DataTableParams) {
@@ -37,11 +37,7 @@ function DataTable({ tradeActivity }: DataTableParams) {
           {tradeActivity.length && (
             <Table.VirtualBody height={240}>
               {tradeActivity.map((transaction, idx) => (
-                <Table.Row
-                  key={idx}
-                  isSelectable
-                  onSelect={() => alert(transaction.ticker)}
-                >
+                <Table.Row key={idx}>
                   <Table.TextCell>{transaction.ticker}</Table.TextCell>
                   <Table.TextCell isNumber>
                     {transaction.quantity}
