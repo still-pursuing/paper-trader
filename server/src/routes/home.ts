@@ -1,11 +1,10 @@
 import { Router } from 'express';
-import { Transaction } from '../models/transactions';
 
+import { Transaction } from '../models/transactions';
 import { timeDifference } from '../helpers/relativeTime';
+import { HOME_ACTIVITY_LIMIT } from '../config';
 
 export const router = Router();
-
-const ACTIVITY_LIMIT = 10;
 
 /** GET / => {  }
  *
@@ -16,7 +15,7 @@ const ACTIVITY_LIMIT = 10;
 router.get('/', async (req, res, next) => {
   try {
     const databaseActivity = await Transaction.allRecentActivity(
-      ACTIVITY_LIMIT
+      HOME_ACTIVITY_LIMIT
     );
 
     const activity = databaseActivity.map((entry) => {
