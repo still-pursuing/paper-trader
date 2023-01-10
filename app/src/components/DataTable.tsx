@@ -1,17 +1,9 @@
 import { Paragraph, Table, Pane } from 'evergreen-ui';
 
-interface ActivityList extends Array<Activity> {}
-
-interface Activity {
-  ticker?: string;
-  quantity?: number;
-  price?: number;
-  transactionType?: string;
-  from?: string;
-}
+import { Activity } from '../interfaces/activity';
 
 interface DataTableParams {
-  tradeActivity: ActivityList;
+  tradeActivity: Activity[];
 }
 
 const tableHeaders = [

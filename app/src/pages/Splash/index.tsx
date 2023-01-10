@@ -4,19 +4,10 @@ import { useEffect, useState } from 'react';
 import PaperTraderApi from '../../helpers/PaperTraderApi';
 import DataTable from '../../components/DataTable';
 import './Splash.css';
-
-interface ActivityList extends Array<Activity> {}
-
-interface Activity {
-  ticker?: string;
-  quantity?: number;
-  price?: number;
-  transactionType?: string;
-  from?: string;
-}
+import { Activity } from '../../interfaces/activity';
 
 export function Splash() {
-  const [tradeActivity, setTradeActivity] = useState<ActivityList | undefined>(
+  const [tradeActivity, setTradeActivity] = useState<Activity[] | undefined>(
     undefined
   );
   const [errors, setErrors] = useState<string | undefined>(undefined);
