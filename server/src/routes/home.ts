@@ -1,7 +1,7 @@
 import { Router } from 'express';
+import { DateTime } from 'luxon';
 
 import { Transaction } from '../models/transactions';
-import { timeDifference } from '../helpers/relativeTime';
 import { HOME_ACTIVITY_LIMIT } from '../config';
 
 export const router = Router();
@@ -21,10 +21,9 @@ router.get('/', async (req, res, next) => {
     const activity = databaseActivity.map((entry) => {
       entry.transactionType = entry.type;
 
-      entry.from = timeDifference(
-        Date.now(),
-        new Date(entry.created_at).valueOf()
-      );
+      const transactionDateMillis = new Date(entry.created_at).valueOf();
+      entry.from = DateTime.fromMillis(transactionDateMillis).toRelative();
+
       delete entry.type;
       delete entry.created_at;
 
