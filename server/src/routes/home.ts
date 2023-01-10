@@ -6,10 +6,12 @@ import { HOME_ACTIVITY_LIMIT } from '../config';
 
 export const router = Router();
 
-/** GET / => {  }
+/** GET / => { [ {ticker, quantity, price, type, from}, {...}, ...] }
  *
- * Returns
+ * Returns an array of objects representing transaction information, where the
+ * length of array is set by the configuration file value.
  *
+ * Otherwise, returns an error.
  */
 
 router.get('/', async (req, res, next) => {

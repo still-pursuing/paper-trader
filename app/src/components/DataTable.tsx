@@ -14,6 +14,18 @@ const tableHeaders = [
   'From',
 ];
 
+/**
+ * Props:
+ * - tradeActivity
+ *
+ * State:
+ * - None
+ *
+ * Effects:
+ * - None
+ *
+ * Splash -> DataTable
+ */
 function DataTable({ tradeActivity }: DataTableParams) {
   return (
     <Pane>

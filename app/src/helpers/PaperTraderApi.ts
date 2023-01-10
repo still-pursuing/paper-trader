@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { BACKEND_BASE_URL } from '../config';
+import { Activity } from '../interfaces/activity';
 
 interface TransactionResult {
   price: number;
@@ -92,7 +93,13 @@ export default class PaperTraderApi {
     return res;
   }
 
-  static async getHomeFeed() {
+  /**
+   * Makes a request to server to obtain recent transaction activity
+   *
+   * Returns:
+   *  Activity[] which is [{ticker, quantity, price, type, from}, {...}, ...}]
+   */
+  static async getHomeFeed(): Promise<Activity[] | undefined> {
     const res = this.request('');
 
     return res;

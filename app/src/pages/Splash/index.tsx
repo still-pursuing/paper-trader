@@ -6,6 +6,20 @@ import DataTable from '../../components/DataTable';
 import './Splash.css';
 import { Activity } from '../../interfaces/activity';
 
+/**
+ * Props:
+ * - None
+ *
+ * State:
+ * - tradeActivity: an array of user transaction details
+ * - errors: stores error state if any occur during form submission
+ *
+ * Events:
+ * - None
+ *
+ * Routes -> Splash -> DataTable
+ * Routed as / and /home
+ */
 export function Splash() {
   const [tradeActivity, setTradeActivity] = useState<Activity[] | undefined>(
     undefined
