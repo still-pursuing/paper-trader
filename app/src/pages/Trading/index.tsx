@@ -214,7 +214,7 @@ function TradingPage() {
    */
   async function quoteRequest(ticker: string, quantity: number) {
     try {
-      const { c: price } = await PaperTraderApi.getStock(ticker);
+      const price = await PaperTraderApi.getStock(ticker);
       const total = price * quantity;
       setQuoteData({ ticker, price, quantity, total });
     } catch (error) {

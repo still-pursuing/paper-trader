@@ -10,10 +10,6 @@ interface TransactionResult {
   balance: number;
 }
 
-interface FinnhubQuote {
-  c: number; // current price of the stock symbol provided
-}
-
 export default class PaperTraderApi {
   static token: string;
 
@@ -79,8 +75,8 @@ export default class PaperTraderApi {
   /**
    * Makes a request to server with stock ticker to get a quote
    */
-  static async getStock(ticker: string): Promise<FinnhubQuote> {
-    const res = (await this.request(`stock/search?ticker=${ticker}`)).quote;
+  static async getStock(ticker: string): Promise<number> {
+    const res = (await this.request(`stock/search?ticker=${ticker}`)).price;
 
     return res;
   }
