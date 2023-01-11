@@ -12,6 +12,8 @@ export const BASE_DISCORD_API_URL = 'https://discord.com/api';
 
 export const INITIAL_FUNDS = 10000;
 
+export const HOME_ACTIVITY_LIMIT = 10;
+
 // Use dev database, testing database, or via env var, production database
 export function getDatabaseUri() {
   return process.env.NODE_ENV === 'test'
