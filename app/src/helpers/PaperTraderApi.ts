@@ -51,9 +51,6 @@ export default class PaperTraderApi {
 
   /**
    * Makes a request to server with stock ticker and quantity to buy a stock
-   *
-   * Returns:
-   *  TransactionResult which is {price, qty, total, balance}
    */
   static async buyStock(
     ticker: string,
@@ -68,8 +65,6 @@ export default class PaperTraderApi {
   /**
    * Makes a request to server with stock ticker and quantity to buy a stock
    *
-   * Returns:
-   *  TransactionResult which is {price, qty, total, balance}
    */
   static async sellStock(
     ticker: string,
@@ -83,9 +78,6 @@ export default class PaperTraderApi {
 
   /**
    * Makes a request to server with stock ticker to get a quote
-   *
-   * Returns:
-   *  FinnhubQuote { c } which represents the price of a share
    */
   static async getStock(ticker: string): Promise<FinnhubQuote> {
     const res = (await this.request(`stock/search?ticker=${ticker}`)).quote;
@@ -95,9 +87,6 @@ export default class PaperTraderApi {
 
   /**
    * Makes a request to server to obtain recent transaction activity
-   *
-   * Returns:
-   *  Activity[] which is [{ticker, quantity, price, type, from}, {...}, ...}]
    */
   static async getHomeFeed(): Promise<Activity[] | undefined> {
     const res = this.request('');
