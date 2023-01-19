@@ -3,7 +3,7 @@ import axios from 'axios';
 import { finnHubToken } from '../config';
 import { BASE_FINNHUB_API_URL } from '../config';
 
-export class StockTransactionAPI {
+export class Finnhub {
   /** Axios request builder */
   static async request(ticker: string, method = 'GET') {
     const url = `${BASE_FINNHUB_API_URL}?symbol=${ticker}&token=${finnHubToken}`;

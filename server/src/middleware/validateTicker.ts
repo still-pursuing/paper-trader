@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { BadRequestError } from '../errors';
-import { StockTransactionAPI } from '../api/stockTransactionAPI';
+import { Finnhub } from '../api/finnhub';
 
 /** Checks if a stock ticker is included in the request and if it's a valid
  * ticker on the NYSE (according to Finnhub)
@@ -16,7 +16,7 @@ export async function validateTicker(
   try {
     if (!ticker) throw new BadRequestError('Missing Ticker');
 
-    const sharePrice = await StockTransactionAPI.getStockQuote(
+    const sharePrice = await Finnhub.getStockQuote(
       ticker.toString().toUpperCase()
     );
 
