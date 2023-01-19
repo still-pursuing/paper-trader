@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import { BACKEND_BASE_URL } from '../config';
 import { Activity } from '../interfaces/activity';
+import { Stock } from '../classes/stock';
 
 interface TransactionResult {
   price: number;
@@ -77,8 +78,9 @@ export default class PaperTraderApi {
    */
   static async getStockPrice(ticker: string): Promise<number> {
     const res = (await this.request(`stock/search?ticker=${ticker}`)).price;
+    const stock = new Stock(res);
 
-    return res;
+    return stock.price;
   }
 
   /**
