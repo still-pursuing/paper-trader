@@ -75,7 +75,7 @@ export default class PaperTraderApi {
   /**
    * Makes a request to server with stock ticker to get a quote
    */
-  static async getStock(ticker: string): Promise<number> {
+  static async getStockPrice(ticker: string): Promise<number> {
     const res = (await this.request(`stock/search?ticker=${ticker}`)).price;
 
     return res;
