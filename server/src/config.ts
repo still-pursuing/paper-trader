@@ -9,6 +9,7 @@ export const clientSecret = process.env.CLIENT_SECRET;
 export const finnHubToken = process.env.FINNHUB_API_TOKEN;
 
 export const BASE_DISCORD_API_URL = 'https://discord.com/api';
+export const BASE_FINNHUB_API_URL = 'https://finnhub.io/api/v1/quote';
 
 export const INITIAL_FUNDS = 10000;
 

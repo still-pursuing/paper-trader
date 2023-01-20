@@ -1,12 +1,7 @@
 import axios from 'axios';
 
 import { finnHubToken } from '../config';
-
-const BASE_FINNHUB_API_URL = 'https://finnhub.io/api/v1/quote';
-
-interface FinnhubQuote {
-  c: number; // current price of the stock symbol provided
-}
+import { BASE_FINNHUB_API_URL } from '../config';
 
 export class Finnhub {
   /** Axios request builder */
@@ -20,7 +15,8 @@ export class Finnhub {
   // Individual Finnhub API routes
 
   /** Get a stock quote based on ticker input */
-  static async getStockQuote(ticker: string): Promise<FinnhubQuote> {
-    return this.request(ticker);
+  static async getStockQuote(ticker: string): Promise<number> {
+    const { c: sharePrice } = await this.request(ticker);
+    return sharePrice;
   }
 }

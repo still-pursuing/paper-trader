@@ -11,8 +11,8 @@ export const router = Router();
  *
  */
 router.get('/search', async (req, res, next) => {
-  const quote = res.locals.quote;
-  return res.json({ quote });
+  const price: number = res.locals.sharePrice;
+  return res.json({ price });
 });
 
 /** POST /buy {  quantity } => { price, qty, total }
@@ -24,12 +24,10 @@ router.get('/search', async (req, res, next) => {
  */
 router.post('/buy', async (req, res, next) => {
   const { ticker, quantity } = req.body;
-  console.log(req.body);
-  const quote = res.locals.quote;
   const qty = Number(quantity);
 
   try {
-    const price: number = quote.c;
+    const price: number = res.locals.sharePrice;
     const total = Number((price * qty).toFixed(2));
 
     const userBalance = +(await User.getProfile(res.locals.user)).balance;
@@ -66,7 +64,6 @@ router.post('/buy', async (req, res, next) => {
 router.post('/sell', async (req, res, next) => {
   const { ticker, quantity } = req.body;
   const qty = Number(quantity);
-  const quote = res.locals.quote;
 
   try {
     const totalOwned = Number(
@@ -79,14 +76,12 @@ router.post('/sell', async (req, res, next) => {
       );
     }
 
-    const price: number = quote.c;
+    const price: number = res.locals.sharePrice;
     const total = Number((price * qty).toFixed(2));
 
     const balance = Number(
       await Transaction.sell(ticker, qty, price, res.locals.user)
     );
-
-    console.log({ price, qty, total, balance });
 
     return res.json({ price, qty, total, balance });
   } catch (error) {
