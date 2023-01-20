@@ -7,7 +7,7 @@ import { port } from './config';
 import { ExpressError, NotFoundError } from './errors';
 import { router as homeRoute } from './routes/home';
 import { router as loginRoute } from './routes/login';
-import { router as profileRoute } from './routes/profile';
+import { router as userRoute } from './routes/user';
 import { router as stockRoute } from './routes/stock';
 import { authenticateJWT } from './middleware/auth';
 import { validateTicker } from './middleware/validateTicker';
@@ -22,7 +22,7 @@ app.use('/', homeRoute);
 app.use('/login', loginRoute);
 
 app.use(authenticateJWT);
-app.use('/profile', profileRoute);
+app.use('/user', userRoute);
 app.use('/stock', validateTicker, stockRoute);
 
 /** Handle 404 errors -- this matches everything */
