@@ -98,6 +98,9 @@ export class Transaction {
     return balance;
   }
 
+  /** Returns up to the provided limit amount of the most recent stock transactions activity
+   *
+   */
   static async allRecentActivity(limit: number) {
     const recentActivityResult = await db.query(
       `SELECT ticker, quantity, price, type, created_at
