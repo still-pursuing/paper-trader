@@ -28,7 +28,8 @@
     "jsonwebtoken": "^8.5.1",
     "luxon": "^3.2.1",
     "morgan": "^1.10.0",
-    "pg": "^8.8.0"
+    "pg": "^8.8.0",
+    "yahoo-finance2": "^2.3.10"
   },
   "engines": {
     "node": ">=16.13.0"
