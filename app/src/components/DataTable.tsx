@@ -42,8 +42,8 @@ function DataTable({ tradeActivity }: DataTableParams) {
             <Table.VirtualBody height={240}>
               {tradeActivity.map((transaction, idx) => (
                 <Table.Row key={idx}>
-                  {Object.values(transaction).map((val) => (
-                    <Table.TextCell>{val}</Table.TextCell>
+                  {Object.values(transaction).map((val, idx) => (
+                    <Table.TextCell key={idx}>{val}</Table.TextCell>
                   ))}
                 </Table.Row>
               ))}
