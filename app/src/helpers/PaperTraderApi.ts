@@ -37,10 +37,10 @@ export default class PaperTraderApi {
    * Makes a request to server with JWT token from localStorage
    *
    * Returns:
-   *  {username, balance}
+   *  {userProfile, userPortfolio}
    */
-  static async getUserProfile() {
-    const res = (await this.request('profile')).userPortfolio;
+  static async getUserAccount() {
+    const res = await this.request('user');
 
     return res;
   }
