@@ -66,9 +66,13 @@ export class User {
 
   // todo: add an update method if user changed their Discord username
 
+  /** Query the database for user's portfolio holdings
+   *
+   * Returns either their holdings or undefined if there's no transactions
+   */
   static async getPortfolioValue(id: string) {
     const result = await db.query(
-      `SELECT ticker, SUM(CASE WHEN type='buy' THEN quantity ELSE -quantity END) 
+      `SELECT ticker, SUM(CASE WHEN type='buy' THEN quantity ELSE -quantity END)
         AS total_owned
         FROM transactions
         WHERE user_id=$1
