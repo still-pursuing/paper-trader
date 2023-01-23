@@ -23,6 +23,14 @@ interface Portfolio {
   balance: string;
 }
 
+interface Holdings {
+  company: string;
+  currentPrice: number;
+  ticker: string;
+  totalOwned: number;
+  totalValue: number;
+}
+
 interface LogoutParams {
   handleLogout: () => void;
 }
@@ -30,6 +38,7 @@ interface LogoutParams {
 function Profile({ handleLogout }: LogoutParams) {
   const user = useContext(UserContext);
   const [portfolio, setPortfolio] = useState<Portfolio | undefined>(undefined);
+  const [holdings, setHoldings] = useState<Holdings | undefined>(undefined);
   const navigate = useNavigate();
 
   // make requests to get username and balance, transactions
@@ -37,8 +46,10 @@ function Profile({ handleLogout }: LogoutParams) {
   useEffect(() => {
     async function loadPortfolio() {
       try {
-        const userProfile = await PaperTraderApi.getUserProfile();
+        const { userProfile, userPortfolio } =
+          await PaperTraderApi.getUserAccount();
         setPortfolio(userProfile);
+        console.log(userPortfolio);
       } catch (error) {
         const message: string = "Couldn't load profile, please log in again";
         handleLogout();
@@ -56,19 +67,19 @@ function Profile({ handleLogout }: LogoutParams) {
         Profile Page
       </Heading>
       {portfolio && (
-        <Paragraph>
-          Hi <>{portfolio.username}!</>
-        </Paragraph>
-      )}
-      {portfolio && (
-        <Paragraph>
-          You have a balance of{' '}
-          {Number(portfolio.balance).toLocaleString('en', {
-            style: 'currency',
-            currency: 'USD',
-          })}{' '}
-          to trade with.
-        </Paragraph>
+        <Pane display='flex' flexDirection='column' alignItems='center'>
+          <Paragraph>
+            Hi <>{portfolio.username}!</>
+          </Paragraph>
+          <Paragraph>
+            You have a balance of{' '}
+            {Number(portfolio.balance).toLocaleString('en', {
+              style: 'currency',
+              currency: 'USD',
+            })}{' '}
+            to trade with.
+          </Paragraph>
+        </Pane>
       )}
       {!portfolio && (
         <Pane display='flex' flexDirection='column' alignItems='center'>
