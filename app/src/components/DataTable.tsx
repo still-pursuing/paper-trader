@@ -42,13 +42,9 @@ function DataTable({ tradeActivity }: DataTableParams) {
             <Table.VirtualBody height={240}>
               {tradeActivity.map((transaction, idx) => (
                 <Table.Row key={idx}>
-                  <Table.TextCell>{transaction.ticker}</Table.TextCell>
-                  <Table.TextCell isNumber>
-                    {transaction.quantity}
-                  </Table.TextCell>
-                  <Table.TextCell isNumber>${transaction.price}</Table.TextCell>
-                  <Table.TextCell>{transaction.transactionType}</Table.TextCell>
-                  <Table.TextCell>{transaction.from}</Table.TextCell>
+                  {Object.values(transaction).map((val) => (
+                    <Table.TextCell>{val}</Table.TextCell>
+                  ))}
                 </Table.Row>
               ))}
             </Table.VirtualBody>
