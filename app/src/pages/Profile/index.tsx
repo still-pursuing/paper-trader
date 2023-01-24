@@ -4,6 +4,16 @@ import { Navigate, useNavigate } from 'react-router-dom';
 
 import PaperTraderApi from '../../helpers/PaperTraderApi';
 import UserContext from '../../UserContext';
+import { Holdings } from '../../interfaces/holdings';
+import DataTable from '../../components/DataTable';
+
+const tableHeaders = [
+  'Company',
+  'Ticker',
+  'Total Shares Owned',
+  'Current Value',
+  'Total Value',
+];
 
 /**
  * Props:
@@ -23,14 +33,6 @@ interface Portfolio {
   balance: string;
 }
 
-interface Holdings {
-  company: string;
-  currentPrice: number;
-  ticker: string;
-  totalOwned: number;
-  totalValue: number;
-}
-
 interface LogoutParams {
   handleLogout: () => void;
 }
@@ -38,7 +40,7 @@ interface LogoutParams {
 function Profile({ handleLogout }: LogoutParams) {
   const user = useContext(UserContext);
   const [portfolio, setPortfolio] = useState<Portfolio | undefined>(undefined);
-  const [holdings, setHoldings] = useState<Holdings | undefined>(undefined);
+  const [holdings, setHoldings] = useState<Holdings[] | undefined>(undefined);
   const navigate = useNavigate();
 
   // make requests to get username and balance, transactions
@@ -49,7 +51,7 @@ function Profile({ handleLogout }: LogoutParams) {
         const { userProfile, userPortfolio } =
           await PaperTraderApi.getUserAccount();
         setPortfolio(userProfile);
-        console.log(userPortfolio);
+        setHoldings(userPortfolio);
       } catch (error) {
         const message: string = "Couldn't load profile, please log in again";
         handleLogout();
@@ -62,26 +64,38 @@ function Profile({ handleLogout }: LogoutParams) {
   if (!user) return <Navigate to='/login' replace />;
 
   return (
-    <Pane display='flex' flexDirection='column' alignItems='center'>
-      <Heading is='h1' size={900}>
+    <Pane>
+      <Heading
+        is='h1'
+        size={900}
+        display='flex'
+        flexDirection='column'
+        alignItems='center'
+      >
         Profile Page
       </Heading>
-      {portfolio && (
-        <Pane display='flex' flexDirection='column' alignItems='center'>
-          <Paragraph>
-            Hi <>{portfolio.username}!</>
-          </Paragraph>
-          <Paragraph>
-            You have a balance of{' '}
-            {Number(portfolio.balance).toLocaleString('en', {
-              style: 'currency',
-              currency: 'USD',
-            })}{' '}
-            to trade with.
-          </Paragraph>
+      {portfolio ? (
+        <Pane>
+          <Pane display='flex' flexDirection='column' alignItems='center'>
+            <Paragraph>
+              Hi <>{portfolio.username}!</>
+            </Paragraph>
+            <Paragraph>
+              You have a balance of{' '}
+              {Number(portfolio.balance).toLocaleString('en', {
+                style: 'currency',
+                currency: 'USD',
+              })}{' '}
+              to trade with.
+            </Paragraph>
+          </Pane>
+          <Pane>
+            {holdings && (
+              <DataTable tableHeaders={tableHeaders} tableContent={holdings} />
+            )}
+          </Pane>
         </Pane>
-      )}
-      {!portfolio && (
+      ) : (
         <Pane display='flex' flexDirection='column' alignItems='center'>
           <Paragraph>Loading...</Paragraph>
           <Spinner marginX='auto' marginY={30} />
