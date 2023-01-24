@@ -6,6 +6,14 @@ import DataTable from '../../components/DataTable';
 import './Splash.css';
 import { Activity } from '../../interfaces/activity';
 
+const tableHeaders = [
+  'Ticker',
+  'Quantity',
+  'Price',
+  'Transaction Type',
+  'From',
+];
+
 /**
  * Props:
  * - None
@@ -63,7 +71,7 @@ export function Splash() {
             </Alert>
           </Pane>
         ) : tradeActivity ? (
-          <DataTable tradeActivity={tradeActivity} />
+          <DataTable tableContent={tradeActivity} tableHeaders={tableHeaders} />
         ) : (
           <Pane display='flex' flexDirection='column' alignItems='center'>
             <Heading is='h4' size={900}>
