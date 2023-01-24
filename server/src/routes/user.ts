@@ -21,13 +21,14 @@ router.get('/', async (req, res, next) => {
     const userPortfolio = await User.getPortfolioValue(res.locals.user);
 
     for (const stock of userPortfolio) {
-      const { ticker, total_owned }: { ticker: string; total_owned: number } =
+      const { ticker, total_owned }: { ticker: string; total_owned: string } =
         stock;
-      const { longName, ask } = await yahooFinance.quote(ticker); // argument must be type string
-
+      const { longName, regularMarketPrice } = await yahooFinance.quote(ticker); // argument must be type string
       stock.company = longName;
-      stock.currentPrice = ask;
-      stock.totalValue = +(total_owned * ask).toFixed(2);
+      stock.totalOwned = +total_owned;
+      stock.currentPrice = regularMarketPrice;
+      stock.totalValue = +(stock.totalOwned * regularMarketPrice).toFixed(2);
+      delete stock.total_owned;
     }
 
     return res.json({ userProfile, userPortfolio });
