@@ -4,7 +4,7 @@ import { Alert, Pane } from 'evergreen-ui';
 
 import { NotFound } from './pages/NotFound';
 import Login from './pages/Login';
-import Profile from './pages/Profile';
+import Account from './pages/Account';
 import Navbar from './components/Navbar';
 import { Splash } from './pages/Splash';
 import UserContext from './UserContext';
@@ -90,7 +90,7 @@ function App() {
           <Route path='login' element={<Login handleLogin={handleLogin} />} />
           <Route
             path='profile'
-            element={<Profile handleLogout={handleLogout} />}
+            element={<Account handleLogout={handleLogout} />}
           />
           <Route path='trading' element={<TradingPage />} />
           <Route path='success' element={<SuccessPage />} />

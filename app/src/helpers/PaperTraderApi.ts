@@ -11,14 +11,14 @@ interface TransactionResult {
   balance: number;
 }
 
-interface Portfolio {
+interface Profile {
   username: string;
   balance: string;
 }
 
 interface UserAccount {
-  userProfile: Portfolio;
-  userPortfolio: Holdings[];
+  userProfile: Profile;
+  userHoldings: Holdings[];
 }
 
 export default class PaperTraderApi {
@@ -48,7 +48,7 @@ export default class PaperTraderApi {
    * Makes a request to server with JWT token from localStorage
    *
    * Returns:
-   *  {userProfile, userPortfolio}
+   *  {userProfile, userHoldings}
    */
   static async getUserAccount(): Promise<UserAccount> {
     const res = await this.request('user');
