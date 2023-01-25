@@ -27,13 +27,13 @@ function DataTable({ tableContent, tableHeaders }: DataTableParams) {
         <Paragraph>No activity! Login and start trading!</Paragraph>
       ) : (
         <Table>
-          <Table.Head>
+          <Table.Head textAlign='center'>
             {tableHeaders.map((header) => (
               <Table.TextHeaderCell key={header}>{header}</Table.TextHeaderCell>
             ))}
           </Table.Head>
           {tableContent.length && (
-            <Table.VirtualBody height={240}>
+            <Table.VirtualBody height={240} textAlign='center'>
               {tableContent.map((transaction, idx) => (
                 <Table.Row key={idx}>
                   {Object.values(transaction).map((val, idx) => (
