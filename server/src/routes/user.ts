@@ -18,10 +18,10 @@ router.get('/', async (req, res, next) => {
     if (userProfile === undefined) {
       throw new NotFoundError('No user found');
     }
-    const userPortfolio = await User.getHoldings(res.locals.user);
+    const userHoldings = await User.getHoldings(res.locals.user);
 
     // use array.map instead?
-    for (const stock of userPortfolio) {
+    for (const stock of userHoldings) {
       const { ticker, total_owned }: { ticker: string; total_owned: string } =
         stock;
       const { longName, regularMarketPrice } = await yahooFinance.quote(ticker); // argument must be type string
@@ -36,24 +36,24 @@ router.get('/', async (req, res, next) => {
       delete stock.total_owned;
     }
 
-    userPortfolio.push({
+    userHoldings.push({
       company: 'Total',
       ticker: '',
       totalOwned: '',
       currentPrice: '',
-      totalValue: userPortfolio
+      totalValue: userHoldings
         .map((holding) => holding.totalValue)
         .reduce((a, b) => a + b, 0),
     });
 
-    userPortfolio.map((holding) => {
+    userHoldings.map((holding) => {
       holding.totalValue = holding.totalValue.toLocaleString('en', {
         style: 'currency',
         currency: 'USD',
       });
     });
 
-    return res.json({ userProfile, userPortfolio });
+    return res.json({ userProfile, userHoldings });
   } catch (err) {
     return next(err);
   }
