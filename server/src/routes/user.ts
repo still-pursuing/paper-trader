@@ -20,7 +20,6 @@ router.get('/', async (req, res, next) => {
     }
     const userHoldings = await User.getHoldings(res.locals.user);
 
-    // use array.map instead?
     for (const stock of userHoldings) {
       const { ticker, total_owned }: { ticker: string; total_owned: string } =
         stock;
