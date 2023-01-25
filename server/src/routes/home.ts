@@ -21,6 +21,10 @@ router.get('/', async (req, res, next) => {
     );
 
     const activity = databaseActivity.map((entry) => {
+      entry.price = (+entry.price).toLocaleString('en', {
+        style: 'currency',
+        currency: 'USD',
+      });
       entry.transactionType = entry.type;
 
       const transactionDateMillis = new Date(entry.created_at).valueOf();
