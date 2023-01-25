@@ -89,7 +89,7 @@ function App() {
           <Route path='home' element={<Splash />} />
           <Route path='login' element={<Login handleLogin={handleLogin} />} />
           <Route
-            path='profile'
+            path='account'
             element={<Account handleLogout={handleLogout} />}
           />
           <Route path='trading' element={<TradingPage />} />
