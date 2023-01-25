@@ -1,7 +1,7 @@
 export interface Holdings {
   company: string;
-  currentPrice: number;
+  currentPrice: string;
   ticker: string;
-  totalOwned: number;
-  totalValue: number;
+  totalOwned: string;
+  totalValue: string;
 }
