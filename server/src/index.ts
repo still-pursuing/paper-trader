@@ -7,7 +7,7 @@ import { port } from './config';
 import { ExpressError, NotFoundError } from './errors';
 import { router as homeRoute } from './routes/home';
 import { router as loginRoute } from './routes/login';
-import { router as userRoute } from './routes/user';
+import { router as userRoute } from './routes/profile';
 import { router as stockRoute } from './routes/stock';
 import { authenticateJWT } from './middleware/auth';
 import { validateTicker } from './middleware/validateTicker';

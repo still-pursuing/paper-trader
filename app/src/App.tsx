@@ -4,7 +4,7 @@ import { Alert, Pane } from 'evergreen-ui';
 
 import { NotFound } from './pages/NotFound';
 import Login from './pages/Login';
-import Account from './pages/Account';
+import Account from './pages/Profile';
 import Navbar from './components/Navbar';
 import { Splash } from './pages/Splash';
 import UserContext from './UserContext';
