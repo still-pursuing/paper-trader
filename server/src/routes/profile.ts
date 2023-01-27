@@ -23,14 +23,14 @@ router.get('/', async (req, res, next) => {
     for (const stock of userHoldings) {
       const { ticker, total_owned }: { ticker: string; total_owned: string } =
         stock;
-      const { longName, regularMarketPrice } = await yahooFinance.quote(ticker); // argument must be type string
+      const { longName, regularMarketPrice } = await yahooFinance.quote(ticker);
       stock.company = longName;
       stock.totalOwned = total_owned;
       stock.currentPrice = regularMarketPrice.toLocaleString('en', {
         style: 'currency',
         currency: 'USD',
       });
-      stock.totalValue = +(+total_owned * regularMarketPrice);
+      stock.totalValue = +total_owned * regularMarketPrice;
 
       delete stock.total_owned;
     }
