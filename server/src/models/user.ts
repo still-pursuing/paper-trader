@@ -76,7 +76,8 @@ export class User {
         AS total_owned
         FROM transactions
         WHERE user_id=$1
-        GROUP BY ticker`,
+        GROUP BY ticker
+        HAVING SUM(CASE WHEN type='buy' THEN quantity ELSE -quantity END) > 0`,
       [id]
     );
 
