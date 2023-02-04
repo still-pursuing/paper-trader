@@ -1,4 +1,4 @@
-import { Pane, Heading, Paragraph, Spinner } from 'evergreen-ui';
+import { Pane, Heading, Paragraph, Spinner, Strong, Text } from 'evergreen-ui';
 import { useContext, useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 
@@ -37,6 +37,10 @@ function Account({ handleLogout }: LogoutParams) {
   const user = useContext(UserContext);
   const [profile, setProfile] = useState<Profile | undefined>(undefined);
   const [holdings, setHoldings] = useState<Holdings[] | undefined>(undefined);
+  const [totalHoldings, setTotalHoldings] = useState<string | undefined>(
+    undefined
+  );
+  const [totalValue, setTotalValue] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
 
   // make requests to get username and balance, transactions
@@ -44,10 +48,16 @@ function Account({ handleLogout }: LogoutParams) {
   useEffect(() => {
     async function loadAccount() {
       try {
-        const { userProfile, userHoldings } =
-          await PaperTraderApi.getUserAccount();
+        const {
+          userProfile,
+          userHoldings,
+          totalHoldingsValue,
+          totalUserValue,
+        } = await PaperTraderApi.getUserAccount();
         setProfile(userProfile);
         setHoldings(userHoldings);
+        setTotalHoldings(totalHoldingsValue);
+        setTotalValue(totalUserValue);
       } catch (error) {
         const message: string = "Couldn't load profile, please log in again";
         handleLogout();
@@ -74,20 +84,32 @@ function Account({ handleLogout }: LogoutParams) {
           </Heading>
           <Pane display='flex' flexDirection='column' alignItems='center'>
             <Paragraph>
-              You have a balance of{' '}
-              {Number(profile.balance).toLocaleString('en', {
-                style: 'currency',
-                currency: 'USD',
-              })}{' '}
-              to trade with.
+              You have a balance of {profile.balance} to trade with.
             </Paragraph>
           </Pane>
           <Pane>
             {holdings && (
-              <DataTable
-                tableHeaders={holdingsTableHeaders}
-                tableContent={holdings}
-              />
+              <Pane>
+                <DataTable
+                  tableHeaders={holdingsTableHeaders}
+                  tableContent={holdings}
+                />
+                <Pane
+                  display='flex'
+                  flexDirection='column'
+                  alignItems='end'
+                  marginRight={10}
+                >
+                  <Pane>
+                    <Strong size={400}>Total Holdings Value: </Strong>
+                    <Text size={400}>{totalHoldings}</Text>
+                  </Pane>
+                  <Pane>
+                    <Strong size={400}>Total Account Value: </Strong>
+                    <Text size={400}>{totalValue}</Text>
+                  </Pane>
+                </Pane>
+              </Pane>
             )}
           </Pane>
         </Pane>

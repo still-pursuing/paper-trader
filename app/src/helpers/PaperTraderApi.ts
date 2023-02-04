@@ -19,6 +19,8 @@ interface Profile {
 interface UserAccount {
   userProfile: Profile;
   userHoldings: Holdings[];
+  totalHoldingsValue: string;
+  totalUserValue: string;
 }
 
 export default class PaperTraderApi {
