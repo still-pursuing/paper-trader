@@ -3,6 +3,7 @@ import yahooFinance from 'yahoo-finance2';
 
 import { NotFoundError } from '../errors';
 import { User } from '../models/user';
+import { convertToUSDCurrency } from '../helpers/dollarConverter';
 
 export const router = Router();
 
@@ -18,6 +19,7 @@ router.get('/', async (req, res, next) => {
     if (userProfile === undefined) {
       throw new NotFoundError('No user found');
     }
+
     const userHoldings = await User.getHoldings(res.locals.user);
 
     for (const stock of userHoldings) {
@@ -26,33 +28,34 @@ router.get('/', async (req, res, next) => {
       const { longName, regularMarketPrice } = await yahooFinance.quote(ticker);
       stock.company = longName;
       stock.totalOwned = total_owned;
-      stock.currentPrice = regularMarketPrice.toLocaleString('en', {
-        style: 'currency',
-        currency: 'USD',
-      });
+      stock.currentPrice = convertToUSDCurrency(regularMarketPrice);
       stock.totalValue = +total_owned * regularMarketPrice;
 
       delete stock.total_owned;
     }
 
-    userHoldings.push({
-      company: 'Total',
-      ticker: '',
-      totalOwned: '',
-      currentPrice: '',
-      totalValue: userHoldings
-        .map((holding) => holding.totalValue)
-        .reduce((a, b) => a + b, 0),
-    });
+    let totalHoldingsValue = userHoldings
+      .map((holding) => holding.totalValue)
+      .reduce((a, b) => a + b, 0);
+
+    const totalUserValue = convertToUSDCurrency(
+      +userProfile.balance + totalHoldingsValue
+    );
+
+    userProfile.balance = convertToUSDCurrency(+userProfile.balance);
+
+    totalHoldingsValue = convertToUSDCurrency(totalHoldingsValue);
 
     userHoldings.map((holding) => {
-      holding.totalValue = holding.totalValue.toLocaleString('en', {
-        style: 'currency',
-        currency: 'USD',
-      });
+      holding.totalValue = convertToUSDCurrency(holding.totalValue);
     });
 
-    return res.json({ userProfile, userHoldings });
+    return res.json({
+      userProfile,
+      userHoldings,
+      totalHoldingsValue,
+      totalUserValue,
+    });
   } catch (err) {
     return next(err);
   }
