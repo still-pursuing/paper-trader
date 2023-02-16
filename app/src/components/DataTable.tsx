@@ -1,18 +1,12 @@
 import { Paragraph, Table, Pane } from 'evergreen-ui';
 
 import { Activity } from '../interfaces/activity';
+import { Holdings } from '../interfaces/holdings';
 
 interface DataTableParams {
-  tradeActivity: Activity[];
+  tableContent: Activity[] | Holdings[];
+  tableHeaders: string[];
 }
-
-const tableHeaders = [
-  'Ticker',
-  'Quantity',
-  'Price',
-  'Transaction Type',
-  'From',
-];
 
 /**
  * Props:
@@ -26,29 +20,25 @@ const tableHeaders = [
  *
  * Splash -> DataTable
  */
-function DataTable({ tradeActivity }: DataTableParams) {
+function DataTable({ tableContent, tableHeaders }: DataTableParams) {
   return (
     <Pane>
-      {tradeActivity.length === 0 ? (
+      {tableContent.length === 0 ? (
         <Paragraph>No activity! Login and start trading!</Paragraph>
       ) : (
         <Table>
-          <Table.Head>
+          <Table.Head textAlign='center'>
             {tableHeaders.map((header) => (
               <Table.TextHeaderCell key={header}>{header}</Table.TextHeaderCell>
             ))}
           </Table.Head>
-          {tradeActivity.length && (
-            <Table.VirtualBody height={240}>
-              {tradeActivity.map((transaction, idx) => (
+          {tableContent.length && (
+            <Table.VirtualBody height={240} textAlign='center'>
+              {tableContent.map((transaction, idx) => (
                 <Table.Row key={idx}>
-                  <Table.TextCell>{transaction.ticker}</Table.TextCell>
-                  <Table.TextCell isNumber>
-                    {transaction.quantity}
-                  </Table.TextCell>
-                  <Table.TextCell isNumber>${transaction.price}</Table.TextCell>
-                  <Table.TextCell>{transaction.transactionType}</Table.TextCell>
-                  <Table.TextCell>{transaction.from}</Table.TextCell>
+                  {Object.values(transaction).map((val, idx) => (
+                    <Table.TextCell key={idx}>{val}</Table.TextCell>
+                  ))}
                 </Table.Row>
               ))}
             </Table.VirtualBody>

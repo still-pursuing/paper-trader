@@ -2,12 +2,25 @@ import axios from 'axios';
 
 import { BACKEND_BASE_URL } from '../config';
 import { Activity } from '../interfaces/activity';
+import { Holdings } from '../interfaces/holdings';
 
 interface TransactionResult {
   price: number;
   qty: number;
   total: number;
   balance: number;
+}
+
+interface Profile {
+  username: string;
+  balance: string;
+}
+
+interface UserAccount {
+  userProfile: Profile;
+  userHoldings: Holdings[];
+  totalHoldingsValue: string;
+  totalUserValue: string;
 }
 
 export default class PaperTraderApi {
@@ -37,10 +50,10 @@ export default class PaperTraderApi {
    * Makes a request to server with JWT token from localStorage
    *
    * Returns:
-   *  {username, balance}
+   *  {userProfile, userHoldings}
    */
-  static async getUserProfile() {
-    const res = (await this.request('profile')).userPortfolio;
+  static async getUserAccount(): Promise<UserAccount> {
+    const res = await this.request('user');
 
     return res;
   }
