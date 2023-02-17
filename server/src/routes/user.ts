@@ -25,7 +25,9 @@ router.get('/', async (req, res, next) => {
     for (const stock of userHoldings) {
       const { ticker, total_owned }: { ticker: string; total_owned: string } =
         stock;
-      const { longName, regularMarketPrice } = await yahooFinance.quote(ticker);
+      const { longName, regularMarketPrice } = await yahooFinance.quoteCombine(
+        ticker
+      );
       stock.company = longName;
       stock.totalOwned = total_owned;
       stock.currentPrice = convertToUSDCurrency(regularMarketPrice);

@@ -33,7 +33,12 @@ function DataTable({ tableContent, tableHeaders }: DataTableParams) {
             ))}
           </Table.Head>
           {tableContent.length && (
-            <Table.VirtualBody height={240} textAlign='center'>
+            <Table.VirtualBody
+              height={
+                40 * tableContent.length >= 240 ? 240 : 40 * tableContent.length
+              }
+              textAlign='center'
+            >
               {tableContent.map((transaction, idx) => (
                 <Table.Row key={idx}>
                   {Object.values(transaction).map((val, idx) => (

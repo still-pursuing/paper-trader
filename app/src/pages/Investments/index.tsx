@@ -33,7 +33,7 @@ interface LogoutParams {
   handleLogout: () => void;
 }
 
-function Account({ handleLogout }: LogoutParams) {
+function InvestmentsPage({ handleLogout }: LogoutParams) {
   const user = useContext(UserContext);
   const [profile, setProfile] = useState<Profile | undefined>(undefined);
   const [holdings, setHoldings] = useState<Holdings[] | undefined>(undefined);
@@ -46,14 +46,14 @@ function Account({ handleLogout }: LogoutParams) {
   // make requests to get username and balance, transactions
   // add a try catch in case accessing db has issues
   useEffect(() => {
-    async function loadAccount() {
+    async function loadUser() {
       try {
         const {
           userProfile,
           userHoldings,
           totalHoldingsValue,
           totalUserValue,
-        } = await PaperTraderApi.getUserAccount();
+        } = await PaperTraderApi.getUser();
         setProfile(userProfile);
         setHoldings(userHoldings);
         setTotalHoldings(totalHoldingsValue);
@@ -64,7 +64,7 @@ function Account({ handleLogout }: LogoutParams) {
         return navigate('/login', { state: { message }, replace: true });
       }
     }
-    if (user) loadAccount();
+    if (user) loadUser();
   }, [user, navigate, handleLogout]);
 
   if (!user) return <Navigate to='/login' replace />;
@@ -125,4 +125,4 @@ function Account({ handleLogout }: LogoutParams) {
   );
 }
 
-export default Account;
+export default InvestmentsPage;

@@ -68,7 +68,7 @@ function Login({ handleLogin }: LoginParams) {
     }
   }, [authCode, handleLogin, setSearchParams, state]);
 
-  if (user) return <Navigate to='/profile' replace />;
+  if (user) return <Navigate to='/investments' replace />;
 
   /** Makes a request to Discord's OAuth authorization page */
   async function getDiscordOAuthCode() {
