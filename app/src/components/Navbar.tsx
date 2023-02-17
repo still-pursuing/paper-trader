@@ -42,10 +42,10 @@ function Navbar({ handleLogout }: LogoutParams) {
             </Tab>
             <Tab
               is={ReactRouterLink}
-              to='account'
-              isSelected={pathname === '/account'}
+              to='investments'
+              isSelected={pathname === '/investments'}
             >
-              Account
+              Investments
             </Tab>
             <Tab
               is={ReactRouterLink}

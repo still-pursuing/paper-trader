@@ -16,7 +16,7 @@ interface Profile {
   balance: string;
 }
 
-interface UserAccount {
+interface User {
   userProfile: Profile;
   userHoldings: Holdings[];
   totalHoldingsValue: string;
@@ -52,7 +52,7 @@ export default class PaperTraderApi {
    * Returns:
    *  {userProfile, userHoldings}
    */
-  static async getUserAccount(): Promise<UserAccount> {
+  static async getUser(): Promise<User> {
     const res = await this.request('user');
 
     return res;
