@@ -76,37 +76,13 @@
 
 The motivation for this project was to expose myself to different technologies that are popular in the software development industry.
 
-### Logging In
-
-<p align="center"><img src="images/logging-in.gif" alt="Logging In To Paper Trader"></p>
-
-To get started with trading on **Paper Trader**, the user logins and authorizes the application to utilize their Discord profile via Discord's OAuth 2.0 implementation (Note, if the application was not previously authorized then the user will have an additional step of logging into their Discord account). Once authenticated, the user is redirected to their user profile page, displaying their account balance and investments (if any) queried from the PostgreSQL database. In addition, a JWT is generated and stored in the client's local storage such that the user's session can be maintained between visits without having to constantly reauthorize access to their Discord account if they have not logged out.
-
-### Making Transactions
-
-<p align="center">
-<img src="images/buy-transaction.gif" alt="Buying a Stock">
-<img src="images/sell-transaction.gif" alt="Sell a Stock">
-</p>
-
-By filling out a form, a user can either buy, sell, or lookup a valid stock. However, if they have insufficient funds to make a purchase, try to sell more shares than they own, or enter an invalid stock, the transaction request will not be completed and an error message will be displayed.
-
-<p align="center">
-<img src="images/buy-transaction-failed.gif" alt="Failed Buying a Stock">
-</p>
-
-### Investments
-
-<p align="center">
-<img src="images/investments-page.png" alt="Failed Buying a Stock">
-</p>
-Currently, the investments page displays the user's investment values. By making an aggregate API call to the unofficial Yahoo Finance API, the current value of each stock is found and the corresponding total value for the number of shares owned is calculated. In order to properly display the strings as currency values, Javascripts built in .toLocale() method was used.
-
-## Implementation Decisions
+### Implementation Decisions
 
 1. Which technologies to use
 
    - The main technologies used in this project were Typescript, React, Node and Express. As I wanted to use new technologies that are popular in the software development industry, but also wanted to continue building my existing code language skills, I opted to use Typescript as the only new primary technology. Not only is it popular in the industry, but given it's type enforcing I believed it would be able to save me on debugging time down the road as errors would be caught during compilation. However, I did encounter a slight learning curve as I haven't worked with a typed language before, so utilizing React, Node, and Express ensured consistent progress.
+
+### Challenges
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -187,9 +163,43 @@ This project utilizes a Discord Bot to process the OAuth2.0 login requests which
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+### Logging In
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+<p align="center"><img src="images/logging-in.gif" alt="Logging In To Paper Trader"></p>
+
+To get started with trading on **Paper Trader**, the user logins and authorizes the application to utilize their Discord profile via Discord's OAuth 2.0 implementation (Note, if the application was not previously authorized then the user will have an additional step of logging into their Discord account). Once authenticated, the user is redirected to their user profile page, displaying their account balance and investments (if any) queried from the PostgreSQL database. In addition, a JWT is generated and stored in the client's local storage such that the user's session can be maintained between visits without having to constantly reauthorize access to their Discord account if they have not logged out.
+
+- Learnings of interest:
+  - Integrating Discord OAuth authentication flow
+  - Implementing unique error handling based on which part of the OAuth flow failed
+
+### Making Transactions
+
+<p align="center">
+<img src="images/buy-transaction.gif" alt="Buying a Stock">
+<img src="images/sell-transaction.gif" alt="Sell a Stock">
+</p>
+
+By filling out a form, a user can either buy, sell, or lookup a valid stock. However, if they have insufficient funds to make a purchase, try to sell more shares than they own, or enter an invalid stock, the transaction request will not be completed and an error message will be displayed.
+
+<p align="center">
+<img src="images/buy-transaction-failed.gif" alt="Failed Buying a Stock">
+</p>
+
+- Learnings of interest:
+  - Utilized conditional statments in SQL query to check user's owned share quantities
+
+### Investments
+
+<p align="center">
+<img src="images/investments-page.png" alt="Failed Buying a Stock">
+</p>
+Currently, the investments page displays the user's investment values. By making an aggregate API call to the unofficial Yahoo Finance API, the current value of each stock is found and the corresponding total value for the number of shares owned is calculated.
+ 
+ - Learnings of interest:
+    - Utilized Javascript's `.toLocale()` method to style the strings as currency
+    - Reduced the number of individual API calls to Yahoo Finance by using their `quoteCombine` method
+    - Refactored table component to be reusable, leading to more complex Typescript interfaces
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
