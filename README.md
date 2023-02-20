@@ -78,11 +78,43 @@ The motivation for this project was to expose myself to different technologies t
 
 ### Implementation Decisions
 
-1. Which technologies to use
+1. Picking the stack
 
    - The main technologies used in this project were Typescript, React, Node and Express. As I wanted to use new technologies that are popular in the software development industry, but also wanted to continue building my existing code language skills, I opted to use Typescript as the only new primary technology. Not only is it popular in the industry, but given it's type enforcing I believed it would be able to save me on debugging time down the road as errors would be caught during compilation. However, I did encounter a slight learning curve as I haven't worked with a typed language before, so utilizing React, Node, and Express ensured consistent progress.
 
+2. Which deployment service to use
+
+   - Oh the many free deployment services that exist, I opted to use Firebase and Fly.io. Firebase was chosen as it has a large range of services, and while Paper Trader doesn't utilize all of them, I wanted to get some familiarity to the platform as I hope to return to it in future projects. As for choosing Fly.io, I originally wanted to use Heroku as I used it in the past and was familiar with their deployment process. Unfortunately, Heroku ended their free hobby tier service and I needed to pick alternatives. In the end, I was deciding between Fly.io and Render, but given that I knew I wanted to use a PostgreSQL database, Render would not have worked as the platform [deletes their free database instance after 90 days](https://render.com/docs/free#free-postgresql-databases) regardless of activity at the time of writing this. Lastly, both platforms had clear documentation on how to setup a CI/CD pipeline with Github Actions, which I knew I wanted to implement for this project.
+
+3. Setting up a CI/CD pipeline
+
+   - I've experienced making changes and either forgetting to redeploy or deploying before saving the files. By learning to add this to this repository, gone are the days of showing a project and realizing the wrong version is in production (hopefully).
+
+4. OAuth for user authentication and authorization
+
+   - Across the internet I saw a lot of websites that I used offered SSO via other big platform services (e.g. Google, LinkedIn, etc.), I saw this would app would be a good opportunity to try integrating a similar process. Discord was choosen as the idea for Paper Trader formed while chatting with my friends over Discord. In addition to SSO being a popular user authentication process, it has the added benefit of relieving the pressure of making a robust user account system on my own. Account security is a very difficult infrastructure to get right, so relying on proven existing procedures was an easy choice.
+
+5. Styling: CSS, Bootstrap, or a React Component Library?
+
+   - I chose to go with a React Component Library (specifically Evergreen UI) as it has the benefits Bootstrap/Other CSS frameworks that provide consistent styling on the frontend and enable fine tuning with CSS if needed. Furthermore, I could spend less time on styling common React components such as a navbar and a form.
+
+6. SQL vs NoSQL
+   - Given that this application works with financial transactions, a relational database is better suited for the type of data that is being stored. Specifically, this application can benefit from the ACID compliance of a relational database, ensuring accurate transaction integrity.
+
 ### Challenges
+
+Below is an ongoing compilation of the challenges encountered while working on this project. Some are general and some are specific.
+
+- Learning to work with types
+  - Given this was my first attempt at working with a typed language, I encountered some growing pains as features were added to the project. Originally it wasn't so bad when working with basic data types, like `number` and `string`, but that changed once I started having nested objects being passed around to my React components. Determining the correct structure for the interfaces and correct typing for the component props led to long sessions of reading StackOverflow, Typescript documentation, and various blog posts to figure out how to resolve my type errors.
+- Deployment issues
+  - Setting up a CI/CD pipeline with new deployment services was a bumpy experience getting started. From figuring out what the different errors meant from each deployment failure and understanding how to manipulate the target directories, each step helped refine my CI/CD setup. Barring updates to the services I use that will break my setup, I'm glad to have resolved the issues I had with getting this process implemented as it made deployment a seamless procedure.
+- Implementing Discord OAuth
+  - While getting started with using Discord's OAuth flow, I jumped into picking out pieces of the documentation to add onto the application. Unfortunately, this meant confusing bugs where I had no idea on how to even resolve. I decided to step back and make a dummy repo that followed Discord's documentation on getting a basic OAuth flow setup on a simple application. By breaking down each step of the process and tinkering with the example application, I was able to figure out why my haphazard OAuth integration had issues. Specifically, I wasn't properly generating the OAuth token and utilizing it in different application routes during my first attempt.
+- Navigating through new technologies
+  - A general catch-all challenge, but working with these new technologies (CI/CD, Typescript, Fly.io, OAuth, etc.) meant lots of opportunities for roadblocks. To overcome these challenges, I often had to spend more time reading and researching than actually coding up the feature/implementation.
+- Getting feedback
+  - Of course, what good would this project be as a learning tool if there was no feedback or review of the code. This led to searching up examples of how others may have implemented a similar feature, and reaching out to my more experienced software engineering friends for code reviews.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -132,7 +164,7 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-This project utilizes a Discord Bot to process the OAuth2.0 login requests which has private keys that cannot be shared. If one wants to replicate this in their copy of this repository, one can start [here](https://discordjs.guide/oauth2/#a-quick-example).
+This application utilizes a Discord Bot to process the OAuth2.0 login requests which has private keys that cannot be shared. If one wants to replicate this in their copy of this repository, one can start [here](https://discordjs.guide/oauth2/#a-quick-example).
 
 1. Get a free Finnhub API Key at [https://finnhub.io/register](https://finnhub.io/register) and your Discord secrets from following their documentation previously linked.
 2. Clone the repo
@@ -258,9 +290,9 @@ See the [open issues](https://github.com/github_username/repo_name/issues) for a
 ## Contributing
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+Don't forget to give the repository a star! Thanks again!
 
-1. Fork the Project
+1. Fork the repository
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
@@ -280,9 +312,7 @@ Project Link: [https://github.com/still-pursuing/paper-trader](https://github.co
 
 ## Acknowledgments
 
-- []()
-- []()
-- []()
+- Thanks to [li-andy](https://github.com/li-andy) for taking the time to review pull requests for best practices and feedback on implementation
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
