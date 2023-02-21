@@ -23,7 +23,7 @@
 <br />
 <div align="center">
 
-![logo](https://user-images.githubusercontent.com/69769431/220258739-89239d11-a4bd-4be1-892e-8b5176dc43c4.png)
+![logo](https://user-images.githubusercontent.com/69769431/220485345-82d76424-985e-4948-871a-c847a4f745cb.png)
 
 <h3 align="center">Paper Trader</h3>
 
