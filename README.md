@@ -22,9 +22,10 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/still-pursuing/paper-trader">
-    <img src="images/logo.png" alt="Paper Trader" width="auto" height="auto">
-  </a>
+
+![logo](https://user-images.githubusercontent.com/69769431/220258739-89239d11-a4bd-4be1-892e-8b5176dc43c4.png)
+
+
 
 <h3 align="center">Paper Trader</h3>
 
