@@ -22,9 +22,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/still-pursuing/paper-trader">
-    <img src="images/logo.png" alt="Paper Trader" width="auto" height="auto">
-  </a>
+
+![logo](https://user-images.githubusercontent.com/69769431/220485345-82d76424-985e-4948-871a-c847a4f745cb.png)
 
 <h3 align="center">Paper Trader</h3>
 
@@ -72,7 +71,12 @@
 
 ## About The Project
 
-<p align="center"><img src="images/homepage.png" alt="Paper Trader Home Page"></p>
+<div align="center">
+
+![homepage](https://user-images.githubusercontent.com/69769431/220259451-28f0a532-a294-4092-bde9-bb8a3734927d.png)
+
+</div>
+
 
 The motivation for this project was to expose myself to different technologies that are popular in the software development industry.
 
@@ -195,7 +199,11 @@ This application utilizes a Discord Bot to process the OAuth2.0 login requests w
 
 ### Logging In
 
-<p align="center"><img src="images/logging-in.gif" alt="Logging In To Paper Trader"></p>
+<div align="center">
+
+![logging-in](https://user-images.githubusercontent.com/69769431/220259925-d91857aa-08b4-4da8-9d16-149450d4c8fd.gif)
+
+</div>
 
 To get started with trading on **Paper Trader**, the user logins and authorizes the application to utilize their Discord profile via Discord's OAuth 2.0 implementation (Note, if the application was not previously authorized then the user will have an additional step of logging into their Discord account). Once authenticated, the user is redirected to their user profile page, displaying their account balance and investments (if any) queried from the PostgreSQL database. In addition, a JWT is generated and stored in the client's local storage such that the user's session can be maintained between visits without having to constantly reauthorize access to their Discord account if they have not logged out.
 
@@ -205,25 +213,31 @@ To get started with trading on **Paper Trader**, the user logins and authorizes 
 
 ### Making Transactions
 
-<p align="center">
-<img src="images/buy-transaction.gif" alt="Buying a Stock">
-<img src="images/sell-transaction.gif" alt="Sell a Stock">
-</p>
+<div align="center">
+
+![buy-transaction](https://user-images.githubusercontent.com/69769431/220260001-bd4fe562-e3f8-41d8-889e-5f08d219f96f.gif)
+![sell-transaction](https://user-images.githubusercontent.com/69769431/220260008-722c32d5-5475-46f9-93d9-9f8f7e139c12.gif)
+
+</div>
 
 By filling out a form, a user can either buy, sell, or lookup a valid stock. However, if they have insufficient funds to make a purchase, try to sell more shares than they own, or enter an invalid stock, the transaction request will not be completed and an error message will be displayed.
 
-<p align="center">
-<img src="images/buy-transaction-failed.gif" alt="Failed Buying a Stock">
-</p>
+<div align="center">
+
+![buy-transaction-failed](https://user-images.githubusercontent.com/69769431/220260075-d91d92fe-d4fd-4f40-957e-e20e34c7ff8f.gif)
+
+</div>
 
 - Learnings of interest:
   - Utilized conditional statments in SQL query to check user's owned share quantities
 
 ### Investments
 
-<p align="center">
-<img src="images/investments-page.png" alt="Failed Buying a Stock">
-</p>
+<div align="center">
+
+![investments-page](https://user-images.githubusercontent.com/69769431/220260158-960b7021-d442-4a80-a244-8e8f4eea5d26.png)
+
+</div>
 Currently, the investments page displays the user's investment values. By making an aggregate API call to the unofficial Yahoo Finance API, the current value of each stock is found and the corresponding total value for the number of shares owned is calculated.
  
  - Learnings of interest:
