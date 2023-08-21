@@ -333,7 +333,7 @@ Project Link: [https://github.com/still-pursuing/paper-trader](https://github.co
 
 [product-screenshot]: images/screenshot.png
 [typescript]: https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white
-[typescript-url]: https://nextjs.org/
+[typescript-url]: https://www.typescriptlang.org/
 [react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [react-url]: https://reactjs.org/
 [node.js]: https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white
